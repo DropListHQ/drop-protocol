@@ -2,14 +2,14 @@
 
 pragma solidity ^0.8.0;
 
-import "./MerkleDropERC1155.sol";
-import "@openzeppelin/contracts/proxy/Clones.sol";
+import "./MerkleDrop/IDrop.sol";
+import "@openzeppelin/contracts/contracts/proxy/Clones.sol";
 
-contract MerkleDropERC1155Factory {
+contract DropFactory {
     using Clones for *;
     
     event CreateDrop(address indexed drop, address indexed token, bytes32 ipfsHash);
-
+    
     function createDrop(
         address template,
         address token,
@@ -17,8 +17,8 @@ contract MerkleDropERC1155Factory {
         uint256 expiryTimestamp,
         bytes32 salt,
         bytes32 ipfsHash
-    ) external returns (MerkleDropERC1155 drop) {
-        drop = MerkleDropERC1155(Clones.cloneDeterministic(template, salt));
+    ) external returns (IDrop drop) {
+        drop = IDrop(Clones.cloneDeterministic(template, salt));
         drop.init(msg.sender, token, merkleRoot, expiryTimestamp, ipfsHash);
         emit CreateDrop(address(drop), token, ipfsHash);
     }

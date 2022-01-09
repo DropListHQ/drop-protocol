@@ -1,4 +1,4 @@
-*.swp
+swp
 *.swo
 
 # Logs
@@ -60,3 +60,7 @@ allFiredEvents
 # hardhat
 cache
 artifacts
+
+*~
+
+  
