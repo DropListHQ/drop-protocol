@@ -63,8 +63,19 @@ describe('DropFactory', () => {
         });
     })
     describe('predictDropAddress()', () => {
-        xit('correcty precomputes Drop contract address', async () => {
-            throw new Error("Not implemented")
+        it('correcty precomputes Drop contract address', async () => {
+            const merkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
+            const expiration = DECEMBER_31_2325;
+            const salt = ethers.utils.formatBytes32String("SALT");
+            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+
+            const tx = await factory.createDrop(template.address, token.address, merkleRoot, expiration, salt, ipfsHash);
+            const receipt = await tx.wait();
+            const args = receipt.events[0].args;
+            const actualDropAddress = args.drop;
+            const precomputedDropAddress = await factory.predictDropAddress(template.address, salt);
+
+            expect(actualDropAddress).to.be.equal(precomputedDropAddress);
         });
     });
 });
