@@ -5,6 +5,24 @@ import "@openzeppelin/contracts/contracts/utils/introspection/IERC165.sol";
 
 interface IDrop is IERC165 {
 
+    // Returns the address of the token distributed by this contract.
+    function token() external view returns (address);
+
+    // Returns the merkle root of the merkle tree containing account balances available to claim.
+    function merkleRoot() external view returns (bytes32);
+
+    // Returns the ipfs hash containing tree information.
+    function ipfsHash() external view returns (bytes32);
+
+    // Returns timestemp when drop will become invalid.
+    function expiration() external view returns (uint256);
+
+    // returns address the drop creator address
+    function sender() external view returns (address);
+    
+    // returns if drop contract is inialized
+    function initialized() external view returns (bool);
+        
   /**
    * @dev Constructor for Drop contract as an instance is a proxy (conforming to EIP-1167), the init function is used on initialization.
    * @param tokenOwner owner of the token to be distributed.

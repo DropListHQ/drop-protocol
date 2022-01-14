@@ -8,23 +8,25 @@ import "@openzeppelin/contracts/contracts/utils/introspection/ERC165.sol";
 import "./IDrop.sol";
 
 contract BaseDrop is IDrop, ERC165 {
-    bytes32 public merkleRoot;
-    address public token;
-    bytes32 public ipfsHash;
-    uint256 public expiryTimestamp;
-    address private tokenOwner;
-    bool public initialized;
-
-    mapping(uint256 => uint256) public claimedBitMap;
+    bytes32 public override merkleRoot;
+    address public override token;
+    bytes32 public override ipfsHash;
+    uint256 public override expiration;
+    address public override sender;
+    bool public override initialized;
     
-    function init(address tokenOwner_, address token_, bytes32 merkleRoot_, uint256 expiryTimestamp_, bytes32 ipfsHash_) external {
+    mapping(uint256 => uint256) public claimedBitMap;
+
+    error NotImplementedError();
+    
+    function init(address sender_, address token_, bytes32 merkleRoot_, uint256 expiration_, bytes32 ipfsHash_) external {
         require(!initialized, "Drop already initialized");
         initialized = true;
         token = token_;
         merkleRoot = merkleRoot_;
-        expiryTimestamp = expiryTimestamp_;
+        expiration = expiration_;
         ipfsHash = ipfsHash_;
-        tokenOwner = tokenOwner_;
+        sender = sender_;
     }
     
     function isClaimed(uint256 index) public override view returns (bool) {
@@ -36,34 +38,29 @@ contract BaseDrop is IDrop, ERC165 {
     }
     
     function isExpired() public override view returns (bool) {
-        return block.timestamp < expiryTimestamp;
+        return block.timestamp < expiration;
     }
-    
-    function claim(uint256 index, uint256 tokenId, uint256 amount, uint256 maxSupply, address account, bytes32[] calldata merkleProof) external override {
-        require(!isExpired(), "MerkleDrop: Drop experied");
-        require(!isClaimed(index), 'MerkleDrop: Token already claimed');
 
-        // Verify the merkle proof.
-        bytes32 node = keccak256(abi.encodePacked(index, tokenId, account, amount, maxSupply));
-        require(MerkleProof.verify(merkleProof, merkleRoot, node), 'MerkleDistributor: Invalid proof.');
-        
-        /* // Set max suply of not exist */
-        /* if (claimStartedForToken(tokenId) == false) { */
-        /*     _maxSupply[tokenId] = maxSupply + 1; */
-        /* } */
-        
-        /* // Check that enought token left */
-        /* require(tokensLeft(tokenId) - amount >= 0, 'Not enought tokens'); */
-        /* _maxSupply[tokenId] -= amount; */
-        
-        /* // Mark it claimed and send the token. */
-        /* _setClaimed(index); */
-        /* IERC1155(token).safeTransferFrom(_tokenOwner, account, tokenId, amount, ""); */
-        
-        /* emit Claimed(index, tokenId, amount, account); */
+    function _checkMerkleDrop(uint256 index, uint256 tokenId, uint256 amount, uint256 maxSupply, address account, bytes32[] calldata merkleProof) private view {
+
+      // drop not expired 
+      require(!isExpired(), "MerkleDrop: Drop experied");
+
+      // leaf isn't claimed
+      require(!isClaimed(index), 'MerkleDrop: Token already claimed');
+      
+      // Verify the merkle proof.
+      bytes32 node = keccak256(abi.encodePacked(index, tokenId, account, amount, maxSupply));
+      require(MerkleProof.verify(merkleProof, merkleRoot, node), 'MerkleDistributor: Invalid proof.');
+    }
+
+    
+    function claim(uint256 index, uint256 tokenId, uint256 amount, uint256 maxSupply, address account, bytes32[] calldata merkleProof) public virtual override {
+      // basic merkle drop checks
+      _checkMerkleDrop(index, tokenId, amount, maxSupply, account, merkleProof);
     }
     
-    function _setClaimed(uint256 index) private {
+    function _setClaimed(uint256 index) internal {
         uint256 claimedWordIndex = index / 256;
         uint256 claimedBitIndex = index % 256;
         claimedBitMap[claimedWordIndex] = claimedBitMap[claimedWordIndex] | (1 << claimedBitIndex);
