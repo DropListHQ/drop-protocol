@@ -34,7 +34,8 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "OpenZeppelin/openzeppelin-contracts#master"
+    "@openzeppelin/contracts": "OpenZeppelin/openzeppelin-contracts#master",
+    "@ethersproject/keccak256": "^5.5.0"
   },
   "scripts": {
     "build": "hardhat compile",
