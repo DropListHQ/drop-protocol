@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { Contract } from "ethers";
 import { arrayify, computeAddress, defaultAbiCoder, hexlify, randomBytes, SigningKey } from "ethers/lib/utils";
 import { keccak256 } from '@ethersproject/keccak256';
-import { buildMerkleTreeERC1155, RecipientsDataFormat } from "@drop-protocol/dropSDK";
+import { buildMerkleTreeERC1155, RecipientsDataFormat, MerkleDistributorInfo } from "@drop-protocol/drop-sdk";
 import { ethers } from "hardhat";
 
 const DECEMBER_31_2325 = 11234234223 // Thursday, December 31, 2325 8:37:03 PM                                                                                                                                
@@ -26,6 +26,7 @@ describe('DropFactory', () => {
     let nonrecipient: SignerWithAddress;
     let sender: SignerWithAddress;
     let recipients: RecipientsDataFormat;
+    let merkletree: MerkleDistributorInfo;
 
     before(async () => {
         signers = await ethers.getSigners();
@@ -54,7 +55,8 @@ describe('DropFactory', () => {
         recipients[recipient1.address] = { amount: 1, tokenId: 1, maxSupply: 1 };
         recipients[recipient2.address] = { amount: 1, tokenId: 2, maxSupply: 3 };
         recipients[recipient3.address] = { amount: 2, tokenId: 2, maxSupply: 3 };
-        recipients[recipient3.address] = { amount: 1, tokenId: 1, maxSupply: 1 };
+        recipients[recipient4.address] = { amount: 1, tokenId: 1, maxSupply: 1 };
+        merkletree = buildMerkleTreeERC1155(recipients);
     });
 
     beforeEach(async () => {
@@ -67,7 +69,6 @@ describe('DropFactory', () => {
 
     describe('init()', () => {
         it('inits the contract', async () => {
-            const merkletree = buildMerkleTreeERC1155(recipients);
             const expiration = DECEMBER_31_2325;
             const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
             const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
@@ -81,7 +82,6 @@ describe('DropFactory', () => {
         });
 
         it('does not allow to init contract twice', async () => {
-            const merkletree = buildMerkleTreeERC1155(recipients);
             const expiration = DECEMBER_31_2325;
             const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
 
@@ -94,10 +94,8 @@ describe('DropFactory', () => {
         });
     })
 
-
     describe('isExpire()', () => {
         it('should not return expired for non-expired drop', async () => {
-            const merkletree = buildMerkleTreeERC1155(recipients);
             const expiration = DECEMBER_31_2325;
             const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
             const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
@@ -105,47 +103,71 @@ describe('DropFactory', () => {
         })
 
         it('should return expired for expired drop', async () => {
-            const merkletree = buildMerkleTreeERC1155(recipients);
             const expiration = JULY_30_2015;
             const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
             const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
 
             expect(await drop.isExpired()).to.be.eq(true);
-            // console.log(merkletree);
         })
     })
 
     describe('claim()', () => {
+        describe("valid drop & merkletree", () => {
+            beforeEach(async () => {
+                // init drop contract            
+                const expiration = DECEMBER_31_2325;
+                const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+                const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+            })
 
-        it('should allow to execute valid claim', async () => {
+            it('should allow to execute valid claim', async () => {
+                // execute valid claim
+                const claim = merkletree.claims[recipient1.address];
+                expect(await drop.isClaimed(claim.index)).to.be.equal(false);
+                expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(0);
 
-            // init drop contract
-            const merkletree = buildMerkleTreeERC1155(recipients);
-            const expiration = DECEMBER_31_2325;
-            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
-            const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+                drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof);
+                expect(await drop.isClaimed(claim.index)).to.be.equal(true);
+                expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(claim.amount);
+            })
 
-            // execute valid claim
-            const claim = merkletree.claims[recipient1.address];
-            expect(await drop.isClaimed(claim.index)).to.be.equal(false);
-            expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(0);
+            it('should allow to execute claim only once', async () => {
+                const claim = merkletree.claims[recipient1.address];
 
-            drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof);
-            expect(await drop.isClaimed(claim.index)).to.be.equal(true);
-            expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(claim.amount);
+                // first claim tx should go through
+                drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof);
+
+                // second claim tx should revert
+                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof)).to.be.reverted;
+            })
+
+            it('should not allow to execute claim to wrong recipient', async () => {
+                const claim = merkletree.claims[recipient1.address];
+                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, nonrecipient.address, claim.proof)).to.be.reverted;
+            })
+
+            it('should allow to claim tokens only once on first come first served basis ', async () => {
+                // first claim tx should go through
+                const firstClaim = merkletree.claims[recipient1.address];
+                drop.claim(firstClaim.index, firstClaim.tokenId, firstClaim.amount, firstClaim.maxSupply, recipient1.address, firstClaim.proof);
+
+                // second claim tx should revert
+                const secondClaim = merkletree.claims[recipient4.address];
+                await expect(drop.claim(secondClaim.index, secondClaim.tokenId, secondClaim.amount, secondClaim.maxSupply, recipient4.address, secondClaim.proof)).to.be.reverted;
+            })
         })
 
-        xit('should allow to execute claim only once', async () => {
-        })
-
-        xit('should not allow to execute claim with missed deadline', async () => {
-        })
-
-        xit('should not allow to execute claim to wrong recipient', async () => {
-        })
-
-        xit('should allow to claim tokens only once on first come first served basis ', async () => {
+        describe("missed deadline", () => {
+            beforeEach(async () => {
+                // init drop contract            
+                const expiration = JULY_30_2015;
+                const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+                const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+            })
+            it('should not allow to execute claim with missed deadline', async () => {
+                const claim = merkletree.claims[recipient1.address];
+                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof)).to.be.reverted;
+            })
         })
     })
-
 });

@@ -31,16 +31,16 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@drop-protocol/dropSDK",
+  "name": "@drop-protocol/drop-sdk",
   "author": "Mikhail Dobrokhvalov",
-  "module": "dist/dropSDK.esm.js",
+  "module": "dist/drop-sdk.esm.js",
   "size-limit": [
     {
-      "path": "dist/dropSDK.cjs.production.min.js",
+      "path": "dist/drop-sdk.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/dropSDK.esm.js",
+      "path": "dist/drop-sdk.esm.js",
       "limit": "10 KB"
     }
   ],

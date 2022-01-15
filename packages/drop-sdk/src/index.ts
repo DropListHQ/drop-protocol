@@ -9,8 +9,6 @@ export type RecipientsDataFormat = {
     }
 }
 
-
-
 export const buildMerkleTreeERC1155 = (recipientsData: RecipientsDataFormat): MerkleDistributorInfo => {
     const merkleData = parseBalanceMap(recipientsData);
     return merkleData
