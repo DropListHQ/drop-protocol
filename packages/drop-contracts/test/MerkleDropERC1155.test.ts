@@ -22,6 +22,7 @@ describe('DropFactory', () => {
     let recipient1: SignerWithAddress;
     let recipient2: SignerWithAddress;
     let recipient3: SignerWithAddress;
+    let recipient4: SignerWithAddress;
     let nonrecipient: SignerWithAddress;
     let sender: SignerWithAddress;
     let recipients: RecipientsDataFormat;
@@ -38,17 +39,22 @@ describe('DropFactory', () => {
         token = await MockToken.deploy();
         await token.deployed();
 
+        // approve drop contract to transfer erc1155 tokens on sender's behalf
+        token.setApprovalForAll(drop.address, true);
+
         // create merkle tree
         sender = signers[0];
         recipient1 = signers[1];
         recipient2 = signers[2];
         recipient3 = signers[3];
-        nonrecipient = signers[4];
+        recipient4 = signers[4];
+        nonrecipient = signers[5];
 
         recipients = {}
         recipients[recipient1.address] = { amount: 1, tokenId: 1, maxSupply: 1 };
         recipients[recipient2.address] = { amount: 1, tokenId: 2, maxSupply: 3 };
         recipients[recipient3.address] = { amount: 2, tokenId: 2, maxSupply: 3 };
+        recipients[recipient3.address] = { amount: 1, tokenId: 1, maxSupply: 1 };
     });
 
     beforeEach(async () => {
@@ -105,6 +111,41 @@ describe('DropFactory', () => {
             const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
 
             expect(await drop.isExpired()).to.be.eq(true);
+            // console.log(merkletree);
         })
     })
+
+    describe('claim()', () => {
+
+        it('should allow to execute valid claim', async () => {
+
+            // init drop contract
+            const merkletree = buildMerkleTreeERC1155(recipients);
+            const expiration = DECEMBER_31_2325;
+            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+            const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+
+            // execute valid claim
+            const claim = merkletree.claims[recipient1.address];
+            expect(await drop.isClaimed(claim.index)).to.be.equal(false);
+            expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(0);
+
+            drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof);
+            expect(await drop.isClaimed(claim.index)).to.be.equal(true);
+            expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(claim.amount);
+        })
+
+        xit('should allow to execute claim only once', async () => {
+        })
+
+        xit('should not allow to execute claim with missed deadline', async () => {
+        })
+
+        xit('should not allow to execute claim to wrong recipient', async () => {
+        })
+
+        xit('should allow to claim tokens only once on first come first served basis ', async () => {
+        })
+    })
+
 });
