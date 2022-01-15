@@ -41,23 +41,18 @@ contract BaseDrop is IDrop, ERC165 {
         return block.timestamp < expiration;
     }
 
-    function _checkMerkleDrop(uint256 index, uint256 tokenId, uint256 amount, uint256 maxSupply, address account, bytes32[] calldata merkleProof) private view {
+    function checkClaim(uint256 index, bytes32 node, bytes32[] calldata merkleProof) public view returns (bool) {
 
       // drop not expired 
-      require(!isExpired(), "MerkleDrop: Drop experied");
+      require(!isExpired(), 'MerkleDrop: Drop expired');
 
       // leaf isn't claimed
       require(!isClaimed(index), 'MerkleDrop: Token already claimed');
       
       // Verify the merkle proof.
-      bytes32 node = keccak256(abi.encodePacked(index, tokenId, account, amount, maxSupply));
       require(MerkleProof.verify(merkleProof, merkleRoot, node), 'MerkleDistributor: Invalid proof.');
-    }
 
-    
-    function claim(uint256 index, uint256 tokenId, uint256 amount, uint256 maxSupply, address account, bytes32[] calldata merkleProof) public virtual override {
-      // basic merkle drop checks
-      _checkMerkleDrop(index, tokenId, amount, maxSupply, account, merkleProof);
+      return true;
     }
     
     function _setClaimed(uint256 index) internal {

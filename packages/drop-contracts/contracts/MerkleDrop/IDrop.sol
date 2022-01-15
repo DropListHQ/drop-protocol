@@ -43,7 +43,7 @@ interface IDrop is IERC165 {
    * @param beneficiary The account that the claim should benefit.
    * @param merkleProof Merkle proof for the leaf index. 
    */
-  function claim(uint256 index, uint256 tokenId, uint256 amount, uint256 maxSupply, address beneficiary, bytes32[] calldata merkleProof) external;
+  // function claim(uint256 index, uint256 tokenId, uint256 amount, uint256 maxSupply, address beneficiary, bytes32[] calldata merkleProof) external;
 
 
   /**
@@ -58,4 +58,14 @@ interface IDrop is IERC165 {
    * @return Boolean if drop is claimed.
    */
   function isExpired() external view returns (bool);
+
+
+  /**
+   * @dev Runs basic chacks for the drop and returns true if claim is valid. 
+   * @param index Leaf index in the Merkle tree.
+   * @param node data in the merkle leaf approved by sender.
+   * @param merkleProof Merkle proof for the leaf index.   
+   * @return Boolean if drop is claimed.
+   */
+  function checkClaim(uint256 index, bytes32 node, bytes32[] calldata merkleProof) external view returns (bool);
 }
