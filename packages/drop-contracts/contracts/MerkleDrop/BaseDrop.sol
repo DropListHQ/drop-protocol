@@ -38,7 +38,7 @@ contract BaseDrop is IDrop, ERC165 {
     }
     
     function isExpired() public override view returns (bool) {
-        return block.timestamp < expiration;
+        return block.timestamp >= expiration;
     }
 
     function checkClaim(uint256 index, bytes32 node, bytes32[] calldata merkleProof) public view returns (bool) {

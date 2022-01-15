@@ -1,9 +1,5 @@
 import { buildMerkleTreeERC1155 } from '../src'
 import { hexlify } from '@ethersproject/bytes';
-// import { randomBytes } from '@ethersproject/random';
-// import { computeAddress } from '@ethersproject/transactions';
-// import { SigningKey } from '@ethersproject/signing-key';
-// import { ethers } from 'ethers'
 
 type DataOldFormat = {
     [account: string]: {
@@ -12,14 +8,6 @@ type DataOldFormat = {
         maxSupply: number
     }
 }
-
-// type DataNewFormat = {
-//     address: string;
-//     earnings: string;
-//     reasons: string;
-//     tokenId: number | string;
-//     maxSupply: string
-// }
 
 describe('buildMerkleTreeERC1155', () => {
     it('should build Merkle tree for erc1155 NFTs', async () => {

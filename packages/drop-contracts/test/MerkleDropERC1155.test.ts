@@ -2,10 +2,12 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { Contract } from "ethers";
 import { arrayify, computeAddress, defaultAbiCoder, hexlify, randomBytes, SigningKey } from "ethers/lib/utils";
-import { ethers } from "hardhat";
 import { keccak256 } from '@ethersproject/keccak256';
+import { buildMerkleTreeERC1155, RecipientsDataFormat } from "@drop-protocol/dropSDK";
+import { ethers } from "hardhat";
 
 const DECEMBER_31_2325 = 11234234223 // Thursday, December 31, 2325 8:37:03 PM                                                                                                                                
+const JULY_30_2015 = 1438251133 // Thursday, July 30, 2015 10:12:13 AM                                                                                                                                         
 
 describe('DropFactory', () => {
     let signers: SignerWithAddress[];
@@ -17,6 +19,12 @@ describe('DropFactory', () => {
     let drop: Contract;
     let issuerkey: SigningKey;
     let issueraddress: string;
+    let recipient1: SignerWithAddress;
+    let recipient2: SignerWithAddress;
+    let recipient3: SignerWithAddress;
+    let nonrecipient: SignerWithAddress;
+    let sender: SignerWithAddress;
+    let recipients: RecipientsDataFormat;
 
     before(async () => {
         signers = await ethers.getSigners();
@@ -25,9 +33,22 @@ describe('DropFactory', () => {
         drop = await Drop.deploy();
         await drop.deployed();
 
-        // // deploy mock token toowner                                                                                                                                                                          
-        // const MockToken = await ethers.getContractFactory("ERC20Mock");
-        // token = await MockToken.deploy();
+        //deploy mock token to owner                                                                                                                                                                          
+        const MockToken = await ethers.getContractFactory("ERC1155Mock");
+        token = await MockToken.deploy();
+        await token.deployed();
+
+        // create merkle tree
+        sender = signers[0];
+        recipient1 = signers[1];
+        recipient2 = signers[2];
+        recipient3 = signers[3];
+        nonrecipient = signers[4];
+
+        recipients = {}
+        recipients[recipient1.address] = { amount: 1, tokenId: 1, maxSupply: 1 };
+        recipients[recipient2.address] = { amount: 1, tokenId: 2, maxSupply: 3 };
+        recipients[recipient3.address] = { amount: 2, tokenId: 2, maxSupply: 3 };
     });
 
     beforeEach(async () => {
@@ -38,22 +59,52 @@ describe('DropFactory', () => {
         await ethers.provider.send("evm_revert", [snapshot]);
     });
 
-    describe('createDrop()', () => {
-        xit('creates drop and emits event', async () => {
-            const merkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
+    describe('init()', () => {
+        it('inits the contract', async () => {
+            const merkletree = buildMerkleTreeERC1155(recipients);
             const expiration = DECEMBER_31_2325;
-            const salt = ethers.utils.formatBytes32String("SALT");
+            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+            const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+
+            expect(await drop.sender()).to.be.eq(sender.address);
+            expect(await drop.merkleRoot()).to.be.eq(merkletree.merkleRoot);
+            expect(await drop.token()).to.be.eq(token.address);
+            expect(await drop.ipfsHash()).to.be.eq(ipfsHash);
+            expect(await drop.expiration()).to.be.eq(expiration);
+            expect(await drop.initialized()).to.be.eq(true);
+        });
+
+        it('does not allow to init contract twice', async () => {
+            const merkletree = buildMerkleTreeERC1155(recipients);
+            const expiration = DECEMBER_31_2325;
             const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
 
-            const tx = await factory.createDrop(template.address, token.address, merkleRoot, expiration, salt, ipfsHash);
-            const receipt = await tx.wait();
-            expect(receipt.events.length).to.equal(1);
-            expect(receipt.events[0].event).to.equal('CreateDrop');
-            const args = receipt.events[0].args;
-            expect(args.token).to.equal(token.address);
-            expect(args.template).to.equal(template.address);
-            expect(args.expiration).to.equal(expiration);
-            expect(args.ipfsHash).to.equal(ipfsHash);
+            // first tx to init the contract should go through
+            const tx1 = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+
+            // second tx should revert
+            const fakeMerkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
+            await expect(drop.init(sender.address, token.address, fakeMerkleRoot, expiration, ipfsHash)).to.be.reverted;
         });
+    })
+
+
+    describe('isExpire()', () => {
+        it('should not return expired for non-expired drop', async () => {
+            const merkletree = buildMerkleTreeERC1155(recipients);
+            const expiration = DECEMBER_31_2325;
+            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+            const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+            expect(await drop.isExpired()).to.be.eq(false);
+        })
+
+        it('should return expired for expired drop', async () => {
+            const merkletree = buildMerkleTreeERC1155(recipients);
+            const expiration = JULY_30_2015;
+            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+            const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+
+            expect(await drop.isExpired()).to.be.eq(true);
+        })
     })
 });
