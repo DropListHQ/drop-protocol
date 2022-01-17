@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { Contract } from "ethers";
 import { arrayify, computeAddress, defaultAbiCoder, hexlify, randomBytes, SigningKey } from "ethers/lib/utils";
 import { keccak256 } from '@ethersproject/keccak256';
-import { buildMerkleTreeERC1155, RecipientsDataFormat, MerkleDistributorInfo } from "@drop-protocol/drop-sdk";
+import { buildMerkleTreeERC1155, RecipientsDictFormatERC1155, MerkleDistributorInfoERC1155 } from "@drop-protocol/drop-sdk";
 import { ethers } from "hardhat";
 
 const DECEMBER_31_2325 = 11234234223 // Thursday, December 31, 2325 8:37:03 PM                                                                                                                                
@@ -25,8 +25,8 @@ describe('DropFactory', () => {
     let recipient4: SignerWithAddress;
     let nonrecipient: SignerWithAddress;
     let sender: SignerWithAddress;
-    let recipients: RecipientsDataFormat;
-    let merkletree: MerkleDistributorInfo;
+    let recipients: RecipientsDictFormatERC1155;
+    let merkletree: MerkleDistributorInfoERC1155;
 
     before(async () => {
         signers = await ethers.getSigners();
