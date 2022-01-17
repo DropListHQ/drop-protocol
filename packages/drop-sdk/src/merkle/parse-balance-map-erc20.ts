@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers'
-import BalanceTree from './balance-tree-erc1155'
+import BalanceTree from './balance-tree-erc20'
 
 const { isAddress, getAddress } = utils
 
@@ -7,7 +7,7 @@ const { isAddress, getAddress } = utils
 // It is completely sufficient for recreating the entire merkle tree.
 // Anyone can verify that all air drops are included in the tree,
 // and the tree has no additional distributions.
-export interface MerkleDistributorInfoERC1155 {
+export interface MerkleDistributorInfoERC20 {
     merkleRoot: string
     tokenTotal: string
     creationTime: string | number
@@ -15,51 +15,39 @@ export interface MerkleDistributorInfoERC1155 {
         [account: string]: {
             index: number
             amount: string,
-            tokenId: string | number,
-            maxSupply: string | number,
             proof: string[]
         }
     }
 }
 
-export type RecipientsDictFormatERC1155 = {
+export type RecipientsDictFormatERC20 = {
     [account: string]: {
-        amount: number | string,
-        tokenId: number | string,
-        maxSupply: number | string
+        amount: number | string
     }
 }
-export type RecipientsArrayFormatERC1155 = {
+export type RecipientsArrayFormatERC20 = {
     address: string;
     amount: string;
-    tokenId: number | string;
-    maxSupply: string
 }
 
-export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | RecipientsArrayFormatERC1155[]): MerkleDistributorInfoERC1155 {
+export default function parseBalanceMap(balances: RecipientsDictFormatERC20 | RecipientsArrayFormatERC20[]): MerkleDistributorInfoERC20 {
     // if balances are in an old format, process them
-    const balancesInRecipientsArrayFormatERC1155: RecipientsArrayFormatERC1155[] = Array.isArray(balances)
+    const balancesInRecipientsArrayFormatERC20: RecipientsArrayFormatERC20[] = Array.isArray(balances)
         ? balances
         : Object.keys(balances).map(
-            (account): RecipientsArrayFormatERC1155 => ({
+            (account): RecipientsArrayFormatERC20 => ({
                 address: account,
-                amount: `0x${balances[account].amount.toString(16)}`,
-                tokenId: balances[account].tokenId,
-                maxSupply: `0x${balances[account].maxSupply.toString(16)}`
+                amount: `0x${balances[account].amount.toString(16)}`
             })
         )
 
-    const dataByAddress = balancesInRecipientsArrayFormatERC1155.reduce<{
+    const dataByAddress = balancesInRecipientsArrayFormatERC20.reduce<{
         [address: string]: {
             amount: BigNumber;
-            tokenId: number | string,
-            maxSupply: BigNumber
         }
     }>((memo, {
         address: account,
-        amount,
-        tokenId,
-        maxSupply
+        amount
     }) => {
         if (!isAddress(account)) {
             throw new Error(`Found invalid address: ${account}`)
@@ -67,13 +55,10 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         const parsed = getAddress(account)
         if (memo[parsed]) throw new Error(`Duplicate address: ${parsed}`)
         const parsedNum = BigNumber.from(amount)
-        const parsedMaxSupply = BigNumber.from(maxSupply)
         if (parsedNum.lte(0)) throw new Error(`Invalid amount for account: ${account}`)
 
         memo[parsed] = {
-            amount: parsedNum,
-            maxSupply: parsedMaxSupply,
-            tokenId
+            amount: parsedNum
         }
         return memo
     }, {})
@@ -85,9 +70,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         sortedAddresses.map((address) => {
             return {
                 account: address,
-                amount: dataByAddress[address].amount,
-                tokenId: dataByAddress[address].tokenId,
-                maxSupply: dataByAddress[address].maxSupply
+                amount: dataByAddress[address].amount
             }
         })
     )
@@ -97,22 +80,16 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
             amount: string;
             index: number;
             proof: string[];
-            tokenId: number | string,
-            maxSupply: string | number
         }
     }>((memo, address, index) => {
-        const { amount, tokenId, maxSupply } = dataByAddress[address]
+        const { amount } = dataByAddress[address]
         memo[address] = {
             index,
             amount: amount.toHexString(),
-            tokenId,
-            maxSupply: maxSupply.toHexString(),
             proof: tree.getProof(
                 index,
                 address,
-                amount,
-                tokenId,
-                maxSupply
+                amount
             )
         }
         return memo
