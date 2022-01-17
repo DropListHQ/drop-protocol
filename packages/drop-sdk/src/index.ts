@@ -1,17 +1,13 @@
-import parseBalanceMap, { MerkleDistributorInfo } from "./merkle/parse-balance-map"
+import parseBalanceMap, { MerkleDistributorInfoERC1155, RecipientsDictFormatERC1155, RecipientsArrayFormatERC1155 } from "./merkle/parse-balance-map"
 
-// RecipientData should be provided in the the following format: 
-export type RecipientsDataFormat = {
-    [account: string]: {
-        amount: number | string,
-        tokenId: number | string,
-        maxSupply: number
-    }
-}
-
-export const buildMerkleTreeERC1155 = (recipientsData: RecipientsDataFormat): MerkleDistributorInfo => {
+export const buildMerkleTreeERC1155 = (recipientsData: RecipientsDictFormatERC1155 | RecipientsArrayFormatERC1155[]): MerkleDistributorInfoERC1155 => {
     const merkleData = parseBalanceMap(recipientsData);
     return merkleData
 }
 
-export { MerkleDistributorInfo } from "./merkle/parse-balance-map"
+// export const buildMerkleTreeERC20 = (recipientsData: RecipientsDataFormat1155): MerkleDistributorInfo => {
+//     const merkleData = parseBalanceMap(recipientsData);
+//     return merkleData
+// }
+
+export { MerkleDistributorInfoERC1155, RecipientsDictFormatERC1155, RecipientsArrayFormatERC1155 } from "./merkle/parse-balance-map"

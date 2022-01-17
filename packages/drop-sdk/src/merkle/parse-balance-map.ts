@@ -7,7 +7,7 @@ const { isAddress, getAddress } = utils
 // It is completely sufficient for recreating the entire merkle tree.
 // Anyone can verify that all air drops are included in the tree,
 // and the tree has no additional distributions.
-export interface MerkleDistributorInfo {
+export interface MerkleDistributorInfoERC1155 {
     merkleRoot: string
     tokenTotal: string
     creationTime: string | number
@@ -25,36 +25,36 @@ export interface MerkleDistributorInfo {
     }
 }
 
-export type OldFormat = {
+export type RecipientsDictFormatERC1155 = {
     [account: string]: {
         amount: number | string,
         tokenId: number | string,
         maxSupply: number | string
     }
 }
-export type NewFormat = {
+export type RecipientsArrayFormatERC1155 = {
     address: string;
-    earnings: string;
+    amount: string;
     reasons: string;
     tokenId: number | string;
     maxSupply: string
 }
 
-export default function parseBalanceMap(balances: OldFormat | NewFormat[]): MerkleDistributorInfo {
+export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | RecipientsArrayFormatERC1155[]): MerkleDistributorInfoERC1155 {
     // if balances are in an old format, process them
-    const balancesInNewFormat: NewFormat[] = Array.isArray(balances)
+    const balancesInRecipientsArrayFormatERC1155: RecipientsArrayFormatERC1155[] = Array.isArray(balances)
         ? balances
         : Object.keys(balances).map(
-            (account): NewFormat => ({
+            (account): RecipientsArrayFormatERC1155 => ({
                 address: account,
-                earnings: `0x${balances[account].amount.toString(16)}`,
+                amount: `0x${balances[account].amount.toString(16)}`,
                 reasons: '',
                 tokenId: balances[account].tokenId,
                 maxSupply: `0x${balances[account].maxSupply.toString(16)}`
             })
         )
 
-    const dataByAddress = balancesInNewFormat.reduce<{
+    const dataByAddress = balancesInRecipientsArrayFormatERC1155.reduce<{
         [address: string]: {
             amount: BigNumber;
             tokenId: number | string,
@@ -65,7 +65,7 @@ export default function parseBalanceMap(balances: OldFormat | NewFormat[]): Merk
         }
     }>((memo, {
         address: account,
-        earnings,
+        amount,
         reasons,
         tokenId,
         maxSupply
@@ -75,7 +75,7 @@ export default function parseBalanceMap(balances: OldFormat | NewFormat[]): Merk
         }
         const parsed = getAddress(account)
         if (memo[parsed]) throw new Error(`Duplicate address: ${parsed}`)
-        const parsedNum = BigNumber.from(earnings)
+        const parsedNum = BigNumber.from(amount)
         const parsedMaxSupply = BigNumber.from(maxSupply)
         if (parsedNum.lte(0)) throw new Error(`Invalid amount for account: ${account}`)
 
