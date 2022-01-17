@@ -18,9 +18,6 @@ export interface MerkleDistributorInfoERC1155 {
             tokenId: string | number,
             maxSupply: string | number,
             proof: string[]
-            flags?: {
-                [flag: string]: boolean
-            }
         }
     }
 }
@@ -35,7 +32,6 @@ export type RecipientsDictFormatERC1155 = {
 export type RecipientsArrayFormatERC1155 = {
     address: string;
     amount: string;
-    reasons: string;
     tokenId: number | string;
     maxSupply: string
 }
@@ -48,7 +44,6 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
             (account): RecipientsArrayFormatERC1155 => ({
                 address: account,
                 amount: `0x${balances[account].amount.toString(16)}`,
-                reasons: '',
                 tokenId: balances[account].tokenId,
                 maxSupply: `0x${balances[account].maxSupply.toString(16)}`
             })
@@ -58,15 +53,11 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         [address: string]: {
             amount: BigNumber;
             tokenId: number | string,
-            maxSupply: BigNumber,
-            flags?: {
-                [flag: string]: boolean
-            }
+            maxSupply: BigNumber
         }
     }>((memo, {
         address: account,
         amount,
-        reasons,
         tokenId,
         maxSupply
     }) => {
@@ -79,17 +70,10 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         const parsedMaxSupply = BigNumber.from(maxSupply)
         if (parsedNum.lte(0)) throw new Error(`Invalid amount for account: ${account}`)
 
-        const flags = {
-            isSOCKS: reasons.includes('socks'),
-            isLP: reasons.includes('lp'),
-            isUser: reasons.includes('user'),
-        }
-
         memo[parsed] = {
             amount: parsedNum,
             maxSupply: parsedMaxSupply,
-            tokenId,
-            ...(reasons === '' ? {} : { flags })
+            tokenId
         }
         return memo
     }, {})
@@ -114,13 +98,10 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
             index: number;
             proof: string[];
             tokenId: number | string,
-            maxSupply: string | number,
-            flags?: {
-                [flag: string]: boolean
-            }
+            maxSupply: string | number
         }
     }>((memo, address, index) => {
-        const { amount, flags, tokenId, maxSupply } = dataByAddress[address]
+        const { amount, tokenId, maxSupply } = dataByAddress[address]
         memo[address] = {
             index,
             amount: amount.toHexString(),
@@ -132,8 +113,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
                 amount,
                 tokenId,
                 maxSupply
-            ),
-            ...(flags ? { flags } : {}),
+            )
         }
         return memo
     }, {})
