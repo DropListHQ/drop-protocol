@@ -40,6 +40,6 @@ contract MerkleDropERC1155 is BaseDrop, IMerkleDropERC1155 {
     _setClaimed(index);
     IERC1155(token).safeTransferFrom(sender, account, tokenId, amount, "");
     
-    // emit Claimed(index, tokenId, amount, account);
+    emit ClaimedERC1155(index, tokenId, amount, account);
   }    
 }

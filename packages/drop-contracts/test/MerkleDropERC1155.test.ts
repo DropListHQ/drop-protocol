@@ -120,15 +120,24 @@ describe('DropFactory', () => {
                 const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
             })
 
-            it('should allow to execute valid claim', async () => {
+            it('should execute valid claim and emit ClaimedERC1155 event', async () => {
                 // execute valid claim
                 const claim = merkletree.claims[recipient1.address];
                 expect(await drop.isClaimed(claim.index)).to.be.equal(false);
                 expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(0);
 
-                drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof);
+                const tx = await drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof);
                 expect(await drop.isClaimed(claim.index)).to.be.equal(true);
                 expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(claim.amount);
+
+                const receipt = await tx.wait();
+                const events = receipt.events;
+
+                expect(events[1].event).to.equal('ClaimedERC1155');
+                expect(events[1].args.index).to.equal(claim.index);
+                expect(events[1].args.tokenId).to.equal(claim.tokenId);
+                expect(events[1].args.amount).to.equal(claim.amount);
+                expect(events[1].args.beneficiary).to.equal(recipient1.address);
             })
 
             it('should allow to execute claim only once', async () => {

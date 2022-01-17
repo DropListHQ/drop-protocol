@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/contracts/proxy/Clones.sol";
 contract DropFactory {
     using Clones for *;
     
-    event CreateDrop(address indexed drop, address indexed token, address template, uint expiration, bytes32 ipfsHash);
+    event CreateDrop(address indexed drop, address token, address template, uint expiration, bytes32 ipfsHash);
     
     function createDrop(
         address template,
