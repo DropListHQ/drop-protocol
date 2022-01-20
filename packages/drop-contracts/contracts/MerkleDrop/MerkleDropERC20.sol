@@ -10,7 +10,7 @@ contract MerkleDropERC20 is BaseDrop, IMerkleDropERC20 {
       
   function claim(uint256 index, uint256 amount, address account, bytes32[] calldata merkleProof) public virtual override {
     // standard merkle drop checks working for all token standards (ERC20, ERC721, ERC1155)
-    bytes32 node = keccak256(abi.encodePacked(index, amount));
+    bytes32 node = keccak256(abi.encodePacked(index, account, amount));
     require(super.checkClaim(index, node, merkleProof), 'invalid claim');
         
     // Mark leaf as claimed and send tokens.

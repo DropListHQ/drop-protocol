@@ -9,7 +9,7 @@ import { ethers } from "hardhat";
 const DECEMBER_31_2325 = 11234234223 // Thursday, December 31, 2325 8:37:03 PM                                                                                                                                
 const JULY_30_2015 = 1438251133 // Thursday, July 30, 2015 10:12:13 AM                                                                                                                                         
 
-describe('DropFactory', () => {
+describe('MerkleDropERC1155', () => {
     let signers: SignerWithAddress[];
     let snapshot: number;
     let executor: Contract;
