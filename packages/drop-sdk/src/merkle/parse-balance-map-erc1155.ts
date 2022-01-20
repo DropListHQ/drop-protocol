@@ -16,7 +16,6 @@ export interface MerkleDistributorInfoERC1155 {
             index: number
             amount: string,
             tokenId: string | number,
-            maxSupply: string | number,
             proof: string[]
         }
     }
@@ -25,15 +24,13 @@ export interface MerkleDistributorInfoERC1155 {
 export type RecipientsDictFormatERC1155 = {
     [account: string]: {
         amount: number | string,
-        tokenId: number | string,
-        maxSupply: number | string
+        tokenId: number | string
     }
 }
 export type RecipientsArrayFormatERC1155 = {
     address: string;
     amount: string;
     tokenId: number | string;
-    maxSupply: string
 }
 
 export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | RecipientsArrayFormatERC1155[]): MerkleDistributorInfoERC1155 {
@@ -44,22 +41,19 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
             (account): RecipientsArrayFormatERC1155 => ({
                 address: account,
                 amount: `0x${balances[account].amount.toString(16)}`,
-                tokenId: balances[account].tokenId,
-                maxSupply: `0x${balances[account].maxSupply.toString(16)}`
+                tokenId: balances[account].tokenId
             })
         )
 
     const dataByAddress = balancesInRecipientsArrayFormatERC1155.reduce<{
         [address: string]: {
             amount: BigNumber;
-            tokenId: number | string,
-            maxSupply: BigNumber
+            tokenId: number | string
         }
     }>((memo, {
         address: account,
         amount,
-        tokenId,
-        maxSupply
+        tokenId
     }) => {
         if (!isAddress(account)) {
             throw new Error(`Found invalid address: ${account}`)
@@ -67,12 +61,10 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         const parsed = getAddress(account)
         if (memo[parsed]) throw new Error(`Duplicate address: ${parsed}`)
         const parsedNum = BigNumber.from(amount)
-        const parsedMaxSupply = BigNumber.from(maxSupply)
         if (parsedNum.lte(0)) throw new Error(`Invalid amount for account: ${account}`)
 
         memo[parsed] = {
             amount: parsedNum,
-            maxSupply: parsedMaxSupply,
             tokenId
         }
         return memo
@@ -86,8 +78,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
             return {
                 account: address,
                 amount: dataByAddress[address].amount,
-                tokenId: dataByAddress[address].tokenId,
-                maxSupply: dataByAddress[address].maxSupply
+                tokenId: dataByAddress[address].tokenId
             }
         })
     )
@@ -97,22 +88,19 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
             amount: string;
             index: number;
             proof: string[];
-            tokenId: number | string,
-            maxSupply: string | number
+            tokenId: number | string
         }
     }>((memo, address, index) => {
-        const { amount, tokenId, maxSupply } = dataByAddress[address]
+        const { amount, tokenId } = dataByAddress[address]
         memo[address] = {
             index,
             amount: amount.toHexString(),
             tokenId,
-            maxSupply: maxSupply.toHexString(),
             proof: tree.getProof(
                 index,
                 address,
                 amount,
-                tokenId,
-                maxSupply
+                tokenId
             )
         }
         return memo
