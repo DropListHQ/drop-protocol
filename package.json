@@ -1,7 +1,8 @@
 {
-    "private": true,
-    "workspaces": {
-        "packages": ["packages/*"],
-        "nohoist": ["**/@nomiclabs/**", "**/typescript", "**/ts-node", "**/@typechain/**"]
-    }
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": ["**/@nomiclabs/**", "**/typescript", "**/ts-node", "**/@typechain/**"]
+  }
 }
