@@ -1,5 +1,5 @@
 import { BigNumber, utils } from 'ethers'
-import BalanceTree from './balance-tree'
+import BalanceTree from './balance-tree-erc1155'
 
 const { isAddress, getAddress } = utils
 
@@ -7,89 +7,65 @@ const { isAddress, getAddress } = utils
 // It is completely sufficient for recreating the entire merkle tree.
 // Anyone can verify that all air drops are included in the tree,
 // and the tree has no additional distributions.
-export interface MerkleDistributorInfo {
+export interface MerkleDistributorInfoERC1155 {
     merkleRoot: string
     tokenTotal: string
     creationTime: string | number
     claims: {
         [account: string]: {
             index: number
-            amount: string,
             tokenId: string | number,
-            maxSupply: string | number,
+            amount: string,
             proof: string[]
-            flags?: {
-                [flag: string]: boolean
-            }
         }
     }
 }
 
-export type OldFormat = {
+export type RecipientsDictFormatERC1155 = {
     [account: string]: {
-        amount: number | string,
         tokenId: number | string,
-        maxSupply: number | string
+        amount: number | string
     }
 }
-export type NewFormat = {
+export type RecipientsArrayFormatERC1155 = {
     address: string;
-    earnings: string;
-    reasons: string;
     tokenId: number | string;
-    maxSupply: string
+    amount: string;
 }
 
-export default function parseBalanceMap(balances: OldFormat | NewFormat[]): MerkleDistributorInfo {
+export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | RecipientsArrayFormatERC1155[]): MerkleDistributorInfoERC1155 {
     // if balances are in an old format, process them
-    const balancesInNewFormat: NewFormat[] = Array.isArray(balances)
+    const balancesInRecipientsArrayFormatERC1155: RecipientsArrayFormatERC1155[] = Array.isArray(balances)
         ? balances
         : Object.keys(balances).map(
-            (account): NewFormat => ({
+            (account): RecipientsArrayFormatERC1155 => ({
                 address: account,
-                earnings: `0x${balances[account].amount.toString(16)}`,
-                reasons: '',
                 tokenId: balances[account].tokenId,
-                maxSupply: `0x${balances[account].maxSupply.toString(16)}`
+                amount: `0x${balances[account].amount.toString(16)}`
             })
         )
 
-    const dataByAddress = balancesInNewFormat.reduce<{
+    const dataByAddress = balancesInRecipientsArrayFormatERC1155.reduce<{
         [address: string]: {
             amount: BigNumber;
-            tokenId: number | string,
-            maxSupply: BigNumber,
-            flags?: {
-                [flag: string]: boolean
-            }
+            tokenId: number | string
         }
     }>((memo, {
         address: account,
-        earnings,
-        reasons,
-        tokenId,
-        maxSupply
+        amount,
+        tokenId
     }) => {
         if (!isAddress(account)) {
             throw new Error(`Found invalid address: ${account}`)
         }
         const parsed = getAddress(account)
         if (memo[parsed]) throw new Error(`Duplicate address: ${parsed}`)
-        const parsedNum = BigNumber.from(earnings)
-        const parsedMaxSupply = BigNumber.from(maxSupply)
+        const parsedNum = BigNumber.from(amount)
         if (parsedNum.lte(0)) throw new Error(`Invalid amount for account: ${account}`)
 
-        const flags = {
-            isSOCKS: reasons.includes('socks'),
-            isLP: reasons.includes('lp'),
-            isUser: reasons.includes('user'),
-        }
-
         memo[parsed] = {
-            amount: parsedNum,
-            maxSupply: parsedMaxSupply,
             tokenId,
-            ...(reasons === '' ? {} : { flags })
+            amount: parsedNum
         }
         return memo
     }, {})
@@ -101,39 +77,31 @@ export default function parseBalanceMap(balances: OldFormat | NewFormat[]): Merk
         sortedAddresses.map((address) => {
             return {
                 account: address,
-                amount: dataByAddress[address].amount,
                 tokenId: dataByAddress[address].tokenId,
-                maxSupply: dataByAddress[address].maxSupply
+                amount: dataByAddress[address].amount
             }
         })
     )
     // generate claims
     const claims = sortedAddresses.reduce<{
         [address: string]: {
-            amount: string;
             index: number;
+            tokenId: number | string;
+            amount: string;
             proof: string[];
-            tokenId: number | string,
-            maxSupply: string | number,
-            flags?: {
-                [flag: string]: boolean
-            }
         }
     }>((memo, address, index) => {
-        const { amount, flags, tokenId, maxSupply } = dataByAddress[address]
+        const { tokenId, amount } = dataByAddress[address]
         memo[address] = {
             index,
-            amount: amount.toHexString(),
             tokenId,
-            maxSupply: maxSupply.toHexString(),
+            amount: amount.toHexString(),
             proof: tree.getProof(
                 index,
                 address,
-                amount,
                 tokenId,
-                maxSupply
-            ),
-            ...(flags ? { flags } : {}),
+                amount
+            )
         }
         return memo
     }, {})

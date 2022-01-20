@@ -1,17 +1,22 @@
-import parseBalanceMap, { MerkleDistributorInfo } from "./merkle/parse-balance-map"
+import parseBalanceMapERC1155, { MerkleDistributorInfoERC1155, RecipientsDictFormatERC1155, RecipientsArrayFormatERC1155 } from "./merkle/parse-balance-map-erc1155"
+import parseBalanceMapERC20, { MerkleDistributorInfoERC20, RecipientsDictFormatERC20, RecipientsArrayFormatERC20 } from "./merkle/parse-balance-map-erc20"
+import parseBalanceMapERC721, { MerkleDistributorInfoERC721, RecipientsDictFormatERC721, RecipientsArrayFormatERC721 } from "./merkle/parse-balance-map-erc721"
 
-// RecipientData should be provided in the the following format: 
-export type RecipientsDataFormat = {
-    [account: string]: {
-        amount: number | string,
-        tokenId: number | string,
-        maxSupply: number
-    }
-}
-
-export const buildMerkleTreeERC1155 = (recipientsData: RecipientsDataFormat): MerkleDistributorInfo => {
-    const merkleData = parseBalanceMap(recipientsData);
+export const buildMerkleTreeERC1155 = (recipientsData: RecipientsDictFormatERC1155 | RecipientsArrayFormatERC1155[]): MerkleDistributorInfoERC1155 => {
+    const merkleData = parseBalanceMapERC1155(recipientsData);
     return merkleData
 }
 
-export { MerkleDistributorInfo } from "./merkle/parse-balance-map"
+export const buildMerkleTreeERC20 = (recipientsData: RecipientsDictFormatERC20 | RecipientsArrayFormatERC20[]): MerkleDistributorInfoERC20 => {
+    const merkleData = parseBalanceMapERC20(recipientsData);
+    return merkleData
+}
+
+export const buildMerkleTreeERC721 = (recipientsData: RecipientsDictFormatERC721 | RecipientsArrayFormatERC721[]): MerkleDistributorInfoERC721 => {
+    const merkleData = parseBalanceMapERC721(recipientsData);
+    return merkleData
+}
+
+export { MerkleDistributorInfoERC1155, RecipientsDictFormatERC1155, RecipientsArrayFormatERC1155 } from "./merkle/parse-balance-map-erc1155"
+export { MerkleDistributorInfoERC20, RecipientsDictFormatERC20, RecipientsArrayFormatERC20 } from "./merkle/parse-balance-map-erc20"
+export { MerkleDistributorInfoERC721, RecipientsDictFormatERC721, RecipientsArrayFormatERC721 } from "./merkle/parse-balance-map-erc721"
