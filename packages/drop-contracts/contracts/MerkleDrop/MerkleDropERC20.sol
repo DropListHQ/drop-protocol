@@ -2,7 +2,6 @@
 pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/contracts/utils/cryptography/MerkleProof.sol";
 import "./BaseDrop.sol";
 import "./IMerkleDropERC20.sol";
 

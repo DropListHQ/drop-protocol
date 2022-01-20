@@ -17,6 +17,10 @@ export const buildMerkleTreeERC721 = (recipientsData: RecipientsDictFormatERC721
     return merkleData
 }
 
+// TS types
 export { MerkleDistributorInfoERC1155, RecipientsDictFormatERC1155, RecipientsArrayFormatERC1155 } from "./merkle/parse-balance-map-erc1155"
 export { MerkleDistributorInfoERC20, RecipientsDictFormatERC20, RecipientsArrayFormatERC20 } from "./merkle/parse-balance-map-erc20"
 export { MerkleDistributorInfoERC721, RecipientsDictFormatERC721, RecipientsArrayFormatERC721 } from "./merkle/parse-balance-map-erc721"
+
+// ABI
+export { DropFactoryInterface, DropInterfaceERC20, DropInterfaceERC721, DropInterfaceERC1155 } from "./contracts/interfaces"
