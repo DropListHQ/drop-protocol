@@ -1,6 +1,7 @@
 {
   "private": true,
   "version": "0.1.0",
+  "name": "drop-protocol",
   "workspaces": {
     "packages": ["packages/*"],
     "nohoist": ["**/@nomiclabs/**", "**/typescript", "**/ts-node", "**/@typechain/**"]
