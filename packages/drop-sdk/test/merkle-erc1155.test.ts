@@ -12,7 +12,7 @@ describe('buildMerkleTreeERC1155', () => {
         const result = buildMerkleTreeERC1155(data);
 
         expect(Object.keys(result.claims).length).toEqual(3);
-        expect(result.merkleRoot).toEqual('0x9d1bd4badb9034765e3689d0f0bc9ca6f5217a81f67c810ccf2c2e0fd25477f2');
+        expect(result.merkleRoot).toEqual('0xbdc9b31870b2ea8b42923ab01f756912bd1a15395795da0c7d3ac08b8dbe9612');
 
         const claim = result.claims['0x88EC069E5151cFad602A06AD13fea7e87Ba089C8'];
         expect(claim.amount).toEqual(hexlify(1));

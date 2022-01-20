@@ -14,8 +14,8 @@ export interface MerkleDistributorInfoERC1155 {
     claims: {
         [account: string]: {
             index: number
-            amount: string,
             tokenId: string | number,
+            amount: string,
             proof: string[]
         }
     }
@@ -23,14 +23,14 @@ export interface MerkleDistributorInfoERC1155 {
 
 export type RecipientsDictFormatERC1155 = {
     [account: string]: {
-        amount: number | string,
-        tokenId: number | string
+        tokenId: number | string,
+        amount: number | string
     }
 }
 export type RecipientsArrayFormatERC1155 = {
     address: string;
-    amount: string;
     tokenId: number | string;
+    amount: string;
 }
 
 export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | RecipientsArrayFormatERC1155[]): MerkleDistributorInfoERC1155 {
@@ -40,8 +40,8 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         : Object.keys(balances).map(
             (account): RecipientsArrayFormatERC1155 => ({
                 address: account,
-                amount: `0x${balances[account].amount.toString(16)}`,
-                tokenId: balances[account].tokenId
+                tokenId: balances[account].tokenId,
+                amount: `0x${balances[account].amount.toString(16)}`
             })
         )
 
@@ -64,8 +64,8 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         if (parsedNum.lte(0)) throw new Error(`Invalid amount for account: ${account}`)
 
         memo[parsed] = {
-            amount: parsedNum,
-            tokenId
+            tokenId,
+            amount: parsedNum
         }
         return memo
     }, {})
@@ -77,30 +77,30 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         sortedAddresses.map((address) => {
             return {
                 account: address,
-                amount: dataByAddress[address].amount,
-                tokenId: dataByAddress[address].tokenId
+                tokenId: dataByAddress[address].tokenId,
+                amount: dataByAddress[address].amount
             }
         })
     )
     // generate claims
     const claims = sortedAddresses.reduce<{
         [address: string]: {
-            amount: string;
             index: number;
+            tokenId: number | string;
+            amount: string;
             proof: string[];
-            tokenId: number | string
         }
     }>((memo, address, index) => {
-        const { amount, tokenId } = dataByAddress[address]
+        const { tokenId, amount } = dataByAddress[address]
         memo[address] = {
             index,
-            amount: amount.toHexString(),
             tokenId,
+            amount: amount.toHexString(),
             proof: tree.getProof(
                 index,
                 address,
-                amount,
-                tokenId
+                tokenId,
+                amount
             )
         }
         return memo

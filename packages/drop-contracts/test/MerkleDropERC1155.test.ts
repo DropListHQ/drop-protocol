@@ -126,7 +126,7 @@ describe('MerkleDropERC1155', () => {
                 expect(await drop.isClaimed(claim.index)).to.be.equal(false);
                 expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(0);
 
-                const tx = await drop.claim(claim.index, claim.tokenId, claim.amount, recipient1.address, claim.proof);
+                const tx = await drop.claim(claim.index, recipient1.address, claim.tokenId, claim.amount, claim.proof);
                 expect(await drop.isClaimed(claim.index)).to.be.equal(true);
                 expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(claim.amount);
 
@@ -144,15 +144,15 @@ describe('MerkleDropERC1155', () => {
                 const claim = merkletree.claims[recipient1.address];
 
                 // first claim tx should go through
-                drop.claim(claim.index, claim.tokenId, claim.amount, recipient1.address, claim.proof);
+                drop.claim(claim.index, recipient1.address, claim.tokenId, claim.amount, claim.proof);
 
                 // second claim tx should revert
-                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, recipient1.address, claim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, recipient1.address, claim.tokenId, claim.amount, claim.proof)).to.be.reverted;
             })
 
             it('should not allow to execute claim to wrong recipient', async () => {
                 const claim = merkletree.claims[recipient1.address];
-                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, nonrecipient.address, claim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, nonrecipient.address, claim.tokenId, claim.amount, claim.proof)).to.be.reverted;
             })
         })
 
@@ -165,7 +165,7 @@ describe('MerkleDropERC1155', () => {
             })
             it('should not allow to execute claim with missed deadline', async () => {
                 const claim = merkletree.claims[recipient1.address];
-                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, recipient1.address, claim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, recipient1.address, claim.tokenId, claim.amount, claim.proof)).to.be.reverted;
             })
         })
     })

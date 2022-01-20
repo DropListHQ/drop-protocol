@@ -6,7 +6,7 @@ export default class BalanceTreeERC1155 {
     constructor(balances: { account: string; amount: BigNumber, tokenId: string | number }[]) {
         this.tree = new MerkleTree(
             balances.map(({ account, amount, tokenId }, index) => {
-                return BalanceTreeERC1155.toNode(index, account, amount, tokenId)
+                return BalanceTreeERC1155.toNode(index, account, tokenId, amount)
             })
         )
     }
@@ -14,12 +14,12 @@ export default class BalanceTreeERC1155 {
     public static verifyProof(
         index: number | BigNumber,
         account: string,
-        amount: BigNumber,
         tokenId: number | string,
+        amount: BigNumber,
         proof: Buffer[],
         root: Buffer
     ): boolean {
-        let pair = BalanceTreeERC1155.toNode(index, account, amount, tokenId)
+        let pair = BalanceTreeERC1155.toNode(index, account, tokenId, amount)
         for (const item of proof) {
             pair = MerkleTree.combinedHash(pair, item)
         }
@@ -31,11 +31,11 @@ export default class BalanceTreeERC1155 {
     public static toNode(
         index: number | BigNumber,
         account: string,
-        amount: BigNumber,
-        tokenId: number | string
+        tokenId: number | string,
+        amount: BigNumber
     ): Buffer {
         return Buffer.from(
-            utils.solidityKeccak256(['uint256', 'uint256', 'address', 'uint256'], [index, tokenId, account, amount]).substr(2),
+            utils.solidityKeccak256(['uint256', 'address', 'uint256', 'uint256'], [index, account, tokenId, amount]).substr(2),
             'hex'
         )
     }
@@ -48,9 +48,9 @@ export default class BalanceTreeERC1155 {
     public getProof(
         index: number | BigNumber,
         account: string,
-        amount: BigNumber,
-        tokenId: number | string
+        tokenId: number | string,
+        amount: BigNumber
     ): string[] {
-        return this.tree.getHexProof(BalanceTreeERC1155.toNode(index, account, amount, tokenId))
+        return this.tree.getHexProof(BalanceTreeERC1155.toNode(index, account, tokenId, amount))
     }
 }
