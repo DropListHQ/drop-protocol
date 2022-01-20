@@ -9,8 +9,6 @@ import { ethers } from "hardhat";
 const DECEMBER_31_2325 = 11234234223 // Thursday, December 31, 2325 8:37:03 PM                                                                                                                                
 const JULY_30_2015 = 1438251133 // Thursday, July 30, 2015 10:12:13 AM                                                                                                                                         
 
-
-
 describe('MerkleDropERC20', () => {
     let signers: SignerWithAddress[];
     let snapshot: number;
@@ -130,7 +128,7 @@ describe('MerkleDropERC20', () => {
                 expect(await drop.isClaimed(claim.index)).to.be.equal(false);
                 expect(await token.balanceOf(recipient1.address)).to.be.eq(0);
 
-                const tx = await drop.claim(claim.index, claim.amount, recipient1.address, claim.proof);
+                const tx = await drop.claim(claim.index, recipient1.address, claim.amount, claim.proof);
                 expect(await drop.isClaimed(claim.index)).to.be.equal(true);
                 expect(await token.balanceOf(recipient1.address)).to.be.eq(claim.amount);
 
@@ -147,15 +145,15 @@ describe('MerkleDropERC20', () => {
                 const claim = merkletree.claims[recipient1.address];
 
                 // first claim tx should go through
-                drop.claim(claim.index, claim.amount, recipient1.address, claim.proof);
+                drop.claim(claim.index, recipient1.address, claim.amount, claim.proof);
 
                 // second claim tx should revert
-                await expect(drop.claim(claim.index, claim.amount, recipient1.address, claim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, recipient1.address, claim.amount, claim.proof)).to.be.reverted;
             })
 
             it('should not allow to execute claim to wrong recipient', async () => {
                 const claim = merkletree.claims[recipient1.address];
-                await expect(drop.claim(claim.index, claim.amount, nonrecipient.address, claim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, nonrecipient.address, claim.amount, claim.proof)).to.be.reverted;
             })
         })
 
@@ -168,7 +166,7 @@ describe('MerkleDropERC20', () => {
             })
             it('should not allow to execute claim with missed deadline', async () => {
                 const claim = merkletree.claims[recipient1.address];
-                await expect(drop.claim(claim.index, claim.amount, recipient1.address, claim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, recipient1.address, claim.amount, claim.proof)).to.be.reverted;
             })
         })
     })
