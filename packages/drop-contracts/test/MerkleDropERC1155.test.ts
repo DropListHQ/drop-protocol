@@ -52,10 +52,10 @@ describe('MerkleDropERC1155', () => {
         nonrecipient = signers[5];
 
         recipients = {}
-        recipients[recipient1.address] = { amount: 1, tokenId: 1, maxSupply: 1 };
-        recipients[recipient2.address] = { amount: 1, tokenId: 2, maxSupply: 3 };
-        recipients[recipient3.address] = { amount: 2, tokenId: 2, maxSupply: 3 };
-        recipients[recipient4.address] = { amount: 1, tokenId: 1, maxSupply: 1 };
+        recipients[recipient1.address] = { amount: 1, tokenId: 1 };
+        recipients[recipient2.address] = { amount: 1, tokenId: 2 };
+        recipients[recipient3.address] = { amount: 2, tokenId: 2 };
+        recipients[recipient4.address] = { amount: 1, tokenId: 1 };
         merkletree = buildMerkleTreeERC1155(recipients);
     });
 
@@ -126,7 +126,7 @@ describe('MerkleDropERC1155', () => {
                 expect(await drop.isClaimed(claim.index)).to.be.equal(false);
                 expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(0);
 
-                const tx = await drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof);
+                const tx = await drop.claim(claim.index, claim.tokenId, claim.amount, recipient1.address, claim.proof);
                 expect(await drop.isClaimed(claim.index)).to.be.equal(true);
                 expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(claim.amount);
 
@@ -144,25 +144,15 @@ describe('MerkleDropERC1155', () => {
                 const claim = merkletree.claims[recipient1.address];
 
                 // first claim tx should go through
-                drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof);
+                drop.claim(claim.index, claim.tokenId, claim.amount, recipient1.address, claim.proof);
 
                 // second claim tx should revert
-                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, recipient1.address, claim.proof)).to.be.reverted;
             })
 
             it('should not allow to execute claim to wrong recipient', async () => {
                 const claim = merkletree.claims[recipient1.address];
-                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, nonrecipient.address, claim.proof)).to.be.reverted;
-            })
-
-            it('should allow to claim tokens only once on first come first served basis ', async () => {
-                // first claim tx should go through
-                const firstClaim = merkletree.claims[recipient1.address];
-                drop.claim(firstClaim.index, firstClaim.tokenId, firstClaim.amount, firstClaim.maxSupply, recipient1.address, firstClaim.proof);
-
-                // second claim tx should revert
-                const secondClaim = merkletree.claims[recipient4.address];
-                await expect(drop.claim(secondClaim.index, secondClaim.tokenId, secondClaim.amount, secondClaim.maxSupply, recipient4.address, secondClaim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, nonrecipient.address, claim.proof)).to.be.reverted;
             })
         })
 
@@ -175,7 +165,7 @@ describe('MerkleDropERC1155', () => {
             })
             it('should not allow to execute claim with missed deadline', async () => {
                 const claim = merkletree.claims[recipient1.address];
-                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, claim.maxSupply, recipient1.address, claim.proof)).to.be.reverted;
+                await expect(drop.claim(claim.index, claim.tokenId, claim.amount, recipient1.address, claim.proof)).to.be.reverted;
             })
         })
     })
