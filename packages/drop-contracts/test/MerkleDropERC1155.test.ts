@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { Contract } from "ethers";
+import { Contract, ContractFactory, ContractTransaction } from "ethers";
 import { arrayify, computeAddress, defaultAbiCoder, hexlify, randomBytes, SigningKey } from "ethers/lib/utils";
 import { keccak256 } from '@ethersproject/keccak256';
 import { buildMerkleTreeERC1155, RecipientsDictFormatERC1155, MerkleDistributorInfoERC1155 } from "@drop-protocol/drop-sdk";
@@ -8,6 +8,24 @@ import { ethers } from "hardhat";
 
 const DECEMBER_31_2325 = 11234234223 // Thursday, December 31, 2325 8:37:03 PM                                                                                                                                
 const JULY_30_2015 = 1438251133 // Thursday, July 30, 2015 10:12:13 AM                                                                                                                                         
+
+async function getClone(call: Promise<ContractTransaction>, factory_: ContractFactory) {
+    const tx = await call;
+    const receipt = await tx.wait();
+    let address = null;
+    if (receipt.events) {
+        for (const event of receipt.events) {
+            if (event.event === "CreateDrop") {
+                address = event ?.args ?.drop;
+                break;
+            }
+        }
+    }
+    if (address !== null) {
+        return factory_.attach(address);
+    }
+    throw new Error("Not a clone creation transaction");
+}
 
 describe('MerkleDropERC1155', () => {
     let signers: SignerWithAddress[];
@@ -27,9 +45,14 @@ describe('MerkleDropERC1155', () => {
     let sender: SignerWithAddress;
     let recipients: RecipientsDictFormatERC1155;
     let merkletree: MerkleDistributorInfoERC1155;
+    let dropClone: Contract;
 
     before(async () => {
         signers = await ethers.getSigners();
+
+        const Factory = await ethers.getContractFactory("DropFactory");
+        factory = await Factory.deploy();
+        await factory.deployed();
 
         const Drop = await ethers.getContractFactory("MerkleDropERC1155");
         drop = await Drop.deploy();
@@ -41,7 +64,7 @@ describe('MerkleDropERC1155', () => {
         await token.deployed();
 
         // approve drop contract to transfer erc1155 tokens on sender's behalf
-        token.setApprovalForAll(drop.address, true);
+        await token.setApprovalForAll(drop.address, true);
 
         // create merkle tree
         sender = signers[0];
@@ -118,9 +141,35 @@ describe('MerkleDropERC1155', () => {
                 const expiration = DECEMBER_31_2325;
                 const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
                 const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
+
+                const Merkledroperc1155 = await ethers.getContractFactory("MerkleDropERC1155");
+                dropClone = await getClone(factory.createDrop(drop.address, token.address, merkletree.merkleRoot, expiration, ipfsHash, ipfsHash), Merkledroperc1155);
+                await token.setApprovalForAll(dropClone.address, true);
             })
 
-            it('should execute valid claim and emit ClaimedERC1155 event', async () => {
+            it('should execute valid claim and emit ClaimedERC1155 event (CLONE)', async () => {
+                // execute valid claim
+                const claim = merkletree.claims[recipient1.address];
+                expect(await dropClone.isClaimed(claim.index)).to.be.equal(false);
+                expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(0);
+
+                const tx = await dropClone.claim(claim.index, recipient1.address, claim.tokenId, claim.amount, claim.proof);
+                expect(await dropClone.isClaimed(claim.index)).to.be.equal(true);
+                expect(await token.balanceOf(recipient1.address, claim.tokenId)).to.be.eq(claim.amount);
+
+                const receipt = await tx.wait();
+                const events = receipt.events;
+
+                expect(events[1].event).to.equal('ClaimedERC1155');
+                expect(events[1].args.index).to.equal(claim.index);
+                expect(events[1].args.tokenId).to.equal(claim.tokenId);
+                expect(events[1].args.amount).to.equal(claim.amount);
+                expect(events[1].args.beneficiary).to.equal(recipient1.address);
+
+                console.log(`Clone claim: ${receipt.gasUsed}`);
+            })
+
+            it('should execute valid claim and emit ClaimedERC1155 event (DEFAULT)', async () => {
                 // execute valid claim
                 const claim = merkletree.claims[recipient1.address];
                 expect(await drop.isClaimed(claim.index)).to.be.equal(false);
@@ -138,7 +187,10 @@ describe('MerkleDropERC1155', () => {
                 expect(events[1].args.tokenId).to.equal(claim.tokenId);
                 expect(events[1].args.amount).to.equal(claim.amount);
                 expect(events[1].args.beneficiary).to.equal(recipient1.address);
+
+                console.log(`Default claim: ${receipt.gasUsed}`);
             })
+
 
             it('should allow to execute claim only once', async () => {
                 const claim = merkletree.claims[recipient1.address];

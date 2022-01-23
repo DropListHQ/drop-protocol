@@ -31,7 +31,7 @@ describe('DropFactory', () => {
         // deploy mock token toowner                                                                                                                                                                          
         const MockToken = await ethers.getContractFactory("ERC20Mock");
         token = await MockToken.deploy();
-
+        await token.deployed();
     });
 
     beforeEach(async () => {
@@ -44,7 +44,6 @@ describe('DropFactory', () => {
 
     describe('createDrop()', () => {
         it('creates drop and emits event', async () => {
-
             const merkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
             const expiration = DECEMBER_31_2325;
             const salt = ethers.utils.formatBytes32String("SALT");
