@@ -8,15 +8,24 @@ export const DropFactoryInterface = new Interface([
 
 export const DropInterfaceERC20 = new Interface([
     "function claim(uint256 index, address beneficiary, uint256 amount, bytes32[] calldata merkleProof)",
+    "function checkClaim(uint256 index, bytes32 node, bytes32[] calldata merkleProof) view returns (bool)",
+    "function isClaimed(uint256 index) view returns (bool)",
+    "function isExpired()  view returns (bool)",
     "event ClaimedERC20(uint256 indexed index, address beneficiary, uint256 amount)"
 ]);
 
 export const DropInterfaceERC721 = new Interface([
     "function claim(uint256 index, address beneficiary, uint256 tokenId, bytes32[] calldata merkleProof)",
+    "function checkClaim(uint256 index, bytes32 node, bytes32[] calldata merkleProof) view returns (bool)",
+    "function isClaimed(uint256 index) view returns (bool)",
+    "function isExpired()  view returns (bool)",
     "event ClaimedERC721(uint256 indexed index, address beneficiary, uint256 tokenId)"
 ]);
 
 export const DropInterfaceERC1155 = new Interface([
     "function claim(uint256 index, address beneficiary, uint256 tokenId, uint256 amount, bytes32[] calldata merkleProof)",
-    "event ClaimedERC721(uint256 indexed index, address beneficiary, uint256 tokenId, uint256 amount)"
+    "function checkClaim(uint256 index, bytes32 node, bytes32[] calldata merkleProof) view returns (bool)",
+    "function isClaimed(uint256 index) view returns (bool)",
+    "function isExpired()  view returns (bool)",
+    "event ClaimedERC1155(uint256 indexed index, address beneficiary, uint256 tokenId, uint256 amount)"
 ]);
