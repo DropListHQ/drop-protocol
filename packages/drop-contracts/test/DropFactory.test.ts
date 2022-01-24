@@ -59,8 +59,18 @@ describe('DropFactory', () => {
             expect(args.expiration).to.equal(expiration);
             expect(args.ipfshash).to.equal(ipfshash);
         });
+
+        it('can not create 2 drop contracts with the same IPFS hash', async () => {
+            const merkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
+            const expiration = DECEMBER_31_2325;
+            const ipfshash = ethers.utils.formatBytes32String("ipfshash");
+
+            const tx = await factory.createDrop(template.address, token.address, merkleRoot, expiration, ipfshash);
+            await expect(factory.createDrop(template.address, token.address, merkleRoot, expiration, ipfshash)).to.be.reverted;
+        });
+
     })
-    describe('predictDropAddress()', () => {
+    describe('getDrop()', () => {
         it('correcty fetches Drop contract address by IPFS hash', async () => {
             const merkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
             const expiration = DECEMBER_31_2325;
