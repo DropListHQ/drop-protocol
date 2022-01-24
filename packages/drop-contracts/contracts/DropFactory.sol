@@ -28,7 +28,7 @@ contract DropFactory {
       }
       
       // offset for calldata pointes for clones with immutable args
-      // see 
+      // see https://github.com/wighawag/clones-with-immutable-args/
       bytes memory data = abi.encodePacked(
                                            msg.sender, // 0 - first argument at 0
                                            token, // 0 + 20 = 20 (as sender is address (20 bytes))
