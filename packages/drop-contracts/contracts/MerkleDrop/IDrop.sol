@@ -20,18 +20,18 @@ interface IDrop is IERC165 {
     // returns address the drop creator address
     function sender() external view returns (address);
     
-    // returns if drop contract is inialized
-    function initialized() external view returns (bool);
+    /* // returns if drop contract is inialized */
+    /* function initialized() external view returns (bool); */
         
-  /**
-   * @dev Constructor for Drop contract as an instance is a proxy (conforming to EIP-1167), the init function is used on initialization.
-   * @param tokenOwner owner of the token to be distributed.
-   * @param token Address of the token contract to be distributed.
-   * @param merkleRoot Merkle root of the merkle drop.
-   * @param expiryTimestamp Unix-timestamp of the deadline until which users are able to claim the drop.
-   * @param ipfsHash IPFS-hash of the drop metadata JSON-file stored via IPFS.
-   */
-  function init(address tokenOwner, address token, bytes32 merkleRoot, uint256 expiryTimestamp, bytes32 ipfsHash) external;
+  /* /\** */
+  /*  * @dev Constructor for Drop contract as an instance is a proxy (conforming to EIP-1167), the init function is used on initialization. */
+  /*  * @param tokenOwner owner of the token to be distributed. */
+  /*  * @param token Address of the token contract to be distributed. */
+  /*  * @param merkleRoot Merkle root of the merkle drop. */
+  /*  * @param expiryTimestamp Unix-timestamp of the deadline until which users are able to claim the drop. */
+  /*  * @param ipfsHash IPFS-hash of the drop metadata JSON-file stored via IPFS. */
+  /*  *\/ */
+  /* function init(address tokenOwner, address token, bytes32 merkleRoot, uint256 expiryTimestamp, bytes32 ipfsHash) external; */
 
 
   /**

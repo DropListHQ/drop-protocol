@@ -14,7 +14,7 @@ contract MerkleDropERC721 is BaseDrop, IMerkleDropERC721 {
     
     // Mark leaf as claimed and send the token.
     _setClaimed(index);
-    IERC721(token).transferFrom(sender, beneficiary, tokenId);
+    IERC721(token()).transferFrom(sender(), beneficiary, tokenId);
     
     emit ClaimedERC721(index, beneficiary, tokenId);
   }    

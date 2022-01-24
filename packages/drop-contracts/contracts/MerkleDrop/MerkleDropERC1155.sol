@@ -14,7 +14,7 @@ contract MerkleDropERC1155 is BaseDrop, IMerkleDropERC1155 {
     
     // Mark leaf as claimed and send the token.
     _setClaimed(index);
-    IERC1155(token).safeTransferFrom(sender, beneficiary, tokenId, amount, "");
+    IERC1155(token()).safeTransferFrom(sender(), beneficiary, tokenId, amount, "");
     
     emit ClaimedERC1155(index, beneficiary, tokenId, amount);
   }    
