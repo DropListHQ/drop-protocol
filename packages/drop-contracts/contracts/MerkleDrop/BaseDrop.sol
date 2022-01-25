@@ -23,7 +23,7 @@ contract BaseDrop is IDrop, ERC165, Clone {
     return _getArgAddress(20);
   }
 
-  function merkleRoot() public virtual override view returns (bytes32) {
+  function merkleroot() public virtual override view returns (bytes32) {
     return bytes32(_getArgUint256(40));
   }    
     
@@ -31,7 +31,7 @@ contract BaseDrop is IDrop, ERC165, Clone {
     return _getArgUint256(72);
   }
 
-  function ipfsHash() public virtual override view returns (bytes32) {
+  function ipfshash() public virtual override view returns (bytes32) {
     return bytes32(_getArgUint256(104));
   }    
     
@@ -48,7 +48,7 @@ contract BaseDrop is IDrop, ERC165, Clone {
     require(!isClaimed(index), 'MerkleDrop: Token already claimed');
       
     // Verify the merkle proof.
-    require(MerkleProof.verify(merkleProof, merkleRoot(), node), 'MerkleDistributor: Invalid proof.');
+    require(MerkleProof.verify(merkleProof, merkleroot(), node), 'MerkleDistributor: Invalid proof.');
 
     return true;
   }
