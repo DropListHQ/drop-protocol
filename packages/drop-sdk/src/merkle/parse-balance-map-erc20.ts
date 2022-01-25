@@ -1,3 +1,4 @@
+// Code is forked and modified from Uniswap Merkle Distributor - https://github.com/Uniswap/merkle-distributor
 import { BigNumber, utils } from 'ethers'
 import BalanceTree from './balance-tree-erc20'
 
