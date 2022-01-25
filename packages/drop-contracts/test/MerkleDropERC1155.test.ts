@@ -5,38 +5,18 @@ import { arrayify, computeAddress, defaultAbiCoder, hexlify, randomBytes, Signin
 import { keccak256 } from '@ethersproject/keccak256';
 import { buildMerkleTreeERC1155, RecipientsDictFormatERC1155, MerkleDistributorInfoERC1155 } from "@drop-protocol/drop-sdk";
 import { ethers } from "hardhat";
+import { getClone } from "./utils";
 
 const DECEMBER_31_2325 = 11234234223 // Thursday, December 31, 2325 8:37:03 PM                                                                                                                                
-const JULY_30_2015 = 1438251133 // Thursday, July 30, 2015 10:12:13 AM                                                                                                                                         
-
-async function getClone(call: Promise<ContractTransaction>, factory_: ContractFactory) {
-    const tx = await call;
-    const receipt = await tx.wait();
-    let address = null;
-    if (receipt.events) {
-        for (const event of receipt.events) {
-            if (event.event === "CreateDrop") {
-                address = event ?.args ?.drop;
-                break;
-            }
-        }
-    }
-    if (address !== null) {
-        return factory_.attach(address);
-    }
-    throw new Error("Not a clone creation transaction");
-}
+const JULY_30_2015 = 1438251133 // Thursday, July 30, 2015 10:12:13 AM
 
 describe('MerkleDropERC1155', () => {
     let signers: SignerWithAddress[];
     let snapshot: number;
-    let executor: Contract;
     let factory: Contract;
     let template: Contract;
     let token: Contract;
     let drop: Contract;
-    let issuerkey: SigningKey;
-    let issueraddress: string;
     let recipient1: SignerWithAddress;
     let recipient2: SignerWithAddress;
     let recipient3: SignerWithAddress;
@@ -45,7 +25,6 @@ describe('MerkleDropERC1155', () => {
     let sender: SignerWithAddress;
     let recipients: RecipientsDictFormatERC1155;
     let merkletree: MerkleDistributorInfoERC1155;
-    let ipfshash: string;
 
     before(async () => {
         signers = await ethers.getSigners();
@@ -78,8 +57,8 @@ describe('MerkleDropERC1155', () => {
         recipients[recipient4.address] = { amount: 1, tokenId: 1 };
         merkletree = buildMerkleTreeERC1155(recipients);
 
-        ipfshash = ethers.utils.formatBytes32String("ipfshash");
         const expiration = DECEMBER_31_2325;
+        const ipfshash = ethers.utils.formatBytes32String("ipfshash");
         drop = await getClone(factory.createDrop(template.address, token.address, merkletree.merkleRoot, expiration, ipfshash), Drop);
 
         // approve drop contract to transfer erc1155 tokens on sender's behalf
@@ -102,7 +81,7 @@ describe('MerkleDropERC1155', () => {
         it('should return expired for expired drop', async () => {
             const Drop = await ethers.getContractFactory("MerkleDropERC1155");
             const expiration = JULY_30_2015;
-            ipfshash = ethers.utils.formatBytes32String("ipfshashExpired");
+            const ipfshash = ethers.utils.formatBytes32String("ipfshashExpired");
             const expiredDrop = await getClone(factory.createDrop(template.address, token.address, merkletree.merkleRoot, expiration, ipfshash), Drop);
             expect(await expiredDrop.isExpired()).to.be.eq(true);
         })
@@ -152,6 +131,7 @@ describe('MerkleDropERC1155', () => {
             it('should not allow to execute claim with missed deadline', async () => {
                 const Drop = await ethers.getContractFactory("MerkleDropERC1155");
                 const expiration = JULY_30_2015;
+                const ipfshash = ethers.utils.formatBytes32String("ipfshashExpired");
                 const expiredDrop = await getClone(factory.createDrop(template.address, token.address, merkletree.merkleRoot, expiration, ipfshash), Drop);
                 await token.setApprovalForAll(expiredDrop.address, true);
                 const claim = merkletree.claims[recipient1.address];
