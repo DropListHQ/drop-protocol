@@ -14,7 +14,7 @@ contract MerkleDropERC20 is BaseDrop, IMerkleDropERC20 {
         
     // Mark leaf as claimed and send tokens.
     _setClaimed(index);
-    IERC20(token).transferFrom(sender, beneficiary, amount);
+    IERC20(token()).transferFrom(sender(), beneficiary, amount);
     
     emit ClaimedERC20(index, beneficiary, amount);
   }    

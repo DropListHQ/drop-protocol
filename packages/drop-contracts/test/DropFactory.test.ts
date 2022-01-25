@@ -31,7 +31,7 @@ describe('DropFactory', () => {
         // deploy mock token toowner                                                                                                                                                                          
         const MockToken = await ethers.getContractFactory("ERC20Mock");
         token = await MockToken.deploy();
-
+        await token.deployed();
     });
 
     beforeEach(async () => {
@@ -44,38 +44,45 @@ describe('DropFactory', () => {
 
     describe('createDrop()', () => {
         it('creates drop and emits event', async () => {
-
             const merkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
             const expiration = DECEMBER_31_2325;
-            const salt = ethers.utils.formatBytes32String("SALT");
-            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+            const ipfshash = ethers.utils.formatBytes32String("ipfshash");
 
-            const tx = await factory.createDrop(template.address, token.address, merkleRoot, expiration, salt, ipfsHash);
+            const tx = await factory.createDrop(template.address, token.address, merkleRoot, expiration, ipfshash);
             const receipt = await tx.wait();
             expect(receipt.events.length).to.equal(1);
             expect(receipt.events[0].event).to.equal('CreateDrop');
+
             const args = receipt.events[0].args;
             expect(args.token).to.equal(token.address);
             expect(args.template).to.equal(template.address);
             expect(args.expiration).to.equal(expiration);
-            expect(args.ipfsHash).to.equal(ipfsHash);
-
+            expect(args.ipfshash).to.equal(ipfshash);
         });
-    })
-    describe('predictDropAddress()', () => {
-        it('correcty precomputes Drop contract address', async () => {
+
+        it('can not create 2 drop contracts with the same IPFS hash', async () => {
             const merkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
             const expiration = DECEMBER_31_2325;
-            const salt = ethers.utils.formatBytes32String("SALT");
-            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
+            const ipfshash = ethers.utils.formatBytes32String("ipfshash");
 
-            const tx = await factory.createDrop(template.address, token.address, merkleRoot, expiration, salt, ipfsHash);
+            const tx = await factory.createDrop(template.address, token.address, merkleRoot, expiration, ipfshash);
+            await expect(factory.createDrop(template.address, token.address, merkleRoot, expiration, ipfshash)).to.be.reverted;
+        });
+
+    })
+    describe('getDrop()', () => {
+        it('correcty fetches Drop contract address by IPFS hash', async () => {
+            const merkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
+            const expiration = DECEMBER_31_2325;
+            const ipfshash = ethers.utils.formatBytes32String("ipfshash");
+
+            const tx = await factory.createDrop(template.address, token.address, merkleRoot, expiration, ipfshash);
             const receipt = await tx.wait();
             const args = receipt.events[0].args;
             const actualDropAddress = args.drop;
-            const precomputedDropAddress = await factory.predictDropAddress(template.address, salt);
+            const fetchedDropAddress = await factory.getDrop(ipfshash);
 
-            expect(actualDropAddress).to.be.equal(precomputedDropAddress);
+            expect(actualDropAddress).to.be.equal(fetchedDropAddress);
         });
     });
 });

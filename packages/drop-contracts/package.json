@@ -34,8 +34,9 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
+    "@ethersproject/keccak256": "^5.5.0",
     "@openzeppelin/contracts": "OpenZeppelin/openzeppelin-contracts#master",
-    "@ethersproject/keccak256": "^5.5.0"
+    "clones-with-immutable-args": "^1.0.0"
   },
   "scripts": {
     "build": "hardhat compile",

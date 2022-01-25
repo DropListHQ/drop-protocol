@@ -5,20 +5,18 @@ import { arrayify, computeAddress, defaultAbiCoder, hexlify, randomBytes, Signin
 import { keccak256 } from '@ethersproject/keccak256';
 import { buildMerkleTreeERC20, MerkleDistributorInfoERC20, RecipientsDictFormatERC20 } from "@drop-protocol/drop-sdk";
 import { ethers } from "hardhat";
+import { getClone } from "./utils";
 
 const DECEMBER_31_2325 = 11234234223 // Thursday, December 31, 2325 8:37:03 PM                                                                                                                                
-const JULY_30_2015 = 1438251133 // Thursday, July 30, 2015 10:12:13 AM                                                                                                                                         
+const JULY_30_2015 = 1438251133 // Thursday, July 30, 2015 10:12:13 AM
 
 describe('MerkleDropERC20', () => {
     let signers: SignerWithAddress[];
     let snapshot: number;
-    let executor: Contract;
     let factory: Contract;
     let template: Contract;
     let token: Contract;
     let drop: Contract;
-    let issuerkey: SigningKey;
-    let issueraddress: string;
     let recipient1: SignerWithAddress;
     let recipient2: SignerWithAddress;
     let recipient3: SignerWithAddress;
@@ -31,9 +29,13 @@ describe('MerkleDropERC20', () => {
     before(async () => {
         signers = await ethers.getSigners();
 
+        const Factory = await ethers.getContractFactory("DropFactory");
+        factory = await Factory.deploy();
+        await factory.deployed();
+
         const Drop = await ethers.getContractFactory("MerkleDropERC20");
-        drop = await Drop.deploy();
-        await drop.deployed();
+        template = await Drop.deploy();
+        await template.deployed();
 
         //deploy mock token to owner                                                                                                                                                                          
         const MockToken = await ethers.getContractFactory("ERC20Mock");
@@ -55,6 +57,10 @@ describe('MerkleDropERC20', () => {
         recipients[recipient4.address] = { amount: 400 };
         merkletree = buildMerkleTreeERC20(recipients);
 
+        const ipfshash = ethers.utils.formatBytes32String("ipfshash");
+        const expiration = DECEMBER_31_2325;
+        drop = await getClone(factory.createDrop(template.address, token.address, merkletree.merkleRoot, expiration, ipfshash), Drop);
+
         // approve drop contract to transfer erc20 tokens on sender's behalf
         const balance = await token.balanceOf(sender.address)
         await token.approve(drop.address, balance);
@@ -69,59 +75,22 @@ describe('MerkleDropERC20', () => {
         await ethers.provider.send("evm_revert", [snapshot]);
     });
 
-    describe('init()', () => {
-        it('inits the contract', async () => {
-            const expiration = DECEMBER_31_2325;
-            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
-            const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
-
-            expect(await drop.sender()).to.be.eq(sender.address);
-            expect(await drop.merkleRoot()).to.be.eq(merkletree.merkleRoot);
-            expect(await drop.token()).to.be.eq(token.address);
-            expect(await drop.ipfsHash()).to.be.eq(ipfsHash);
-            expect(await drop.expiration()).to.be.eq(expiration);
-            expect(await drop.initialized()).to.be.eq(true);
-        });
-
-        it('does not allow to init contract twice', async () => {
-            const expiration = DECEMBER_31_2325;
-            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
-
-            // first tx to init the contract should go through
-            const tx1 = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
-
-            // second tx should revert
-            const fakeMerkleRoot = ethers.utils.formatBytes32String("MERKLE_ROOT");
-            await expect(drop.init(sender.address, token.address, fakeMerkleRoot, expiration, ipfsHash)).to.be.reverted;
-        });
-    })
-
-    describe('isExpire()', () => {
+    describe('isExpired()', () => {
         it('should not return expired for non-expired drop', async () => {
-            const expiration = DECEMBER_31_2325;
-            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
-            const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
             expect(await drop.isExpired()).to.be.eq(false);
         })
 
         it('should return expired for expired drop', async () => {
+            const Drop = await ethers.getContractFactory("MerkleDropERC1155");
             const expiration = JULY_30_2015;
-            const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
-            const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
-
-            expect(await drop.isExpired()).to.be.eq(true);
+            const ipfshash = ethers.utils.formatBytes32String("ipfshashExpired");
+            const expiredDrop = await getClone(factory.createDrop(template.address, token.address, merkletree.merkleRoot, expiration, ipfshash), Drop);
+            expect(await expiredDrop.isExpired()).to.be.eq(true);
         })
     })
 
     describe('claim()', () => {
         describe("valid drop & merkletree", () => {
-            beforeEach(async () => {
-                // init drop contract            
-                const expiration = DECEMBER_31_2325;
-                const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
-                const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
-            })
-
             it('should execute valid claim and emit ClaimedERC20 event', async () => {
                 // execute valid claim
                 const claim = merkletree.claims[recipient1.address];
@@ -158,15 +127,14 @@ describe('MerkleDropERC20', () => {
         })
 
         describe("missed deadline", () => {
-            beforeEach(async () => {
-                // init drop contract            
-                const expiration = JULY_30_2015;
-                const ipfsHash = ethers.utils.formatBytes32String("ipfsHash");
-                const tx = await drop.init(sender.address, token.address, merkletree.merkleRoot, expiration, ipfsHash);
-            })
             it('should not allow to execute claim with missed deadline', async () => {
+                const Drop = await ethers.getContractFactory("MerkleDropERC20");
+                const expiration = JULY_30_2015;
+                const ipfshash = ethers.utils.formatBytes32String("ipfshashExpired");
+                const expiredDrop = await getClone(factory.createDrop(template.address, token.address, merkletree.merkleRoot, expiration, ipfshash), Drop);
                 const claim = merkletree.claims[recipient1.address];
-                await expect(drop.claim(claim.index, recipient1.address, claim.amount, claim.proof)).to.be.reverted;
+                await token.approve(expiredDrop.address, claim.amount);
+                await expect(expiredDrop.claim(claim.index, recipient1.address, claim.amount, claim.proof)).to.be.reverted;
             })
         })
     })

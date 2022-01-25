@@ -1,4 +1,4 @@
-// import { bufferToHex } from 'ethereumjs-util'
+// Code is forked and modified from Uniswap Merkle Distributor - https://github.com/Uniswap/merkle-distributor
 import { keccak256 } from '@ethersproject/keccak256';
 import { arrayify, hexlify } from '@ethersproject/bytes';
 
