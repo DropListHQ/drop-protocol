@@ -44,7 +44,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC20 | Re
 
     const dataByAddress = balancesInRecipientsArrayFormatERC20.reduce<{
         [address: string]: {
-            amount: BigNumber;
+            amount: string;
         }
     }>((memo, {
         address: account,
@@ -59,7 +59,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC20 | Re
         if (parsedNum.lte(0)) throw new Error(`Invalid amount for account: ${account}`)
 
         memo[parsed] = {
-            amount: parsedNum
+            amount: parsedNum.toString()
         }
         return memo
     }, {})
@@ -86,7 +86,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC20 | Re
         const { amount } = dataByAddress[address]
         memo[address] = {
             index,
-            amount: amount.toHexString(),
+            amount: amount,
             proof: tree.getProof(
                 index,
                 address,
@@ -97,13 +97,13 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC20 | Re
     }, {})
 
     const tokenTotal: BigNumber = sortedAddresses.reduce<BigNumber>(
-        (memo, key) => memo.add(dataByAddress[key].amount),
+        (memo, key) => memo.add(BigNumber.from(dataByAddress[key].amount)),
         BigNumber.from(0)
     )
 
     return {
         merkleRoot: tree.getHexRoot(),
-        tokenTotal: tokenTotal.toHexString(),
+        tokenTotal: tokenTotal.toString(),
         claims,
         creationTime: +(new Date())
     }

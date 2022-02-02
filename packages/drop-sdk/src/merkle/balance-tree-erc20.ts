@@ -4,7 +4,7 @@ import { BigNumber, utils } from 'ethers'
 
 export default class BalanceTreeERC20 {
     private readonly tree: MerkleTree
-    constructor(balances: { account: string; amount: BigNumber }[]) {
+    constructor(balances: { account: string; amount: string }[]) {
         this.tree = new MerkleTree(
             balances.map(({ account, amount }, index) => {
                 return BalanceTreeERC20.toNode(index, account, amount)
@@ -15,7 +15,7 @@ export default class BalanceTreeERC20 {
     public static verifyProof(
         index: number | BigNumber,
         account: string,
-        amount: BigNumber,
+        amount: string,
         proof: Buffer[],
         root: Buffer
     ): boolean {
@@ -31,7 +31,7 @@ export default class BalanceTreeERC20 {
     public static toNode(
         index: number | BigNumber,
         account: string,
-        amount: BigNumber
+        amount: string
     ): Buffer {
         return Buffer.from(
             utils.solidityKeccak256(['uint256', 'address', 'uint256'], [index, account, amount]).substr(2),
@@ -47,7 +47,7 @@ export default class BalanceTreeERC20 {
     public getProof(
         index: number | BigNumber,
         account: string,
-        amount: BigNumber
+        amount: string
     ): string[] {
         return this.tree.getHexProof(BalanceTreeERC20.toNode(index, account, amount))
     }
