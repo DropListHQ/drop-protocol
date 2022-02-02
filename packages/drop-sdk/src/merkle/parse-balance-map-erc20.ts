@@ -23,7 +23,7 @@ export interface MerkleDistributorInfoERC20 {
 
 export type RecipientsDictFormatERC20 = {
     [account: string]: {
-        amount: number | string
+        amount: string
     }
 }
 export type RecipientsArrayFormatERC20 = {
@@ -38,7 +38,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC20 | Re
         : Object.keys(balances).map(
             (account): RecipientsArrayFormatERC20 => ({
                 address: account,
-                amount: `0x${balances[account].amount.toString(16)}`
+                amount: balances[account].amount
             })
         )
 
