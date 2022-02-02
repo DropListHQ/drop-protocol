@@ -10,12 +10,11 @@ const { isAddress, getAddress } = utils
 // and the tree has no additional distributions.
 export interface MerkleDistributorInfoERC1155 {
     merkleRoot: string
-    tokenTotal: string
     creationTime: string | number
     claims: {
         [account: string]: {
             index: number
-            tokenId: string | number,
+            tokenId: string,
             amount: string,
             proof: string[]
         }
@@ -24,13 +23,13 @@ export interface MerkleDistributorInfoERC1155 {
 
 export type RecipientsDictFormatERC1155 = {
     [account: string]: {
-        tokenId: number | string,
-        amount: number | string
+        tokenId: string,
+        amount: string
     }
 }
 export type RecipientsArrayFormatERC1155 = {
     address: string;
-    tokenId: number | string;
+    tokenId: string;
     amount: string;
 }
 
@@ -42,14 +41,14 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
             (account): RecipientsArrayFormatERC1155 => ({
                 address: account,
                 tokenId: balances[account].tokenId,
-                amount: `0x${balances[account].amount.toString(16)}`
+                amount: balances[account].amount
             })
         )
 
     const dataByAddress = balancesInRecipientsArrayFormatERC1155.reduce<{
         [address: string]: {
-            amount: BigNumber;
-            tokenId: number | string
+            amount: string;
+            tokenId: string
         }
     }>((memo, {
         address: account,
@@ -66,7 +65,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
 
         memo[parsed] = {
             tokenId,
-            amount: parsedNum
+            amount: parsedNum.toString()
         }
         return memo
     }, {})
@@ -87,7 +86,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
     const claims = sortedAddresses.reduce<{
         [address: string]: {
             index: number;
-            tokenId: number | string;
+            tokenId: string;
             amount: string;
             proof: string[];
         }
@@ -96,7 +95,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         memo[address] = {
             index,
             tokenId,
-            amount: amount.toHexString(),
+            amount: amount,
             proof: tree.getProof(
                 index,
                 address,
@@ -107,14 +106,8 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC1155 | 
         return memo
     }, {})
 
-    const tokenTotal: BigNumber = sortedAddresses.reduce<BigNumber>(
-        (memo, key) => memo.add(dataByAddress[key].amount),
-        BigNumber.from(0)
-    )
-
     return {
         merkleRoot: tree.getHexRoot(),
-        tokenTotal: tokenTotal.toHexString(),
         claims,
         creationTime: +(new Date())
     }

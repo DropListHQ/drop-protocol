@@ -2,12 +2,12 @@
 import MerkleTree from './merkle-tree'
 import { BigNumber, utils } from 'ethers'
 
-export default class BalanceTreeERC721 {
+export default class BalanceTreeERC20 {
     private readonly tree: MerkleTree
-    constructor(balances: { account: string; tokenId: string }[]) {
+    constructor(balances: { account: string; amount: string }[]) {
         this.tree = new MerkleTree(
-            balances.map(({ account, tokenId }, index) => {
-                return BalanceTreeERC721.toNode(index, account, tokenId)
+            balances.map(({ account, amount }, index) => {
+                return BalanceTreeERC20.toNode(index, account, amount)
             })
         )
     }
@@ -15,26 +15,26 @@ export default class BalanceTreeERC721 {
     public static verifyProof(
         index: number | BigNumber,
         account: string,
-        tokenId: string,
+        amount: string,
         proof: Buffer[],
         root: Buffer
     ): boolean {
-        let pair = BalanceTreeERC721.toNode(index, account, tokenId)
+        let pair = BalanceTreeERC20.toNode(index, account, amount)
         for (const item of proof) {
-            pair = MerkleTree.combinedHash(pair, item)
+            pair = Mer
+            kleTree.combinedHash(pair, item)
         }
-
         return pair.equals(root)
     }
 
-    // keccak256(abi.encode(index, account, tokenId))
+    // keccak256(abi.encode(index, account, amount))
     public static toNode(
         index: number | BigNumber,
         account: string,
-        tokenId: string
+        amount: string
     ): Buffer {
         return Buffer.from(
-            utils.solidityKeccak256(['uint256', 'address', 'uint256'], [index, account, tokenId]).substr(2),
+            utils.solidityKeccak256(['uint256', 'address', 'uint256'], [index, account, amount]).substr(2),
             'hex'
         )
     }
@@ -47,8 +47,8 @@ export default class BalanceTreeERC721 {
     public getProof(
         index: number | BigNumber,
         account: string,
-        tokenId: string
+        amount: string
     ): string[] {
-        return this.tree.getHexProof(BalanceTreeERC721.toNode(index, account, tokenId))
+        return this.tree.getHexProof(BalanceTreeERC20.toNode(index, account, amount))
     }
 }

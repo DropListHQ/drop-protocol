@@ -4,7 +4,7 @@ import { BigNumber, utils } from 'ethers'
 
 export default class BalanceTreeERC1155 {
     private readonly tree: MerkleTree
-    constructor(balances: { account: string; amount: BigNumber, tokenId: string | number }[]) {
+    constructor(balances: { account: string; amount: string, tokenId: string }[]) {
         this.tree = new MerkleTree(
             balances.map(({ account, amount, tokenId }, index) => {
                 return BalanceTreeERC1155.toNode(index, account, tokenId, amount)
@@ -15,8 +15,8 @@ export default class BalanceTreeERC1155 {
     public static verifyProof(
         index: number | BigNumber,
         account: string,
-        tokenId: number | string,
-        amount: BigNumber,
+        tokenId: string,
+        amount: string,
         proof: Buffer[],
         root: Buffer
     ): boolean {
@@ -24,7 +24,6 @@ export default class BalanceTreeERC1155 {
         for (const item of proof) {
             pair = MerkleTree.combinedHash(pair, item)
         }
-
         return pair.equals(root)
     }
 
@@ -32,8 +31,8 @@ export default class BalanceTreeERC1155 {
     public static toNode(
         index: number | BigNumber,
         account: string,
-        tokenId: number | string,
-        amount: BigNumber
+        tokenId: string,
+        amount: string
     ): Buffer {
         return Buffer.from(
             utils.solidityKeccak256(['uint256', 'address', 'uint256', 'uint256'], [index, account, tokenId, amount]).substr(2),
@@ -49,8 +48,8 @@ export default class BalanceTreeERC1155 {
     public getProof(
         index: number | BigNumber,
         account: string,
-        tokenId: number | string,
-        amount: BigNumber
+        tokenId: string,
+        amount: string
     ): string[] {
         return this.tree.getHexProof(BalanceTreeERC1155.toNode(index, account, tokenId, amount))
     }

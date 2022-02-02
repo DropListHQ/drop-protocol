@@ -15,7 +15,7 @@ export interface MerkleDistributorInfoERC721 {
     claims: {
         [account: string]: {
             index: number
-            tokenId: string | number,
+            tokenId: string,
             proof: string[]
         }
     }
@@ -23,12 +23,12 @@ export interface MerkleDistributorInfoERC721 {
 
 export type RecipientsDictFormatERC721 = {
     [account: string]: {
-        tokenId: number | string
+        tokenId: string
     }
 }
 export type RecipientsArrayFormatERC721 = {
     address: string;
-    tokenId: number | string;
+    tokenId: string;
 }
 
 export default function parseBalanceMap(balances: RecipientsDictFormatERC721 | RecipientsArrayFormatERC721[]): MerkleDistributorInfoERC721 {
@@ -44,7 +44,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC721 | R
 
     const dataByAddress = balancesInRecipientsArrayFormatERC721.reduce<{
         [address: string]: {
-            tokenId: number | string
+            tokenId: string
         }
     }>((memo, {
         address: account,
@@ -78,7 +78,7 @@ export default function parseBalanceMap(balances: RecipientsDictFormatERC721 | R
     const claims = sortedAddresses.reduce<{
         [address: string]: {
             index: number;
-            tokenId: number | string;
+            tokenId: string;
             proof: string[];
         }
     }>((memo, address, index) => {
