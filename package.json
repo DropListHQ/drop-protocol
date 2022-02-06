@@ -3,7 +3,17 @@
   "name": "drop-protocol",
   "private": true,
   "workspaces": {
-    "packages": ["packages/*"],
-    "nohoist": ["**/@nomiclabs/**", "**/typescript", "**/ts-node", "**/@typechain/**"]
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@nomiclabs/**",
+      "**/typescript",
+      "**/ts-node",
+      "**/@typechain/**"
+    ]
+  },
+  "dependencies": {
+    "typescript": "4.5.5"
   }
 }
