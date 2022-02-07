@@ -1,5 +1,5 @@
 {
-  "name": "app-dashboard",
+  "name": "@drop-protocol/drop-dashboard",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
