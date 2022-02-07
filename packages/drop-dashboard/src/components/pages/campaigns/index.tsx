@@ -75,10 +75,10 @@ const CampaignsPage: FC<ReduxType & TProps> = ({ retroDrops, address, connectWal
         {loadedCommunities.map((item: INameToValueMap) => {
           const image = communities[item.id]
           return <CommunityWidget
-            title={item.name || 'Loading'}
+            title={item.name || 'Untitled'}
             key={item.id}
-            description={`${item.numOwners} holders`}
-            buttonTitle='Download .txt'
+            description={`${item.nftOwners.length} holders`}
+            buttonTitle='Download .csv'
             action={() => {
               // console.log('hello')
               getOwnersData(item.id)

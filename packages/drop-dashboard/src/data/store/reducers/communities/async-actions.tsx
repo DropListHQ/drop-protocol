@@ -35,5 +35,5 @@ export async function getOwnersData(
     return result
   }, [])
 
-  getCSV('owners.txt', result)
+  getCSV('owners.csv', result)
 }
