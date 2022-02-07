@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'https://api.studio.thegraph.com/query/9597/dropowners3/0.0.1'
+  baseURL: 'https://api.studio.thegraph.com/query/9597/dropowners32/0.0.2'
 });
 
 type TOwners = {
