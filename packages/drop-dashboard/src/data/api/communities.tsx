@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-  baseURL: 'https://api.studio.thegraph.com/query/9597/dropowners1/0.0.22'
+  baseURL: 'https://api.studio.thegraph.com/query/9597/dropowners3/0.0.1'
 });
 
 type TOwners = {
@@ -21,14 +21,13 @@ const getCommunityData = async (contract: string[]) => {
   const response = await instance.post('/', {
     query: `query NftOwners($contract: [String]) {
       nftContracts (
-        where: { id_in: $contract },
-        first: 5
+        where: { id_in: $contract }
       ) {
         id
         name
         numTokens
         numOwners
-        nftOwners (first: 999) {
+        nftOwners {
           owner
           contract {
             name

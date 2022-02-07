@@ -214,8 +214,8 @@ const CampaignTree: FC<ReduxType> = ({
           const image = communities[item.id]
           return <>
             <TableItem>
-              <TableItemImage src={image.logo} alt={item.name} />
-              {item.name}
+              <TableItemImage src={image.logo} alt={item.name || 'Untitled'} />
+              {item.name || 'Untitled'}
             </TableItem>
             <TableItem onClick={_ => {
               getOwnersData(item.id)
