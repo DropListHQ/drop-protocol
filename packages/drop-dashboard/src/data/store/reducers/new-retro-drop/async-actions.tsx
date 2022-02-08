@@ -3,7 +3,7 @@ import * as actionsNewRetroDrop from './actions';
 import { NewRetroDropActions } from './types';
 import { TRetroDropType } from 'types'
 import { pinataApi } from 'data/api'
-import { ERC20Contract } from 'abi'
+import { ERC20Contract, ERC721Contract, ERC1155Contract } from 'abi'
 import { ethers } from 'ethers';
 type TIPFSResponse = { data: { IpfsHash: string, PinSize: number, Timestamp: string } }
 
@@ -19,17 +19,30 @@ export async function createIPFS(dispatch: Dispatch<NewRetroDropActions>, data: 
 }
 
 export async function setTokenContractData(dispatch: Dispatch<NewRetroDropActions>, tokenAddress: string, provider: any, type: TRetroDropType) {
-  dispatch(actionsNewRetroDrop.setLoading(true))
-  dispatch(actionsNewRetroDrop.setTokenAddress(tokenAddress))
-  console.log({ type })
-  if (type === 'erc20') {
+  try {
+    dispatch(actionsNewRetroDrop.setLoading(true))
+    dispatch(actionsNewRetroDrop.setTokenAddress(tokenAddress))
     const signer = await provider.getSigner()
-    const contractInstance = await new ethers.Contract(tokenAddress, ERC20Contract, signer)
-    const decimals = await contractInstance.decimals()
-    dispatch(actionsNewRetroDrop.setDecimals(decimals))
+    if (type === 'erc20') {
+      const contractInstance = await new ethers.Contract(tokenAddress, ERC20Contract, signer)
+      const decimals = await contractInstance.decimals()
+      dispatch(actionsNewRetroDrop.setDecimals(decimals))
+    }
+    if (type === 'erc721') {
+      const contractInstance = await new ethers.Contract(tokenAddress, ERC721Contract, signer)
+      const supply = await contractInstance.totalSupply()
+      console.log({ supply })
+    }
+
+    if (type === 'erc1155') {
+      
+    }
+    dispatch(actionsNewRetroDrop.setLoading(false))
+    dispatch(actionsNewRetroDrop.setStep('create_tree'))
+  } catch (err) {
+    console.error(err)
+    alert('Some error occured, please check token address')
   }
-  dispatch(actionsNewRetroDrop.setLoading(false))
-  dispatch(actionsNewRetroDrop.setStep('create_tree'))
 }
 
 const createIpfs = async (data: any, title: string, description: string, logoURL: string, tokenAddress: string, chainId: number, type: TRetroDropType ) => {

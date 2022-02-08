@@ -3,6 +3,7 @@ import * as actions from './actions';
 import { UserActions } from './types';
 import Web3Modal from "web3modal";
 import { Web3Provider } from '@ethersproject/providers'
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 function sleep(timeout: number) {
   return new Promise((resolve) => setTimeout(() => resolve(true), timeout))
@@ -16,7 +17,26 @@ export async function addItemAsync(dispatch: Dispatch<UserActions>, item: string
 
 export async function connectWallet (dispatch: Dispatch<UserActions>) {
   const providerOptions = {
-  /* See Provider Options Section */
+    // Example with injected providers
+    injected: {
+      display: {
+        logo: "data:image/gif;base64,INSERT_BASE64_STRING",
+        name: "Injected",
+        description: "Connect with the provider in your Browser"
+      },
+      package: null
+    },
+    // Example with WalletConnect provider
+    walletconnect: {
+      display: {
+        name: "Mobile",
+        description: "Scan qrcode with your mobile wallet"
+      },
+      package: WalletConnectProvider,
+      options: {
+        infuraId: "620c738fbe1843a18f47ada0e60e738a" // required
+      }
+    }
   };
   const web3Modal = new Web3Modal({
     cacheProvider: true, // optional
