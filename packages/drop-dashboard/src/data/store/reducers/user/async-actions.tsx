@@ -5,6 +5,18 @@ import Web3Modal from "web3modal";
 import { Web3Provider } from '@ethersproject/providers'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
+const infuraPk = "620c738fbe1843a18f47ada0e60e738a"
+const supportedNetworkURLs = {
+  1: `https://mainnet.infura.io/v3/${infuraPk}`,
+  4: `https://rinkeby.infura.io/v3/${infuraPk}`,
+  3: `https://ropsten.infura.io/v3/${infuraPk}`,
+  5: `https://goerli.infura.io/v3/${infuraPk}`,
+  42: `https://kovan.infura.io/v3/${infuraPk}`,
+  137: 'https://rpc-mainnet.maticvigil.com/',
+  80001: 'https://rpc-mumbai.maticvigil.com/v1/f592ae2e5afb3bebe39314e9bd0949de5b74cd2f'
+  // 97: 'https://data-seed-prebsc-1-s1.binance.org:8545/'
+}
+
 function sleep(timeout: number) {
   return new Promise((resolve) => setTimeout(() => resolve(true), timeout))
 }
@@ -17,32 +29,21 @@ export async function addItemAsync(dispatch: Dispatch<UserActions>, item: string
 
 export async function connectWallet (dispatch: Dispatch<UserActions>) {
   const providerOptions = {
-    // Example with injected providers
-    injected: {
-      display: {
-        logo: "data:image/gif;base64,INSERT_BASE64_STRING",
-        name: "Injected",
-        description: "Connect with the provider in your Browser"
-      },
-      package: null
-    },
-    // Example with WalletConnect provider
     walletconnect: {
-      display: {
-        name: "Mobile",
-        description: "Scan qrcode with your mobile wallet"
-      },
       package: WalletConnectProvider,
       options: {
-        infuraId: "620c738fbe1843a18f47ada0e60e738a" // required
+        infuraId: "620c738fbe1843a18f47ada0e60e738a", // required
+        qrcode: true,
+        rpc: supportedNetworkURLs
       }
     }
   };
   const web3Modal = new Web3Modal({
-    cacheProvider: true, // optional
+    cacheProvider: false, // optional
     providerOptions // required
   })
   const provider = await web3Modal.connect();
+
   const providerWeb3 = new Web3Provider(provider)
   
   let { chainId } = await providerWeb3.getNetwork()
