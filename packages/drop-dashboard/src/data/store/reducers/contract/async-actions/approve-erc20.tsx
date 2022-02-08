@@ -27,53 +27,60 @@ export default async function approveERC20(
 	callback: () => void
 ) {
   dispatch(actionsContract.setLoading(true))
-  const signer = await provider.getSigner()
-  const gasPrice = await provider.getGasPrice()
-  const oneGwei = ethers.utils.parseUnits('1', 'gwei')
-  const tokenAmount = Object.values(recipients).reduce((sum, item) => BigInt(sum) + BigInt(item.amount), 0)
-	console.log({ tokenAmount })
-	const contractInstance = await new ethers.Contract(tokenAddress, ERC20Contract, signer)
-  let iface = new ethers.utils.Interface(ERC20Contract);
-  const data = await iface.encodeFunctionData('approve', [dropAddress, tokenAmount])
-	await signer.sendTransaction({
-    to: tokenAddress,
-    gasPrice: gasPrice.add(oneGwei),
-    from: userAddress,
-    value: 0,
-    data: data
-  })
+	try {
+		const signer = await provider.getSigner()
+		const gasPrice = await provider.getGasPrice()
+		const oneGwei = ethers.utils.parseUnits('1', 'gwei')
+		const tokenAmount = Object.values(recipients).reduce((sum, item) => BigInt(sum) + BigInt(item.amount), 0)
+		console.log({ tokenAmount })
+		const contractInstance = await new ethers.Contract(tokenAddress, ERC20Contract, signer)
+		let iface = new ethers.utils.Interface(ERC20Contract);
+		const data = await iface.encodeFunctionData('approve', [dropAddress, tokenAmount])
+		await signer.sendTransaction({
+			to: tokenAddress,
+			gasPrice: gasPrice.add(oneGwei),
+			from: userAddress,
+			value: 0,
+			data: data
+		})
 
-  const transaction = async function (): Promise<boolean> {
-		return new Promise((resolve, reject) => {
-			const checkInterval = setInterval(async () => {
-				const allowed = await contractInstance.allowance(userAddress, dropAddress)
-				console.log({ allowed, tokenAmount })
-				if (allowed >= tokenAmount) {
-					resolve(true)
-					clearInterval(checkInterval)
-				}
-			}, 3000)
+		const transaction = async function (): Promise<boolean> {
+			return new Promise((resolve, reject) => {
+				const checkInterval = setInterval(async () => {
+					const allowed = await contractInstance.allowance(userAddress, dropAddress)
+					console.log({ allowed, tokenAmount })
+					if (allowed >= tokenAmount) {
+						resolve(true)
+						clearInterval(checkInterval)
+					}
+				}, 3000)
+			})
+		}
+		const finished = await transaction()
+		if (finished) {
+			alert(`DONE: ${ipfsHash}`)
+			dispatch(actionsDrops.addNewRetroDrop({
+				title,
+				ipfsHash,
+				address,
+				chainId,
+				description,
+				logoURL,
+				status: 'active',
+				tokenAddress,
+				recipients,
+				type,
+				decimals
+			}))
+			dispatch(newRetroDropDrops.clearNewRetroDrop())
+			if (callback) { callback() }
+		}
+	} catch (err) {
+		console.log({
+			err
 		})
 	}
-  const finished = await transaction()
-	if (finished) {
-		alert(`DONE: ${ipfsHash}`)
-		dispatch(actionsDrops.addNewRetroDrop({
-			title,
-			ipfsHash,
-			address,
-			chainId,
-			description,
-			logoURL,
-			status: 'active',
-			tokenAddress,
-			recipients,
-			type,
-			decimals
-		}))
-		dispatch(newRetroDropDrops.clearNewRetroDrop())
-		if (callback) { callback() }
-	}
+  
 	
 	dispatch(actionsContract.setLoading(false))
 }

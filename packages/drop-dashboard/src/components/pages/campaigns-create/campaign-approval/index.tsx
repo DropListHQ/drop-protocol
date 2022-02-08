@@ -29,7 +29,7 @@ type TProps = {
   cancel: () => void,
   dropTitle: string,
   dropLogoURL: string,
-  dropDescription: string,
+  dropDescription: string
 }
 
 const mapStateToProps = ({

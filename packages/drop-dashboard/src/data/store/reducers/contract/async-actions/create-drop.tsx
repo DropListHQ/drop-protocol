@@ -20,12 +20,20 @@ export default async function createDrop(
 	chainId: number,
 	type: TRetroDropType
 ) {
-  dispatch(actionsContract.setLoading(true))
-	const contractData = contracts[chainId]
-	const factoryAddress = contractData.factory
-	const templateAddress = contractData[type]
-	let drop = await deployContract(provider, merkleTree, tokenAddress, ipfsHash, factoryAddress, templateAddress)
-	dispatch(actionsNewRetroDrop.setDropAddress(drop))
+	dispatch(actionsContract.setLoading(true))
+	try {
+		const contractData = contracts[chainId]
+		const factoryAddress = contractData.factory
+		const templateAddress = contractData[type]
+		let drop = await deployContract(provider, merkleTree, tokenAddress, ipfsHash, factoryAddress, templateAddress)
+		dispatch(actionsNewRetroDrop.setDropAddress(drop))
+		
+	} catch (err) {
+		console.log({
+			err
+		})
+	}
+  
 	dispatch(actionsContract.setLoading(false))
 	dispatch(actionsNewRetroDrop.setStep('give_approval'))
 }
@@ -42,7 +50,7 @@ const deployContract = async (
 	const signer = await provider.getSigner()
 	const proxyContract = await new ethers.Contract(factoryAddress, DropFactoryInterface, signer)
 	const ipfsHexlified = hexlifyIpfsHash(ipfsHash)
-  await proxyContract.createDrop(
+	await proxyContract.createDrop(
 		templateAddress,
 		tokenAddress,
 		merkleTree.merkleRoot,
@@ -63,8 +71,9 @@ const deployContract = async (
 				if (ipfsHexlified === ipfs) {
 					resolve(drop)
 				}
-		 })
+		})
 		})
 	}
 	return await checkReceipt()
+	 
 }

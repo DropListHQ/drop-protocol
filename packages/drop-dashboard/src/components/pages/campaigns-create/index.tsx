@@ -28,6 +28,7 @@ const mapStateToProps = ({
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
   return {
       setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step)),
+      clearDropData: () => dispatch(newRetroDropActions.clearNewRetroDrop()),
       setType: (type: TRetroDropType) => dispatch(newRetroDropActions.setType(type))
   }
 }
@@ -54,18 +55,39 @@ const defineTitie = (step: TRetroDropStep): string => {
   }
 }
 
+const definePreviousStep = (step: TRetroDropStep): TRetroDropStep => {
+  switch(step) {
+    case 'choose_type':
+      return 'choose_type'
+    case 'initialize':
+      return 'choose_type'
+    case 'create_tree':
+      return 'initialize'
+    case 'publish_ipfs':
+      return 'create_tree'
+    case 'deploy_contract':
+      return 'publish_ipfs'
+    case 'give_approval':
+      return `deploy_contract`
+    default:
+      return 'choose_type'
+  }
+}
+
 const CampaignsCreate: FC<ReduxType> = ({
   setStep,
   step,
   setType,
-  type
+  type,
+  clearDropData
 }) => {  
   const [ recipients, setRecipients ] = useState<TRecipientsData>({})
   const [ dropTitle, setDropTitle ] = useState('')
   const [ dropLogoURL, setDropLogoURL ] = useState('')
   const [ dropDescription, setDropDescription ] = useState('')
 
-  const cancel = () => setStep('choose_type')
+  const cancel = () => clearDropData()
+  const back = () => setStep(definePreviousStep(step))
   
   const onTypeChoose:onTypeChoose = type => {
     setType(type)
@@ -80,7 +102,7 @@ const CampaignsCreate: FC<ReduxType> = ({
   const bredcrumbs = <Breadcrumbs
     path={['My campaigns', 'New campaign']}
     description={defineTitie(step)}
-    returnAction={() => cancel()}
+    returnAction={() => back()}
   />
 
 
