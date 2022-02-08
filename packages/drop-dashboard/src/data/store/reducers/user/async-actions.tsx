@@ -5,13 +5,14 @@ import Web3Modal from "web3modal";
 import { Web3Provider } from '@ethersproject/providers'
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
-const infuraPk = "620c738fbe1843a18f47ada0e60e738a"
+const { REACT_APP_IPFS_URL } = process.env
+
 const supportedNetworkURLs = {
-  1: `https://mainnet.infura.io/v3/${infuraPk}`,
-  4: `https://rinkeby.infura.io/v3/${infuraPk}`,
-  3: `https://ropsten.infura.io/v3/${infuraPk}`,
-  5: `https://goerli.infura.io/v3/${infuraPk}`,
-  42: `https://kovan.infura.io/v3/${infuraPk}`,
+  1: `https://mainnet.infura.io/v3/${REACT_APP_IPFS_URL}`,
+  4: `https://rinkeby.infura.io/v3/${REACT_APP_IPFS_URL}`,
+  3: `https://ropsten.infura.io/v3/${REACT_APP_IPFS_URL}`,
+  5: `https://goerli.infura.io/v3/${REACT_APP_IPFS_URL}`,
+  42: `https://kovan.infura.io/v3/${REACT_APP_IPFS_URL}`,
   137: 'https://rpc-mainnet.maticvigil.com/',
   80001: 'https://rpc-mumbai.maticvigil.com/v1/f592ae2e5afb3bebe39314e9bd0949de5b74cd2f'
   // 97: 'https://data-seed-prebsc-1-s1.binance.org:8545/'
