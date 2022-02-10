@@ -17,6 +17,7 @@ import Campaign from './campaign'
 import Breadcrumbs from './breadcrumbs'
 import InfoBlock from './info-block'
 import PreviewWidget from './preview-widget'
+import TextLink from './text-link'
 
 export {
   Header,
@@ -37,5 +38,6 @@ export {
   Campaign,
   Breadcrumbs,
   InfoBlock,
-  PreviewWidget
+  PreviewWidget,
+  TextLink
 }

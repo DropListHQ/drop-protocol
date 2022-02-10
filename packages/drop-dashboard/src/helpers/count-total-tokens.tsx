@@ -10,7 +10,7 @@ const countTotalTokens: TCountTotalTokens = (recipientsData, type, decimals) => 
   if (type === 'erc20') {
     return Object.values(recipientsData).reduce((sum, item) => {
       if (!decimals) {
-        return sum + item.amount
+        return sum + Number(item.amount)
       } else {
         return sum + Number(utils.formatUnits(item.amount, decimals))
       }

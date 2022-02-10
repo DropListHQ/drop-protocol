@@ -1,13 +1,12 @@
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 import {
   Widget,
   WidgetImage,
   WidgetTitle,
   WidgetText,
-  WidgetButton,
   WidgetIcon,
   WidgetIconBlank,
-  buttonClass
+  WidgetButton
 } from './styled-components'
 
 
@@ -38,7 +37,12 @@ const CommunityWidget: FC<TCommunityWidget> = ({ title, description, disabled, a
     {defineIcon(icon, image, title)}
     <WidgetTitle>{title}</WidgetTitle>
     <WidgetText>{description}</WidgetText>
-    <WidgetButton disabled={disabled} className={buttonClass} onClick={action}>{buttonTitle}</WidgetButton>
+    <WidgetButton
+      disabled={disabled}
+      onClick={action}
+      appearance={inverted ? 'default-inverted' : 'default'}
+      title={buttonTitle}
+    />
   </Widget>
 }
 

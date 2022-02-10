@@ -21,7 +21,7 @@ export const WidgetControls = styled.div`
   display: flex;
   width: 100%;
   gap: 18px;
-  margin-top: 50px;
+  margin-top: 30px;
 `
 
 export const WidgetButton = styled(Button)`
@@ -73,7 +73,7 @@ export const TableItem = styled.div`
   
 
   &:nth-child(2n + 2) {
-    background: ${props => props.theme.buttonDefaultColor};
+    background: ${props => props.theme.buttonActionBackgroundColor};
     color: ${props => props.theme.secondaryTextColor};
     font-size: 12px;
     justify-content: space-between;

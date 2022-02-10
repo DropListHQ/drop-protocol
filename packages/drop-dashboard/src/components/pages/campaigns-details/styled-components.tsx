@@ -48,7 +48,7 @@ export const Link = styled.div`
   border: 1px solid ${props => props.theme.primaryBorderColor};
   font-size: 16px;
   color: ${props => props.theme.primaryTextColor};
-  padding: 14px 16px 10px;
+  padding: 0px 16px;
   justify-content: space-between;
   display: flex;
   align-items: center;

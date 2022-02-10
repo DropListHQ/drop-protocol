@@ -4,7 +4,7 @@ import {
   WidgetControls,
   WidgetButton,
   DoubleWidget,
-} from '../styled-compoents'
+} from '../styled-components'
 import { RootState } from 'data/store';
 import {
   Widget,
@@ -104,13 +104,13 @@ const CampaignInfo: FC<ReduxType> = ({
       <WidgetControls>
         <WidgetButton
           title='Start over'
-          appearance='inverted'
+          appearance='default'
           onClick={cancel}
         />
         <WidgetButton
           title='Publish'
           loading={loading}
-          appearance={loading ? 'gradient' : undefined}
+          appearance='default'
           disabled={!dropTitle || !tokenAddress}
           onClick={() => {
             if (!tokenAddress || !chainId || !type) { return }

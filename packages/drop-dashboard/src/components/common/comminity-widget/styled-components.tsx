@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components'
+import { Button } from 'components/common'
 
-export const buttonClass = 'WidgetButton'
 type TWidget = {
   inverted?: boolean
 }
@@ -16,15 +16,10 @@ export const Widget = styled.div<TWidget>`
   border: 1px solid ${props => props.theme.primaryBorderColor};
   background: ${props => props.theme.blankColor};
   color: ${props => props.theme.primaryTextColor};
-  .${buttonClass} {
-    color: ${props => props.theme.primaryTextColor};
-  }
+
   ${props => props.inverted && css`
     color: ${props.theme.secondaryTextColor};
     background-color: ${props.theme.invertedCommunityColor};
-    .${buttonClass} {
-      color: ${props.theme.secondaryTextColor};
-    }
   `}
 `
 export const WidgetImage = styled.img`
@@ -60,29 +55,13 @@ export const WidgetText = styled.p`
   min-height: 42px;
   margin: 0 0 16px;
 `
-export const WidgetButton = styled.button`
-  min-width: 152px;
-  min-height: 36px;
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  color: ${props => props.theme.primaryTextColor};
-  border: 1px solid ${props => props.theme.primaryBorderColor};
-  font-size: 12px;
-  font-weight: 700;
-  padding: 0 10px;
-  border-radius: 20px;
-  background-color: transparent;
-
-  ${props => props.disabled && css`
-    cursor: not-allowed;
-    opacity: .3;
-  `}
-`
 
 export const WidgetIconBlank = styled.div`
   width: 100%;
   height: 100%;
   background: pink;
+`
+
+export const WidgetButton = styled(Button)`
+  min-width: 152px;
 `

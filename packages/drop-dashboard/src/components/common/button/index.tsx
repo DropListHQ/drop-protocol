@@ -8,32 +8,32 @@ import { ThemeProvider } from 'styled-components'
 import themes from 'themes'
 
 interface Props {
-    title: string,
-    disabled?: boolean,
-    loading?: boolean,
-    size?: 'small' | 'default',
-    onClick: () => void,
-    appearance?: 'inverted' | 'gradient' | 'default',
-    className?: string
+  title: string,
+  disabled?: boolean,
+  loading?: boolean,
+  onClick: () => void,
+  appearance?: 'action' | 'action-inverted' | 'default' | 'default-inverted',
+  className?: string,
+  size?: 'default' | 'small'
 }
 
 const ButtonComponent: FC<Props> = ({
-  size = 'default',
   title,
   disabled = false,
   loading = false,
   onClick,
   appearance = 'default',
-  className
+  className,
+  size
 }) => {
     return <ThemeProvider theme={themes.light}>
       <Button
-        size={size}
         disabled={disabled}
         loading={loading}
         onClick={onClick}
         appearance={appearance}
         className={className}
+        size={size}
       >
         {loading && <ButtonLoader size='small' />}{title}
       </Button>

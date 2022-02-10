@@ -4,7 +4,7 @@ import {
   WidgetButton,
   WidgetDataSplit,
   WidgetDataBlock
-} from '../styled-compoents'
+} from '../styled-components'
 import { RootState } from 'data/store';
 import {
   Widget,
@@ -174,7 +174,7 @@ const CampaignApproval: FC<ReduxType> = ({
   const history = useHistory()
   return <Widget>
     <DataBlock
-      title='RetroDrop’s title'
+      title='Drop’s title'
       text={dropTitle}
     />
     <WidgetDataSplit>
@@ -208,14 +208,14 @@ const CampaignApproval: FC<ReduxType> = ({
     <WidgetControls>
       <WidgetButton
         title='Start over'
-        appearance='inverted'
+        appearance='default'
         onClick={cancel}
       />
       <WidgetButton
         title='Give approval'
         disabled={!tokenAddress || !dropAddress}
         loading={contractLoading}
-        appearance={contractLoading ? 'gradient' : undefined}
+        appearance='default'
         onClick={() => {
           if (!tokenAddress || !dropAddress || !ipfs || !chainId || !type) { return }
           let method
