@@ -29,9 +29,7 @@ export async function setTokenContractData(dispatch: Dispatch<NewRetroDropAction
       dispatch(actionsNewRetroDrop.setDecimals(decimals))
     }
     if (type === 'erc721') {
-      const contractInstance = await new ethers.Contract(tokenAddress, ERC721Contract, signer)
-      const supply = await contractInstance.totalSupply()
-      console.log({ supply })
+
     }
 
     if (type === 'erc1155') {
