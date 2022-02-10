@@ -6,7 +6,7 @@ import {
   WidgetInput,
   WidgetControls,
   WidgetButton
-} from '../styled-compoents'
+} from '../styled-components'
 import { TRetroDropStep, TRetroDropType } from 'types'
 import { NewRetroDropActions } from 'data/store/reducers/new-retro-drop/types'
 import * as newRetroDropActions from 'data/store/reducers/new-retro-drop/actions'
@@ -70,13 +70,15 @@ const CampaignInfo: FC<ReduxType> = ({
     <WidgetControls>
       <WidgetButton
         title='Cancel'
-        appearance='inverted'
+        appearance='default'
         onClick={cancel}
       />
       <WidgetButton
         title='Continue'
+        appearance='default'
         disabled={currentTokenAddress.length !== 42}
         onClick={() => {
+          console.log({ type })
           if (!type) { return }
           setTokenContractData(currentTokenAddress, provider, type)
         }}

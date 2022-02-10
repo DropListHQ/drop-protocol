@@ -42,12 +42,12 @@ const CampaignComponent: FC<TProps> = ({
         // window.open(`${REACT_APP_CLAIM_URL}/${id}`, '_blank')
       }}
       title="Campaign’s Details"
-      appearance='inverted'
+      appearance='default'
     />
     <CampaignButton
       title='Share Link'
       onClick={() => copyToClipboard({ value: `${REACT_APP_CLAIM_URL}/${id}` })}
-      appearance='inverted'
+      appearance='default'
     />
       
   </Campaign>

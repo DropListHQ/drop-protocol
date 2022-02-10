@@ -29,13 +29,14 @@ const defineTitle: TDefineTitle = (path) => {
   </TitleContainer>
 }
 
-const Breadcrumbs: FC<TProps> = ({ returnAction, path, description }) => {
+const Breadcrumbs: FC<TProps> = ({ returnAction, path, description, children }) => {
   return <BreadcrumbsComponent>
     {returnAction && <ReturnButton onClick={returnAction}>
       <Icons.GoBackIcon />Back
     </ReturnButton>}
     {defineTitle(path)}
     {description && <Description>{description}</Description>}
+    {children}
   </BreadcrumbsComponent>
 }
 

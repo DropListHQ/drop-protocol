@@ -29,7 +29,7 @@ const MiniWidgetComponent: FC<Props> = ({
     const button = <ButtonComponent
       title={buttonTitle}
       onClick={action}
-      appearance='inverted'
+      appearance='default'
     />
   
     return <ThemeProvider theme={themes.light}>

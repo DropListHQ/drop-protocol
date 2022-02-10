@@ -74,14 +74,14 @@ const defineTokenTexts = (recipients: TRecipientsData, type: TRetroDropType, dec
 }
 
 const CampaignDetails: FC<ReduxType & IProps & RouteComponentProps> = (props) => {
-  const { retroDrops, match: { params }, decimals } = props
+  const { retroDrops, match: { params } } = props
   const history = useHistory()
 
   const currentCampaign = retroDrops.find(item => item.ipfsHash === params.id)
   if (!currentCampaign) {
     return null
   }
-  const { ipfsHash, recipients, title, chainId, tokenAddress, type } = currentCampaign
+  const { ipfsHash, recipients, title, chainId, tokenAddress, type, decimals } = currentCampaign
   const link = `${REACT_APP_CLAIM_URL}/${ipfsHash}`
   
   
@@ -117,6 +117,7 @@ const CampaignDetails: FC<ReduxType & IProps & RouteComponentProps> = (props) =>
           <Button
             title='Copy Link'
             size='small'
+            appearance='action'
             onClick={() => copyToClipboard({ value: link })}
           />
         </Link>

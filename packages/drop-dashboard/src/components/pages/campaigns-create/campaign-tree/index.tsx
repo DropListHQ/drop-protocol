@@ -10,7 +10,7 @@ import {
   TableWidget,
   TableItemImage,
   LinkAnchor
-} from '../styled-compoents'
+} from '../styled-components'
 import { RootState } from 'data/store';
 import communities from 'configs/communities'
 import Icons from 'icons'
@@ -190,11 +190,12 @@ const CampaignTree: FC<ReduxType> = ({
       <WidgetControls>
         <WidgetButton
           title='Start over'
-          appearance='inverted'
+          appearance='default'
           onClick={cancel}
         />
         <WidgetButton
           title='Parse data'
+          appearance='default'
           disabled={!recipientsValue}
           onClick={async () => {
             if (!type || !tokenAddress) return

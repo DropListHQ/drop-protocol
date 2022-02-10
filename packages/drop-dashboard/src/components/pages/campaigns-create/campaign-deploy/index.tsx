@@ -4,7 +4,7 @@ import {
   WidgetButton,
   WidgetDataSplit,
   WidgetDataBlock
-} from '../styled-compoents'
+} from '../styled-components'
 import { RootState } from 'data/store';
 import {
   Widget,
@@ -74,7 +74,7 @@ const CampaignDeploy: FC<ReduxType> = ({
 }) => {
   return <Widget>
     <DataBlock
-      title='RetroDrop’s title'
+      title='Drop’s title'
       text={dropTitle}
     />
     <WidgetDataSplit>
@@ -104,12 +104,12 @@ const CampaignDeploy: FC<ReduxType> = ({
     <WidgetControls>
       <WidgetButton
         title='Start over'
-        appearance='inverted'
+        appearance='default'
         onClick={cancel}
       />
       <WidgetButton
         title='Deploy'
-        appearance={contractLoading ? 'gradient' : undefined}
+        appearance='default'
         disabled={Boolean(!tokenAddress || !ipfs)}
         loading={contractLoading}
         onClick={() => {

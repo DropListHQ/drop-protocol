@@ -1,6 +1,7 @@
 import { useState, FC, useEffect } from 'react'
 import {
-  Breadcrumbs
+  Breadcrumbs,
+  TextLink
 } from 'components/common'
 
 import { TRetroDropStep, TRetroDropType, TRecipientsData } from 'types'
@@ -40,7 +41,7 @@ const defineTitie = (step: TRetroDropStep): string => {
     case 'choose_type':
       return 'Specify type of token to be airdropped:'
     case 'initialize':
-      return 'Enter your contract address:'
+      return 'Enter your contract address below.'
     case 'create_tree':
       return 'Enter recipient addresses and airdrop token IDs'
     case 'publish_ipfs':
@@ -103,7 +104,11 @@ const CampaignsCreate: FC<ReduxType> = ({
     path={['My campaigns', 'New campaign']}
     description={defineTitie(step)}
     returnAction={() => back()}
-  />
+  >
+    {step === 'initialize' && <div>
+      Get Rinkeby test NFTs from <TextLink target='_blank' href='https://faucet.paradigm.xyz/'>this faucet</TextLink>.<br/>Read the <TextLink target='_blank' href='https://www.notion.so/DropList-Alpha-Instruction-3d897edbf6464bf196406958d8024eda'>full instruction</TextLink> how to launch campaign.
+    </div>}
+  </Breadcrumbs>
 
 
   const renderWidget = (step: TRetroDropStep) => {
