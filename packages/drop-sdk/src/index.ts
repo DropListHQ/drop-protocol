@@ -26,4 +26,5 @@ export { MerkleDistributorInfoERC721, RecipientsDictFormatERC721, RecipientsArra
 export { DropFactoryInterface, DropInterfaceERC20, DropInterfaceERC721, DropInterfaceERC1155 } from "./contracts/interfaces"
 
 // SDK
-export { getDrop } from "./drop-sdk";
+import DropSDK from "./drop-sdk";
+export default DropSDK

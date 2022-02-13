@@ -1,5 +1,12 @@
 import Drop from './Drop';
 
-export const getDrop = (ipfshash: string): Drop => {
-    return new Drop(ipfshash);
+export default class DropSDK {
+    public readonly ipfsbase: string;
+    constructor(ipfsbase: string) {
+        this.ipfsbase = ipfsbase;
+    }
+
+    getDrop(ipfshash: string) {
+        return new Drop(ipfshash);
+    }
 }
