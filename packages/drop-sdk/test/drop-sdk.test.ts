@@ -7,7 +7,7 @@ describe('#getDrop', () => {
 
         const dropSDK = new DropSDK(baseUrl)
 
-        const drop = dropSDK.getDrop(ipfshash);
+        const drop = await dropSDK.getDrop(ipfshash);
         expect(drop.ipfshash).toEqual(ipfshash);
     })
 })
