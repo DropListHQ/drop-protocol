@@ -1,16 +1,7 @@
 import Drop from './Drop';
 import IPFSProvider from './ipfs/provider';
-import { TDropType, TRecipientsData } from './types';
+import { TDropMetadata } from './types';
 
-type TResponse = {
-    chainId: number;
-    tokenAddress: string;
-    claims: TRecipientsData,
-    title: string,
-    logoURL: string,
-    description: string,
-    type: TDropType
-}
 
 export default class DropSDK {
     public readonly ipfsbase: string;
@@ -22,11 +13,8 @@ export default class DropSDK {
     }
 
     async getDrop(ipfshash: string) {
-        const drop = new Drop(ipfshash);
-
-        const data: TResponse = await this.ipfsprovider.get(ipfshash)
-        console.log({ data })
-
+        const metadata: TDropMetadata = await this.ipfsprovider.get(ipfshash)
+        const drop = new Drop(ipfshash, metadata);
         return drop
     }
 }
