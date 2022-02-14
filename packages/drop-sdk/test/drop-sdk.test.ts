@@ -18,5 +18,10 @@ describe('#getDrop', () => {
         // metadata
         expect(drop.metadata.description).toEqual("Test ERC20 (#1)");
         expect(drop.metadata.title).toEqual("Test ERC20 (#1)");
+
+
+        const recipients = drop.getRecipients();
+        expect(recipients.length).toEqual(2);
+        console.log(recipients);
     })
 })

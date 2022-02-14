@@ -16,4 +16,8 @@ export default class Drop {
         this.type = metadata.type;
         this.claims = metadata.claims;
     }
+
+    getRecipients() {
+        return Object.keys(this.claims)
+    }
 }
