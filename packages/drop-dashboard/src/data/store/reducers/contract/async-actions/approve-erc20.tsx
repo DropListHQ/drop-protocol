@@ -70,7 +70,8 @@ export default async function approveERC20(
 				tokenAddress,
 				recipients,
 				type,
-				decimals
+				decimals,
+				dropAddress
 			}))
 			dispatch(newRetroDropDrops.clearNewRetroDrop())
 			if (callback) { callback() }

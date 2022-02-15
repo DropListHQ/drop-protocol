@@ -47,6 +47,7 @@ export const Button = styled.button.attrs(props => ({
   ${props => props.size === 'small' && css`
     padding: 4px 8px;
     height: 24px;
+    min-width: 74px;
   `}
 
   ${props => props.disabled && css`

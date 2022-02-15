@@ -22,20 +22,17 @@ type ReduxType = ReturnType<typeof mapStateToProps>
 const RetroactiveDrops: FC<ReduxType & TProps> = ({ onTypeChoose }) => {
   return <div>
     <Container>
-      <Title>New Campaigns</Title>
       <TypeWidgets>
         <MiniWidget
-          title='ERC1155'
-          subtitle='ethereum'
-          description='Semi-fungible tokens'
+          title='ERC20'
+          description='Fungible tokens'
           buttonTitle='Select Type'
           action={() => {
-            onTypeChoose('erc1155')
+            onTypeChoose('erc20')
           }}
         />
         <MiniWidget
           title='ERC721'
-          subtitle='ethereum'
           description='Non fungible tokens (NFT)'
           buttonTitle='Select Type'
           action={() => {
@@ -43,14 +40,15 @@ const RetroactiveDrops: FC<ReduxType & TProps> = ({ onTypeChoose }) => {
           }}
         />
         <MiniWidget
-          title='ERC20'
-          subtitle='ethereum'
-          description='Fungible tokens'
+          title='ERC1155'
+          description='Semi-fungible tokens'
           buttonTitle='Select Type'
           action={() => {
-            onTypeChoose('erc20')
+            onTypeChoose('erc1155')
           }}
         />
+        
+        
       </TypeWidgets>
       
       

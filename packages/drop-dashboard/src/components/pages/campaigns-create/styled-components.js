@@ -6,7 +6,6 @@ import {
   DataBlock
 } from 'components/common'
 
-import { Link } from 'react-router-dom'
 
 export const WidgetInput = styled(Input)`
 `;
@@ -95,17 +94,4 @@ export const TableItemImage = styled.img`
   height: 16px;
   border-radius: 16px;
   margin-right: 6px;
-`
-
-export const LinkAnchor = styled(Link)`
-  font-size: 12px;
-  font-weight: 700;
-  color: ${props => props.theme.primaryHighlightColor};
-  text-decoration: none;
-  text-align: right;
-
-  svg {
-    transform: scale(-1, -1);
-    margin-left: 4px;
-  }
 `

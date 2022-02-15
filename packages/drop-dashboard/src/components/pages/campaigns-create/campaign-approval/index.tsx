@@ -10,7 +10,7 @@ import {
   Widget,
   DataBlock
 } from 'components/common'
-import { countTotalTokens } from 'helpers'
+import { defineNetworkName, countTotalTokens, capitalize } from 'helpers'
 import { useHistory } from 'react-router-dom'
 import { TRetroDropType, TRecipientsData } from 'types'
 
@@ -180,11 +180,11 @@ const CampaignApproval: FC<ReduxType> = ({
     <WidgetDataSplit>
       <WidgetDataBlock
         title='Network'
-        text='Ethereum Mainnet'
+        text={capitalize(defineNetworkName(chainId))}
       />
       <WidgetDataBlock
         title='Type of token'
-        text={type || ''}
+        text={(type || '').toUpperCase()}
       />
     </WidgetDataSplit>
     <DataBlock
@@ -192,7 +192,7 @@ const CampaignApproval: FC<ReduxType> = ({
       text={tokenAddress || ''}
     />
     <DataBlock
-      title='Your retrodrop contract'
+      title='Drop contract'
       text={dropAddress || ''}
     />
     <WidgetDataSplit>
@@ -212,8 +212,8 @@ const CampaignApproval: FC<ReduxType> = ({
         onClick={cancel}
       />
       <WidgetButton
-        title='Give approval'
-        disabled={!tokenAddress || !dropAddress}
+        title={contractLoading ? 'Approving' : 'Give approval'}
+        disabled={!tokenAddress || !dropAddress || contractLoading}
         loading={contractLoading}
         appearance='default'
         onClick={() => {

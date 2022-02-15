@@ -27,10 +27,10 @@ const PreviewWidgetComponent: FC<TProps> = ({
 
   useEffect(() => {
     const checkImage = async () => {
-      console.log({ image })
       if (!image) { return }
-      const actualImage = await getValidImage(image)
-      setActualImage(actualImage)
+      const newImage = await getValidImage(image, true)
+      if (actualImage === newImage) { return }
+      setActualImage(newImage)
     }
     checkImage()
   }, [image])
@@ -43,7 +43,7 @@ const PreviewWidgetComponent: FC<TProps> = ({
     /> : <PreviewWidgetBlank />}
     <PreviewWidgetTitle>{title}</PreviewWidgetTitle>
     <PreviewWidgetDescription>{description}</PreviewWidgetDescription>
-    <PreviewWidgetButton title='Claim now' onClick={() => {}} />
+    <PreviewWidgetButton disabled title='Claim now' onClick={() => {}} />
   </PreviewWidget>
 }
 

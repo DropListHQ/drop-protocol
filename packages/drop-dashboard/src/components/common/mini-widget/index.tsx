@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-
+import Icons from 'icons'
 import {
   MiniWidget,
   MiniWidgetTitle,
@@ -14,9 +14,9 @@ import themes from 'themes'
 
 interface Props {
   title: string,
-  subtitle?: string,
   buttonTitle: string,
   description?: string,
+  logo?: React.ReactNode,
   action: () => void
 }
 
@@ -24,6 +24,7 @@ const MiniWidgetComponent: FC<Props> = ({
   title,
   buttonTitle = 'Create',
   action = () => console.log('hello world!'),
+  logo,
   description,
 }) => {
     const button = <ButtonComponent
@@ -34,7 +35,7 @@ const MiniWidgetComponent: FC<Props> = ({
   
     return <ThemeProvider theme={themes.light}>
       <MiniWidget>
-        <MiniWidgetTitle>{title}</MiniWidgetTitle>
+        <MiniWidgetTitle>{title}<Icons.EthereumLogo /></MiniWidgetTitle>
         <MiniWidgetDescription>{description}</MiniWidgetDescription>
         <Buttons>{button}</Buttons>
       </MiniWidget>

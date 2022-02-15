@@ -4,7 +4,7 @@ import Button from '../button'
 const MiniWidget = styled.div`
   max-width: 300px;
   width: 100%;
-  padding: 24px 16px 18px;
+  padding: 20px 14px 14px 20px;
   background-color: ${props => props.theme.blankColor};
   border-radius: 8px;
   margin-bottom: 20px;
@@ -17,13 +17,21 @@ const MiniWidgetTitle = styled.h2`
   font-weight: 700;
   margin-bottom: 4px;
   margin-top: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+
+  svg {
+    margin-right: 10px;
+  }
 `
 
 const MiniWidgetDescription = styled.p`
   margin-top: 0;
   font-size: 12px;
   min-height: 50px;
-  color: ${props => props.theme.noteTextColor}
+  color: ${props => props.theme.noteTextColor};
 `
 
 const Buttons = styled.div`
@@ -34,8 +42,8 @@ const Buttons = styled.div`
 `
 
 const ButtonComponent = styled(Button)`
-  margin-right: 10px;
-` 
+  margin-right: 0px;
+`
 
 export {
   MiniWidget, MiniWidgetTitle, MiniWidgetDescription, Buttons, ButtonComponent

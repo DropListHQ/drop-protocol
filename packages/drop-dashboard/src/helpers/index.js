@@ -13,6 +13,7 @@ import checkRecipientsDataFormat from './check-recipients-data-format'
 import hexlifyIpfsHash from './hexlify-ipfs-hash'
 import getValidImage from './get-valid-image'
 import countTotalTokens from './count-total-tokens'
+import defineEtherscanUrl from './define-etherscan-url'
 
 export {
   shortenString,
@@ -27,5 +28,6 @@ export {
   checkRecipientsDataFormat,
   hexlifyIpfsHash,
   getValidImage,
-  countTotalTokens
+  countTotalTokens,
+  defineEtherscanUrl
 }

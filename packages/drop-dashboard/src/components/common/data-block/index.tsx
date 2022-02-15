@@ -2,23 +2,29 @@ import React, { FC } from 'react'
 import {
   DataBlockTitle,
   DataBlockText,
-  DataBlock
+  DataBlock,
+  DataBlockLink
 } from './styled-components'
+import Icons from 'icons';
 
 interface Props {
   title: string | number,
-  text: string | number,
+  text: string | number | React.ReactNode,
+  link?: string,
   className?: string
 }
 
 const DataBlockComponent: FC<Props> = ({
   title,
   text,
-  className
+  className,
+  link
 }) => {
   return <DataBlock className={className}>
     <DataBlockTitle>{title}</DataBlockTitle>
-    <DataBlockText>{text}</DataBlockText>
+    <DataBlockText>
+      {link ? <DataBlockLink target='_blank' rel='noreferrer' href={link}>{text}<Icons.ExternalLinkIcon /></DataBlockLink>: text}
+    </DataBlockText>
   </DataBlock>
 }
 

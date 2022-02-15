@@ -18,6 +18,7 @@ import Breadcrumbs from './breadcrumbs'
 import InfoBlock from './info-block'
 import PreviewWidget from './preview-widget'
 import TextLink from './text-link'
+import AnchorLink from './anchor-link'
 
 export {
   Header,
@@ -39,5 +40,6 @@ export {
   Breadcrumbs,
   InfoBlock,
   PreviewWidget,
-  TextLink
+  TextLink,
+  AnchorLink
 }

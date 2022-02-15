@@ -27,7 +27,6 @@ const CampaignComponent: FC<TProps> = ({
     const defineImage = async () => {
       const image = await getValidImage(imageURL)
       if (image === imageURL) { return }
-      console.log({ image })
       setImageURL(image)
     }
     defineImage()

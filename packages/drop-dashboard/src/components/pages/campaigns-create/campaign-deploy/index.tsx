@@ -3,14 +3,16 @@ import {
   WidgetControls,
   WidgetButton,
   WidgetDataSplit,
-  WidgetDataBlock
+  WidgetDataBlock,
+  DoubleWidget
 } from '../styled-components'
 import { RootState } from 'data/store';
 import {
   Widget,
-  DataBlock
+  DataBlock,
+  PreviewWidget
 } from 'components/common'
-import { defineNetworkName, countTotalTokens, capitalize } from 'helpers'
+import { defineNetworkName, countTotalTokens, capitalize, defineEtherscanUrl } from 'helpers'
 import { TMerkleTree, TRecipientsData, TRetroDropType } from 'types'
 import { Dispatch } from 'redux';
 import { NewRetroDropActions } from 'data/store/reducers/new-retro-drop/types'
@@ -23,6 +25,8 @@ import {
 type TProps = {
   dropTitle: string,
   recipients: TRecipientsData,
+  dropDescription: string,
+  dropLogoURL: string
   cancel: () => void
 }
 
@@ -60,6 +64,8 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 
 const CampaignDeploy: FC<ReduxType> = ({
   dropTitle,
+  dropDescription,
+  dropLogoURL,
   cancel,
   chainId,
   recipients,
@@ -72,54 +78,62 @@ const CampaignDeploy: FC<ReduxType> = ({
   type,
   decimals
 }) => {
-  return <Widget>
-    <DataBlock
-      title='Drop’s title'
-      text={dropTitle}
-    />
-    <WidgetDataSplit>
-      <WidgetDataBlock
-        title='Network'
-        text={capitalize(defineNetworkName(chainId))}
+  return <DoubleWidget>
+    <Widget>
+      <DataBlock
+        title='Drop’s title'
+        text={dropTitle}
       />
-      {type && <WidgetDataBlock
-        title='Type of token'
-        text={type}
+      <WidgetDataSplit>
+        <WidgetDataBlock
+          title='Network'
+          text={capitalize(defineNetworkName(chainId))}
+        />
+        {type && <WidgetDataBlock
+          title='Type of token'
+          text={type.toUpperCase()}
+        />}
+      </WidgetDataSplit>
+      {tokenAddress && <DataBlock
+        title='Token Address'
+        link={defineEtherscanUrl(chainId, tokenAddress)}
+        text={tokenAddress}
       />}
-    </WidgetDataSplit>
-    <DataBlock
-      title='Token Address'
-      text={tokenAddress || ''}
+      <WidgetDataSplit>
+        <WidgetDataBlock
+          title='Tokens to drop'
+          text={recipients ? countTotalTokens(recipients, type, decimals) : 0}
+        />
+        <WidgetDataBlock
+          title='Recipients'
+          text={recipients ? Object.keys(recipients).length : 0}
+        />
+      </WidgetDataSplit>
+      <WidgetControls>
+        <WidgetButton
+          title='Start over'
+          appearance='default'
+          onClick={cancel}
+        />
+        <WidgetButton
+          title={contractLoading ? 'Deploying' : 'Deploy'}
+          appearance='default'
+          disabled={Boolean(!tokenAddress || !ipfs || contractLoading)}
+          loading={contractLoading}
+          onClick={() => {
+            if (tokenAddress && ipfs && chainId && type) {
+              createDrop(provider, merkleTree, tokenAddress, ipfs, chainId, type)
+            }
+          }}
+        />
+      </WidgetControls>
+    </Widget>
+    <PreviewWidget
+      title={dropTitle}
+      description={dropDescription}
+      image={dropLogoURL}
     />
-    <WidgetDataSplit>
-      <WidgetDataBlock
-        title='Total tokens dropped'
-        text={recipients ? countTotalTokens(recipients, type, decimals) : 0}
-      />
-      <WidgetDataBlock
-        title='Recipients'
-        text={recipients ? Object.keys(recipients).length : 0}
-      />
-    </WidgetDataSplit>
-    <WidgetControls>
-      <WidgetButton
-        title='Start over'
-        appearance='default'
-        onClick={cancel}
-      />
-      <WidgetButton
-        title='Deploy'
-        appearance='default'
-        disabled={Boolean(!tokenAddress || !ipfs)}
-        loading={contractLoading}
-        onClick={() => {
-          if (tokenAddress && ipfs && chainId && type) {
-            createDrop(provider, merkleTree, tokenAddress, ipfs, chainId, type)
-          }
-        }}
-      />
-    </WidgetControls>
-  </Widget>
+  </DoubleWidget>
 }
 
 export default connect(mapStateToProps, mapDispatcherToProps)(CampaignDeploy)

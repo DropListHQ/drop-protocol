@@ -63,9 +63,10 @@ const CampaignInfo: FC<ReduxType> = ({
   const [ currentTokenAddress, setCurrentTokenAddress ] = useState(createDefaultTokenAddress(type))
   return <Widget>
     <WidgetInput
-      title='Token’s address'
+      title='Contract address'
       onChange={value => { setCurrentTokenAddress(value); return value}}
       value={currentTokenAddress}
+      placeholder='Enter contract address'
     />
     <WidgetControls>
       <WidgetButton
@@ -78,7 +79,6 @@ const CampaignInfo: FC<ReduxType> = ({
         appearance='default'
         disabled={currentTokenAddress.length !== 42}
         onClick={() => {
-          console.log({ type })
           if (!type) { return }
           setTokenContractData(currentTokenAddress, provider, type)
         }}

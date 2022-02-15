@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Campaign, Title, CommunityWidget } from 'components/common'
+import { Campaign, Title, CommunityWidget, AnchorLink } from 'components/common'
 // import { connect, ConnectedProps } from 'react-redux'
 import { Campaigns } from './styled-components'
 import { RootState } from 'data/store';
@@ -71,8 +71,7 @@ const CampaignsPage: FC<ReduxType & TProps> = ({ retroDrops, address, connectWal
           }}
           icon={<Icons.LinkdropWhiteLogo />}
         />
-
-        {loadedCommunities.map((item: INameToValueMap) => {
+        {loadedCommunities.slice(0, 3).map((item: INameToValueMap) => {
           const image = communities[item.id]
           return <CommunityWidget
             title={item.name || 'Untitled'}
@@ -87,6 +86,7 @@ const CampaignsPage: FC<ReduxType & TProps> = ({ retroDrops, address, connectWal
           />
         })}
       </Campaigns>
+      {loadedCommunities.length > 0 && <AnchorLink href='/communities'>View all communities <Icons.GoBackIcon /></AnchorLink>}
     </Container>
   </div>
 }

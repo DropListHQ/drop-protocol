@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { InfoBlock, Widget } from 'components/common'
+import { InfoBlock, Widget, DataBlock } from 'components/common'
 
 
 export const LinkContainer = styled.div`
@@ -18,6 +18,10 @@ export const InfoBlockStyled = styled(InfoBlock)`
   &:last-child {
     margin-right: 0px;
   }
+`
+
+export const WidgetDataBlock = styled(DataBlock)`
+  flex: 1;
 `
 
 export const Description = styled.div`
