@@ -9,6 +9,7 @@ import { ReactComponent as DocsMenuIcon } from './docs-menu-icon.svg';
 import { ReactComponent as StarMenuIcon } from './star-menu-icon.svg';
 import { ReactComponent as GoBackIcon } from './go-back-icon.svg';
 import { ReactComponent as DownloadIcon } from './download-icon.svg'
+import { ReactComponent as ExternalLinkIcon } from './external-link-icon.svg'
 
 const Icons = {
   EthereumLogo,
@@ -21,7 +22,8 @@ const Icons = {
   StarMenuIcon,
   LinkdropWhiteLogo,
   GoBackIcon,
-  DownloadIcon
+  DownloadIcon,
+  ExternalLinkIcon
 }
 
 export default Icons

@@ -9,13 +9,13 @@ import {
   TableItem,
   TableWidget,
   TableItemImage,
-  LinkAnchor
 } from '../styled-components'
 import { RootState } from 'data/store';
 import communities from 'configs/communities'
 import Icons from 'icons'
 import {
-  Widget
+  Widget,
+  AnchorLink
 } from 'components/common'
 import { buildMerkleTreeERC1155, buildMerkleTreeERC20, buildMerkleTreeERC721 } from '@drop-protocol/drop-sdk'
 
@@ -209,7 +209,7 @@ const CampaignTree: FC<ReduxType> = ({
       </WidgetControls>
     </Widget>
     <TableWidget>
-      <Title>Selected Communities</Title>
+      <Title>Popular communities</Title>
       <Table>
         {loadedCommunities.map((item: INameToValueMap) => {
           const image = communities[item.id]
@@ -226,7 +226,7 @@ const CampaignTree: FC<ReduxType> = ({
           </>
         })}
       </Table>
-      <LinkAnchor to='/communities'>See the full list of communities <Icons.GoBackIcon /></LinkAnchor>
+      <AnchorLink href='/communities'>See the full list of communities <Icons.GoBackIcon /></AnchorLink>
     </TableWidget>
   </DoubleWidget>
 }

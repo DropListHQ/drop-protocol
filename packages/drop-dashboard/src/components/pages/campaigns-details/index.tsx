@@ -1,15 +1,16 @@
-import { FC } from 'react'
-import { Breadcrumbs, Button, DataBlock } from 'components/common'
+import { FC, useState } from 'react'
+import { Breadcrumbs, Button } from 'components/common'
 // import { connect, ConnectedProps } from 'react-redux'
 import { RootState } from 'data/store';
 import { connect } from 'react-redux';
 import { RouteComponentProps, withRouter } from 'react-router-dom'
-import { Link, LinkContainer, LinkValue, LinkTitle, InfoBlockStyled, WidgetDataSplit, InfoBlockContainer, Description, WidgetContainer } from './styled-components'
-import { copyToClipboard } from 'helpers'
+import { Link, LinkContainer, LinkValue, LinkTitle, WidgetDataBlock, InfoBlockStyled, WidgetDataSplit, InfoBlockContainer, Description, WidgetContainer } from './styled-components'
+import { copyToClipboard, shortenString } from 'helpers'
 import { useHistory } from 'react-router-dom'
-import { defineNetworkName, capitalize } from 'helpers'
+import { defineNetworkName, capitalize, defineEtherscanUrl } from 'helpers'
 import { TRecipientsData, TRetroDropType } from 'types'
 import { countTotalTokens } from 'helpers'
+const ipfsGatewayUrl = 'https://gateway.pinata.cloud/ipfs/'
 
 const { REACT_APP_CLAIM_URL } = process.env
 
@@ -18,8 +19,6 @@ type TReduceTokens = {
 }
 
 type TMapTokensIds = string[]
-
-type TMapTokensAmount = number
 
 interface MatchParams {
   id: string;
@@ -46,27 +45,30 @@ type ReduxType = ReturnType<typeof mapStateToProps>
 const defineTokenTexts = (recipients: TRecipientsData, type: TRetroDropType, decimals: number | null) => {
   if (type === 'erc1155') {
     const tokens = recipients && Object.values(recipients).reduce<TReduceTokens>((sum, item) => {
-      sum[item.tokenId] = (sum[item.tokenId] || 0) + Number(item.amount)
+      const tokenId = item.tokenId.length > 10 ? shortenString(item.tokenId) : item.tokenId
+      sum[tokenId] = (sum[tokenId] || 0) + Number(item.amount)
       return sum
     }, {})
 
     return <WidgetDataSplit>
-      <DataBlock title='Token ID' text={Object.keys(tokens).join(', ')} />
-      <DataBlock title='Total amount' text={Object.values(tokens).reduce((a, b) => a + b, 0)} />
+      <WidgetDataBlock title='Token ID' text={Object.keys(tokens).join(', ')} />
+      <WidgetDataBlock title='Total amount' text={Object.values(tokens).reduce((a, b) => a + b, 0)} />
     </WidgetDataSplit>
   }
 
   if (type === 'erc721') {
-    const tokens = recipients && Object.values(recipients).map<TMapTokensIds>((item) => item.tokenId)
+    const tokens = recipients && Object.values(recipients).map<TMapTokensIds>((item) => {
+      return item.tokenId.length > 10 ? shortenString(item.tokenId) : item.tokenId
+    })
     return <WidgetDataSplit>
-      <DataBlock title='Token ID' text={tokens.join(', ')} />
+      <WidgetDataBlock title='Token ID' text={tokens.join(', ')} />
     </WidgetDataSplit>
   }
 
   if (type === 'erc20') {
     const tokensAmount = countTotalTokens(recipients, 'erc20', decimals)
     return <WidgetDataSplit>
-      <DataBlock title='Total amount' text={tokensAmount} />
+      <WidgetDataBlock title='Total amount' text={tokensAmount} />
     </WidgetDataSplit>
   }
 
@@ -75,13 +77,14 @@ const defineTokenTexts = (recipients: TRecipientsData, type: TRetroDropType, dec
 
 const CampaignDetails: FC<ReduxType & IProps & RouteComponentProps> = (props) => {
   const { retroDrops, match: { params } } = props
+  const [ copied, setCopied ] = useState(false)
   const history = useHistory()
 
   const currentCampaign = retroDrops.find(item => item.ipfsHash === params.id)
   if (!currentCampaign) {
     return null
   }
-  const { ipfsHash, recipients, title, chainId, tokenAddress, type, decimals } = currentCampaign
+  const { ipfsHash, recipients, title, chainId, tokenAddress, type, decimals, dropAddress } = currentCampaign
   const link = `${REACT_APP_CLAIM_URL}/${ipfsHash}`
   
   
@@ -101,12 +104,18 @@ const CampaignDetails: FC<ReduxType & IProps & RouteComponentProps> = (props) =>
     </InfoBlockContainer>
     <Description>
       <WidgetContainer>
-        <DataBlock title='Drop’s title' text={title} />
+        <WidgetDataBlock title='Drop’s title' text={title} />
         <WidgetDataSplit>
-          <DataBlock title='Network' text={capitalize(defineNetworkName(chainId))} />
-          <DataBlock title='Type of token' text={type} />
+          <WidgetDataBlock title='Network' text={capitalize(defineNetworkName(chainId))} />
+          <WidgetDataBlock title='Type of token' text={type.toUpperCase()} />
         </WidgetDataSplit>
-        <DataBlock title='Token address' text={tokenAddress} />
+        <WidgetDataBlock title='Token address' text={tokenAddress} />
+        {dropAddress && <WidgetDataBlock
+          title='Drop contract'
+          text={dropAddress}
+          link={defineEtherscanUrl(chainId, dropAddress)}
+        />}
+        <WidgetDataBlock title='IPFS hash' text={shortenString(ipfsHash)} link={`${ipfsGatewayUrl}${ipfsHash}`} />
         {defineTokenTexts(recipients, type, decimals)}
       </WidgetContainer>
 
@@ -115,10 +124,13 @@ const CampaignDetails: FC<ReduxType & IProps & RouteComponentProps> = (props) =>
         <Link>
           <LinkValue>{link}</LinkValue>
           <Button
-            title='Copy Link'
+            title={copied ? 'Copied!' : 'Copy Link'}
             size='small'
             appearance='action'
-            onClick={() => copyToClipboard({ value: link })}
+            onClick={() => {
+              copyToClipboard({ value: link })
+              setCopied(true)
+            }}
           />
         </Link>
       </LinkContainer>

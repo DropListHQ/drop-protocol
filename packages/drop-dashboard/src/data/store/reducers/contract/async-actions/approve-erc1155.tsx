@@ -57,7 +57,8 @@ export default async function approveERC1155(
 				tokenAddress,
 				recipients,
 				type,
-				decimals
+				decimals,
+				dropAddress
 			}))
 			dispatch(newRetroDropDrops.clearNewRetroDrop())
 			if (callback) { callback() }

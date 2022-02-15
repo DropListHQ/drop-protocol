@@ -17,7 +17,7 @@ export const TextareaTitle = styled.h3`
   font-weight: 700;
   font-size: 12px;
   line-height: 16px;
-  color: ${props => props.theme.primaryHighlightColor};
+  color: ${props => props.theme.primaryTextColor};
 `
 
 export const TextareaFieldContainer = styled.div`

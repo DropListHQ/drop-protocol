@@ -84,7 +84,7 @@ const CampaignInfo: FC<ReduxType> = ({
   return <DoubleWidget>
     <Widget>
       <WidgetInput
-        title='Enter title here'
+        title='Drop’s title'
         onChange={value => { setDropTitle(value); return value}}
         value={dropTitle}
       />
@@ -108,10 +108,10 @@ const CampaignInfo: FC<ReduxType> = ({
           onClick={cancel}
         />
         <WidgetButton
-          title='Publish'
+          title={loading ? 'Processing' : 'Continue'}
           loading={loading}
           appearance='default'
-          disabled={!dropTitle || !tokenAddress}
+          disabled={!dropTitle || !tokenAddress || loading}
           onClick={() => {
             if (!tokenAddress || !chainId || !type) { return }
             createIPFS(merkleTree, dropTitle, dropDescription, dropLogoURL, tokenAddress, chainId, type)

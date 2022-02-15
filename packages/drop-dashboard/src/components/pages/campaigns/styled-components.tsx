@@ -19,4 +19,5 @@ export const Campaigns = styled.div`
   grid-template-columns: repeat(4, 1fr);
   width: 100%;
   grid-gap: 20px;
+  margin-bottom: 24px;
 `

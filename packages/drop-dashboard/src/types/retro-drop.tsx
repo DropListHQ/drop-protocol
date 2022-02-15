@@ -11,7 +11,8 @@ type TRetroDrop = {
   tokenAddress: string,
   recipients: TRecipientsData,
   type: TRetroDropType,
-  decimals: number | null
+  decimals: number | null,
+  dropAddress: string
 }
 
 export default TRetroDrop

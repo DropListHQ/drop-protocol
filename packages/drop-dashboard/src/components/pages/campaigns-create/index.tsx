@@ -41,16 +41,15 @@ const defineTitie = (step: TRetroDropStep): string => {
     case 'choose_type':
       return 'Specify type of token to be airdropped:'
     case 'initialize':
-      return 'Enter your contract address below.'
+      return 'Enter contract address of the tokens that you would like to distribute'
     case 'create_tree':
       return 'Enter recipient addresses and airdrop token IDs'
     case 'publish_ipfs':
-      return 'Add details to your campaign:'
+      return 'Add details to your campaign and press Сontinue to upload your data to IPFS and proceed. Please note, it could take some time.'
     case 'deploy_contract':
-      return 'Review details of your campaign and give permission to distribute tokens to DropList:'
+      return 'Review details of your campaign and deploy it to the blockchain. Please note, deployment make take some time'
     case 'give_approval':
-      return `🚀 Are you ready to launch campaign?
-      We are ready!`
+      return '🚀 Review details, give approval and launch campaign'
     default:
       return ''
   }
@@ -154,6 +153,8 @@ const CampaignsCreate: FC<ReduxType> = ({
           {bredcrumbs}
           <CampaignDeploy
             dropTitle={dropTitle}
+            dropDescription={dropDescription}
+            dropLogoURL={dropLogoURL}
             recipients={recipients}
             cancel={cancel}
           />

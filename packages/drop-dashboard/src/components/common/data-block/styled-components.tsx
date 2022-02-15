@@ -26,5 +26,14 @@ export const DataBlock = styled.div.attrs(props => ({
   className: props.className
 }))<DataBlockProps>`
   margin-bottom: 24px;
-  
+`
+
+export const DataBlockLink = styled.a`
+  color: ${props => props.theme.primaryTextColor};
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  svg {
+    margin-left: 6px;
+  }
 `
