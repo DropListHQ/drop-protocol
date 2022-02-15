@@ -22,6 +22,5 @@ describe('#getDrop', () => {
 
         const recipients = drop.getRecipients();
         expect(recipients.length).toEqual(2);
-        console.log(recipients);
     })
 })

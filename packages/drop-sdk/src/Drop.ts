@@ -1,11 +1,11 @@
-import { TDropMetadata, TRecipientsData } from './types';
+import { TDropMetadata, TRecipientsData, TDropType } from './types';
 
 export default class Drop {
     public readonly ipfshash: string;
     public readonly metadata: TDropMetadata;
     public readonly chainId: number;
     public readonly tokenAddress: string;
-    public readonly type: string;
+    public readonly type: TDropType;
     public readonly claims: TRecipientsData;
 
     constructor(ipfshash: string, metadata: TDropMetadata) {
