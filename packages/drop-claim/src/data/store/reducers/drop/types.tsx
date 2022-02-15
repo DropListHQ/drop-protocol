@@ -1,6 +1,7 @@
 import { ActionType } from 'typesafe-actions';
 import * as actions from './actions'
-import { TDropStep, TRecipientsData, TDropType } from 'types'
+import { TDropStep } from 'types'
+import { TRecipientsData, TDropType } from '@drop-protocol/drop-sdk';
 
 export interface DropState {
   step: TDropStep,
