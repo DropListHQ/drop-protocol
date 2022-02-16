@@ -3,16 +3,15 @@ import * as actionsDrop from '../actions';
 import * as actionsToken from '../../token/actions';
 import { DropActions } from '../types';
 import { TokenActions } from '../../token/types';
-// import { getIPFSData } from 'data/api'
 import { ethers } from 'ethers'
-import { DropInterfaceERC1155, DropFactoryInterface } from '@drop-protocol/drop-sdk'
-import contracts from 'configs/contracts'
-import { hexlifyIpfsHash, getValidImage } from 'helpers'
+import { getValidImage } from 'helpers'
 import { utils } from 'ethers'
 import getERC1155Data from './get-erc1155-token-data'
 import getERC721Data from './get-erc721-token-data'
 import getERC20Data from './get-erc20-token-data'
 import DropSDK, { Drop } from '@drop-protocol/drop-sdk'
+
+const { REACT_APP_IPFS_URL } = process.env
 
 export default async function getData(
   dispatch: Dispatch<DropActions> & Dispatch<TokenActions>,
@@ -22,16 +21,8 @@ export default async function getData(
   userAddress: string
 ) {
   dispatch(actionsDrop.setLoading(true))
-  console.log({ env: process.env })
-  const dropSDK = new DropSDK(process.env.REACT_APP_IPFS_URL)
+  const dropSDK = new DropSDK(provider, userChainId, REACT_APP_IPFS_URL)
   const drop: Drop = await dropSDK.getDrop(ipfshash)
-  // const { chainId, tokenAddress, claims, title, logoURL, description, type } = data
-
-  //const metadata: TDropMetadata = drop.metadata;
-  // #todo: change to drop-sdk
-  const contractData = contracts[drop.chainId]
-  const factoryAddress = contractData.factory
-  const templateAddress = contractData[drop.type]
 
   const allowedAddressList = drop.getRecipients()
   dispatch(actionsDrop.setChainId(drop.chainId))
@@ -49,14 +40,7 @@ export default async function getData(
   //   return dispatch(actionsDrop.setStep('not_allowed'))
   // }
 
-  // #todo: change to Drop obj   
-  let dropAddress: string = ''
-  if (factoryAddress) {
-    const factoryContractInstance = new ethers.Contract(factoryAddress, DropFactoryInterface, provider)
-    dropAddress = await factoryContractInstance.getDrop(hexlifyIpfsHash(ipfshash))
-  }
-
-  dispatch(actionsDrop.setDropAddress(dropAddress))
+  dispatch(actionsDrop.setDropAddress(drop.address))
   dispatch(actionsDrop.setTitle(drop.metadata.title))
   dispatch(actionsDrop.setDescription(drop.metadata.description))
   dispatch(actionsDrop.setClaims(drop.claims))
@@ -97,11 +81,8 @@ export default async function getData(
 
     dispatch(actionsDrop.setProof(proof))
     dispatch(actionsDrop.setIndex(index))
-    if (dropAddress) {
-      console.log({ dropAddress, index })
-      const dropContractInstance = new ethers.Contract(dropAddress, DropInterfaceERC1155, provider)
-
-      const isClaimed = await dropContractInstance.isClaimed(index)
+    if (drop.address) {
+      const isClaimed = await drop.hasReceiverClaimed(userAddress)
       if (isClaimed) {
         dispatch(actionsDrop.setLoading(false))
         return dispatch(actionsDrop.setStep('claiming_finished'))
