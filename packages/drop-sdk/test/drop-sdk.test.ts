@@ -1,11 +1,15 @@
 import DropSDK from '../src'
+import { ethers } from 'ethers';
 
 describe('#getDrop', () => {
     it('should return drop instance', async () => {
+
+        const chainId = 4;
         const ipfshash = "Qme99gNyxamTfK6qWL8jfr6g9idEYvJREBJygDz334Z7QJ";
         const baseUrl = "https://gateway.pinata.cloud/ipfs"
 
-        const dropSDK = new DropSDK(baseUrl)
+        const provider = ethers.getDefaultProvider('rinkeby');
+        const dropSDK = new DropSDK(provider, chainId, baseUrl);
 
         const drop = await dropSDK.getDrop(ipfshash);
         expect(drop.ipfshash).toEqual(ipfshash);
