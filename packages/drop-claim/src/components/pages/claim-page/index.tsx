@@ -1,5 +1,5 @@
 import React, { FC, ReactElement, useEffect } from 'react'
-
+import DropSDK from '@drop-protocol/drop-sdk'
 import InitialScreen from './initial-screen'
 import ChangeNetwork from './change-network'
 import NotAllowedForClaim from './not-allowed-for-claim'
@@ -24,24 +24,26 @@ import { DropActions } from 'data/store/reducers/drop/types'
 import { TokenActions } from 'data/store/reducers/token/types'
 
 const mapStateToProps = ({
-  user: { address, provider, chainId },
+  user: { address, provider, chainId, dropSDK },
   drop: { step },
 }: RootState) => ({
   address,
   step,
   provider,
   chainId,
+  dropSDK
 })
 const mapDispatcherToProps = (dispatch: Dispatch<DropActions> & Dispatch<TokenActions>) => {
   return {
-      getData: (
-        provider: any,
-        ipfs: string,
-        chainId: number,
-        address: string,
-        history: any
-      ) => dropAsyncActions.getInitialData(dispatch, provider, ipfs, chainId, address),
-      setStep: (step: TDropStep) => dispatch(dropActions.setStep(step))
+    getData: (
+      provider: any,
+      ipfs: string,
+      chainId: number,
+      address: string,
+      history: any,
+      dropSDK: DropSDK
+    ) => dropAsyncActions.getInitialData(dispatch, provider, ipfs, chainId, address, dropSDK),
+    setStep: (step: TDropStep) => dispatch(dropActions.setStep(step))
   }
 }
 
@@ -78,22 +80,23 @@ const ClaimPage: FC<ReduxType> = ({
   address,
   chainId,
   provider,
-  setStep
+  setStep,
+  dropSDK
 }) => {
   const { ipfs }: { ipfs: string } = useParams()
   const screen = defineCurrentScreen(step)
   const history = useHistory()
   useEffect(() => {
     if (provider === null) { setStep('set_connector') }
-    if (chainId && provider) {
-      getData(provider, ipfs, chainId, address, history)
+    if (chainId && provider && dropSDK) {
+      getData(provider, ipfs, chainId, address, history, dropSDK)
     }
-  }, [provider, address, chainId])
-  
+  }, [provider, address, chainId, dropSDK])
+
   return <Page noHeader={step === 'check_eligibility'}>
     <Container>
       {screen}
-    </Container> 
+    </Container>
   </Page>
 }
 

@@ -11,17 +11,15 @@ import getERC721Data from './get-erc721-token-data'
 import getERC20Data from './get-erc20-token-data'
 import DropSDK, { Drop } from '@drop-protocol/drop-sdk'
 
-const { REACT_APP_IPFS_URL } = process.env
-
 export default async function getData(
   dispatch: Dispatch<DropActions> & Dispatch<TokenActions>,
   provider: any,
   ipfshash: string,
   userChainId: number,
-  userAddress: string
+  userAddress: string,
+  dropSDK: DropSDK
 ) {
   dispatch(actionsDrop.setLoading(true))
-  const dropSDK = new DropSDK(provider, userChainId, REACT_APP_IPFS_URL)
   const drop: Drop = await dropSDK.getDrop(ipfshash)
 
   const allowedAddressList = drop.getRecipients()
