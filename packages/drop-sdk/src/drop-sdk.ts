@@ -13,14 +13,13 @@ export default class DropSDK {
     private readonly provider: any;
     private readonly factory: Factory;
 
-
     constructor(provider: any, chainId: number, ipfsbase: string = DEFAULT_IPFS_BASE) {
         this.ipfsprovider = new IPFSProvider(ipfsbase);
         this.provider = provider;
         this.chainId = chainId;
         this.ipfsbase = ipfsbase;
 
-        const factoryAddress = contracts[this.chainId].factory;
+        const factoryAddress = contracts[`${this.chainId}`].factory;
         this.factory = new Factory(this.provider, factoryAddress);
     }
 

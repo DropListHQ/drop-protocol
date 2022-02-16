@@ -1,7 +1,7 @@
 import { TDropType } from '../types'
 
 type TContracts = {
-    [networkId: string | number]: {
+    [networkId: string]: {
     [key in TDropType]: string
     } & {
         factory: string;
@@ -9,7 +9,7 @@ type TContracts = {
 }
 
 const contracts: TContracts = {
-    4: {
+    '4': {
         factory: '0x236057383d390DEBC28EAd467BAD3804cA3f6B29',
         // templates
         erc721: '0x43FE7F2D3Aa1211D3Be827150F2724DB6E06e683',
