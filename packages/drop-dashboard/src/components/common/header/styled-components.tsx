@@ -49,7 +49,7 @@ export const ConnectionIndicator = styled.div`
   margin-right: 8px;
 `
 
-export const HeaderUseInfo = styled.div`
+export const HeaderUserInfo = styled.div`
   display: flex;
   align-items: center;
   font-size: 12px;
@@ -57,7 +57,9 @@ export const HeaderUseInfo = styled.div`
   border-radius: 20px;
   font-weight: 700;
   min-height: 36px;
+  position: relative;
   text-align: center;
+  user-select: none;
   justify-content: center;
   margin-right: 16px;
   border: 1px solid ${props => props.theme.primaryBorderColor};
@@ -101,4 +103,39 @@ export const HeaderNetworkIcon = styled.span`
 `
 export const HeaderNetworkIconImg = styled.img`
 
+`
+
+export const NetworkIndicatorClass = 'NetworkIndicatorClass'
+
+export const MiniPopupCustomItem = styled.div`
+  font-size: 12px;
+  margin-bottom: 8px;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  &:last-child {
+    margin-bottom: 0px;
+  }
+
+  :hover {
+    .${NetworkIndicatorClass} {
+      background-color: ${props => props.theme.tagDefaultColor};
+    }
+  }
+`
+
+type TNetworkIndicatorProps = {
+  selected: boolean
+}
+
+export const NetworkIndicator = styled.div<TNetworkIndicatorProps>`
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  background-color: transparent;
+  ${props => props.selected && css`
+    background-color: ${props => props.theme.primaryHighlightColor}!important;
+  `}
 `

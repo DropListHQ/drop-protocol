@@ -1,14 +1,17 @@
-import React, { FC } from 'react'
+import { FC, useState } from 'react'
 import {
     Header,
     HeaderTitle,
     HeaderInfo,
-    HeaderUseInfo,
+    HeaderUserInfo,
 		HeaderMenu,
 		HeaderMenuItem,
 		HeaderMenuItemActiveClass,
 		HeaderLogoLink,
-		ConnectionIndicator
+		ConnectionIndicator,
+		MiniPopupCustomItem,
+		NetworkIndicator,
+		NetworkIndicatorClass
 		// @ts-ignore
 } from './styled-components.tsx'
 import { Dispatch } from 'redux';
@@ -21,12 +24,15 @@ import { RootState } from 'data/store';
 import { connect } from 'react-redux';
 import * as asyncUserActions from 'data/store/reducers/user/async-actions'
 import { UserActions } from 'data/store/reducers/user/types'
+import MiniPopup from '../mini-popup'
+import chains from 'configs/chains'
 
-const mapStateToProps = ({ user: { chainId, address } }: RootState) => ({ chainId, address })
+const mapStateToProps = ({ user: { chainId, address, provider } }: RootState) => ({ chainId, address, provider })
 
 const mapDispatcherToProps = (dispatch: Dispatch<UserActions>) => {
   return {
-    connectWallet: () => asyncUserActions.connectWallet(dispatch)
+    connectWallet: () => asyncUserActions.connectWallet(dispatch),
+		switchWallet: (provider: any, chainId: number) => asyncUserActions.switchWallet(dispatch, provider, chainId)
   }
 }
 
@@ -34,7 +40,23 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 
 interface Props {}
 
-const HeaderComponent: FC<Props & ReduxType> = ({ chainId, address, connectWallet }) => {
+
+const HeaderComponent: FC<Props & ReduxType> = ({ chainId, address, connectWallet, switchWallet, provider }) => {
+	const [ showToggleChain, setShowToggleChain ] = useState(false)
+	
+
+	const chainsPopup = showToggleChain && <MiniPopup onClose={() => { setShowToggleChain(false) }}>
+		{Object.keys(chains).map((chain: string) => {
+			const currentChain = chains[Number(chain)]
+			return <MiniPopupCustomItem onClick={() => {
+				switchWallet(provider, Number(chain))
+			}}>
+				{currentChain.displayName}
+				<NetworkIndicator className={NetworkIndicatorClass} selected={Number(chainId) === Number(chain)} />
+			</MiniPopupCustomItem>
+		})}
+	</MiniPopup>
+
 	return <ThemeProvider theme={themes.light}>
 			<Header>
 				<HeaderTitle>
@@ -58,16 +80,19 @@ const HeaderComponent: FC<Props & ReduxType> = ({ chainId, address, connectWalle
 					</HeaderMenuItem>
 				</HeaderMenu>
 				<HeaderInfo>
-					{chainId && <HeaderUseInfo>
+					{chainId && <HeaderUserInfo onClick={() => {
+						setShowToggleChain(!showToggleChain)
+					}}>
 						{capitalize(defineNetworkName(chainId))}
-					</HeaderUseInfo>}
-					{address && <HeaderUseInfo>
+						{chainsPopup}
+					</HeaderUserInfo>}
+					{address && <HeaderUserInfo>
 						<ConnectionIndicator />
 						{shortenString(address)}
-					</HeaderUseInfo>}
-					{!address && <HeaderUseInfo onClick={connectWallet}>
+					</HeaderUserInfo>}
+					{!address && <HeaderUserInfo onClick={connectWallet}>
 						Connect
-					</HeaderUseInfo>}
+					</HeaderUserInfo>}
 				</HeaderInfo>
 			</Header>
 	</ThemeProvider>

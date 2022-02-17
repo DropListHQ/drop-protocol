@@ -14,6 +14,7 @@ import hexlifyIpfsHash from './hexlify-ipfs-hash'
 import getValidImage from './get-valid-image'
 import countTotalTokens from './count-total-tokens'
 import defineEtherscanUrl from './define-etherscan-url'
+import toHex from './to-hex'
 
 export {
   shortenString,
@@ -29,5 +30,6 @@ export {
   hexlifyIpfsHash,
   getValidImage,
   countTotalTokens,
-  defineEtherscanUrl
+  defineEtherscanUrl,
+  toHex
 }
