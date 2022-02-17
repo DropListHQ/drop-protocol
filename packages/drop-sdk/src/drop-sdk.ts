@@ -1,5 +1,5 @@
 import Factory from './Factory';
-import Drop from './Drop';
+import { DropERC20, DropERC721, DropERC1155 } from './Drop';
 import IPFSProvider from './ipfs/provider';
 import { TDropMetadata } from './types';
 import contracts from './config/contracts';
@@ -26,7 +26,17 @@ export default class DropSDK {
     async getDrop(ipfshash: string) {
         const metadata: TDropMetadata = await this.ipfsprovider.get(ipfshash)
         const dropAddress = this.factory.getDrop(ipfshash);
-        const drop = new Drop(ipfshash, metadata, this.provider, dropAddress);
+        let drop: DropERC1155 | DropERC20 | DropERC721;
+        switch (metadata.type) {
+            case "erc20":
+                drop = new DropERC20(ipfshash, metadata, this.provider, dropAddress);
+            case "erc721":
+                drop = new DropERC721(ipfshash, metadata, this.provider, dropAddress);
+            case "erc1155":
+                drop = new DropERC1155(ipfshash, metadata, this.provider, dropAddress);
+            default:
+                throw new Error(`Unknown drop type ${metadata.type}`);
+        }
         return drop
     }
 }

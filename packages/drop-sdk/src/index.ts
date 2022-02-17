@@ -27,8 +27,8 @@ export { DropFactoryInterface, DropInterfaceERC20, DropInterfaceERC721, DropInte
 
 // TYPES
 export * from './types';
-import Drop from './Drop';
-export { Drop };
+export * from './Drop';
+
 
 // SDK
 import DropSDK from "./drop-sdk";
