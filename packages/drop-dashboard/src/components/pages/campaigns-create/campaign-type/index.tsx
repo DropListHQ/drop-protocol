@@ -9,12 +9,12 @@ import RinkebyLogo from 'images/Rinkeby@2x.png'
 import PolygonLogo from 'images/Polygon@2x.png'
 import { Dispatch } from 'redux';
 import * as newRetroDropActions from 'data/store/reducers/new-retro-drop/actions'
+import { useHistory } from 'react-router-dom'
 
 import { NewRetroDropActions } from 'data/store/reducers/new-retro-drop/types'
 
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
   return {
-    setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step)),
     setType: (type: TRetroDropType) => dispatch(newRetroDropActions.setType(type))
   }
 }
@@ -46,12 +46,13 @@ const defineLogo = (chainId: number | null): ReactNode => {
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
 type onTypeChoose = (type: TRetroDropType) => void
 
-const RetroactiveDrops: FC<ReduxType> = ({ chainId, setType, setStep }) => {
+const RetroactiveDrops: FC<ReduxType> = ({ chainId, setType }) => {
   const logo = defineLogo(chainId)
+  const history = useHistory()
 
   const onTypeChoose: onTypeChoose = type => {
     setType(type)
-    setStep('initialize')
+    history.push(`/campaigns/new?step=initialize`)
   }
   
   return <div>

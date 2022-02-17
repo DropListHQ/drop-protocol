@@ -4,7 +4,7 @@ import {
   TextLink
 } from 'components/common'
 
-import { TRetroDropStep, TRecipientsData, isValidStep } from 'types'
+import { TRetroDropStep, TRecipientsData } from 'types'
 import { RootState } from 'data/store';
 import * as newRetroDropActions from 'data/store/reducers/new-retro-drop/actions'
 
@@ -20,6 +20,11 @@ import CampaignDeploy from './campaign-deploy'
 import CampaignApproval from './campaign-approval'
 import { useHistory, useLocation } from 'react-router-dom'
 
+function isValidStep(step: string | null): step is TRetroDropStep {
+  if (!step) { return false }
+  return ['initialize', 'create_tree',  'publish_ipfs', 'deploy_contract', 'give_approval', 'choose_type'].indexOf(step) !== -1;
+}
+
 const mapStateToProps = ({
   newRetroDrop: { step, type },
   user: { chainId }
@@ -31,8 +36,7 @@ const mapStateToProps = ({
 
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
   return {
-      clearDropData: () => dispatch(newRetroDropActions.clearNewRetroDrop()),
-      setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step))
+    clearDropData: () => dispatch(newRetroDropActions.clearNewRetroDrop())
   }
 }
 
@@ -79,8 +83,7 @@ type defineStep = () => TRetroDropStep
 
 const CampaignsCreate: FC<ReduxType> = ({
   chainId,
-  clearDropData,
-  setStep
+  clearDropData
 }) => {  
   const [ recipients, setRecipients ] = useState<TRecipientsData>({})
   const [ dropTitle, setDropTitle ] = useState('')
@@ -102,7 +105,7 @@ const CampaignsCreate: FC<ReduxType> = ({
     if (step === 'choose_type') {
       return history.push('/')
     }
-    setStep(definePreviousStep(step))
+    history.push(`/campaigns/new?step=${definePreviousStep(step)}`)
   }
 
   useEffect(() => {

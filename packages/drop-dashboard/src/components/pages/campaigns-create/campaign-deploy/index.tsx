@@ -21,6 +21,7 @@ import { ContractActions } from 'data/store/reducers/contract/types'
 import {
   createDrop
 } from 'data/store/reducers/contract/async-actions'
+import { useHistory } from 'react-router-dom'
 
 type TProps = {
   dropTitle: string,
@@ -55,8 +56,9 @@ const mapDispatcherToProps = (dispatch: Dispatch<ContractActions> & Dispatch<New
       tokenAddress: string,
       ipfsHash: string,
       chainId: number,
-      type: TRetroDropType
-    ) => createDrop(dispatch, provider, merkleTree, tokenAddress, ipfsHash, chainId, type)
+      type: TRetroDropType,
+      callback: () => void
+    ) => createDrop(dispatch, provider, merkleTree, tokenAddress, ipfsHash, chainId, type, callback)
   }
 }
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps> & TProps
@@ -78,6 +80,7 @@ const CampaignDeploy: FC<ReduxType> = ({
   type,
   decimals
 }) => {
+  const history = useHistory()
   return <DoubleWidget>
     <Widget>
       <DataBlock
@@ -122,7 +125,9 @@ const CampaignDeploy: FC<ReduxType> = ({
           loading={contractLoading}
           onClick={() => {
             if (tokenAddress && ipfs && chainId && type) {
-              createDrop(provider, merkleTree, tokenAddress, ipfs, chainId, type)
+              createDrop(provider, merkleTree, tokenAddress, ipfs, chainId, type, () => {
+                history.push(`/campaigns/new?step=give_approval`)
+              })
             }
           }}
         />

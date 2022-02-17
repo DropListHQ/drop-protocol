@@ -18,6 +18,7 @@ import {
   AnchorLink
 } from 'components/common'
 import { buildMerkleTreeERC1155, buildMerkleTreeERC20, buildMerkleTreeERC721 } from '@drop-protocol/drop-sdk'
+import { useHistory } from 'react-router-dom'
 
 import {
   parseDataERC20,
@@ -53,7 +54,6 @@ const mapStateToProps = ({
 })
 const mapDispatcherToProps = (dispatch: Dispatch<ContractActions> & Dispatch<NewRetroDropActions>) => {
   return {
-    setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step)),
     setMerkleTree: (merkleTree: any) => dispatch(newRetroDropActions.setMerkleTree(merkleTree)),
     getOwnersData: (contract: string) => communitiesAsyncActions.getOwnersData(dispatch, contract)
   }
@@ -128,7 +128,6 @@ const createRecipientsTitle: TCreateDefaultRecipientsValue = (type) => {
 const CampaignTree: FC<ReduxType> = ({
   cancel,
   setMerkleTree,
-  setStep,
   setRecipients,
   loadedCommunities,
   getOwnersData,
@@ -139,11 +138,11 @@ const CampaignTree: FC<ReduxType> = ({
 }) => {
 
   const [ recipientsValue, setRecipientsValue ] = useState(createDefaultRecipientsValue(type))
+  const history = useHistory()
 
   const createTree = async (type: TRetroDropType, recipientsValue: string, tokenAddress: string): Promise<boolean> => {
     let recipientsData
     let merkleData
-    console.log({ recipientsValue, type, decimals })
     if (type === 'erc1155') {
       recipientsData = parseDataERC1155(type, recipientsValue)
       if (!recipientsData) {
@@ -203,7 +202,7 @@ const CampaignTree: FC<ReduxType> = ({
             if (!validTree) {
               return alert('Error in tree format')
             }
-            setStep('publish_ipfs')
+            history.push(`/campaigns/new?step=publish_ipfs`)
           }}
         />
       </WidgetControls>

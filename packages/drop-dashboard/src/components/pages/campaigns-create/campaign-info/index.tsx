@@ -16,6 +16,7 @@ import { Dispatch } from 'redux';
 import { NewRetroDropActions } from 'data/store/reducers/new-retro-drop/types'
 import { connect } from 'react-redux'
 import { TRetroDropType } from 'types';
+import { useHistory } from 'react-router-dom'
 
 type TProps = {
   dropTitle: string,
@@ -50,7 +51,8 @@ const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
       logoURL: string,
       tokenAddress: string,
       chainId: number,
-      type: TRetroDropType
+      type: TRetroDropType,
+      callback: () => void
     ) => newRetroDropAsyncActions.createIPFS(
       dispatch,
       data,
@@ -59,7 +61,8 @@ const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
       logoURL,
       tokenAddress,
       chainId,
-      type
+      type,
+      callback
     ),
   }
 }
@@ -81,6 +84,7 @@ const CampaignInfo: FC<ReduxType> = ({
   chainId,
   type
 }) => {
+  const history = useHistory()
   return <DoubleWidget>
     <Widget>
       <WidgetInput
@@ -114,7 +118,9 @@ const CampaignInfo: FC<ReduxType> = ({
           disabled={!dropTitle || !tokenAddress || loading}
           onClick={() => {
             if (!tokenAddress || !chainId || !type) { return }
-            createIPFS(merkleTree, dropTitle, dropDescription, dropLogoURL, tokenAddress, chainId, type)
+            createIPFS(merkleTree, dropTitle, dropDescription, dropLogoURL, tokenAddress, chainId, type, () => {
+              history.push(`/campaigns/new?step=publish_ipfs`)
+            })
           }}
         />
       </WidgetControls>
