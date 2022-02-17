@@ -19,6 +19,7 @@ import InfoBlock from './info-block'
 import PreviewWidget from './preview-widget'
 import TextLink from './text-link'
 import AnchorLink from './anchor-link'
+import MiniPopup from './mini-popup'
 
 export {
   Header,
@@ -41,5 +42,6 @@ export {
   InfoBlock,
   PreviewWidget,
   TextLink,
-  AnchorLink
+  AnchorLink,
+  MiniPopup
 }

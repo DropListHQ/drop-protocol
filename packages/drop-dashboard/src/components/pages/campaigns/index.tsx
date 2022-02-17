@@ -21,12 +21,13 @@ interface INameToValueMap {
 
 const mapStateToProps = ({
   drops: { retroDrops },
-  user: { address },
+  user: { address, chainId },
   communities: { communities }
 }: RootState) => ({
   retroDrops,
   address,
-  loadedCommunities: communities
+  loadedCommunities: communities,
+  chainId
 })
 
 // const getOwnersData
@@ -39,8 +40,8 @@ const mapDispatcherToProps = (dispatch: Dispatch<CommunitiesActions>) => {
 
 type ReduxType = ReturnType<typeof mapStateToProps>  & ReturnType<typeof mapDispatcherToProps>
 
-const CampaignsPage: FC<ReduxType & TProps> = ({ retroDrops, address, connectWallet, loadedCommunities, getOwnersData }) => {
-  const currentCampaigns = retroDrops.filter(item => item.address === address)
+const CampaignsPage: FC<ReduxType & TProps> = ({ retroDrops, address, connectWallet, loadedCommunities, getOwnersData, chainId }) => {
+  const currentCampaigns = retroDrops.filter(item => item.address === address && item.chainId === chainId)
   const history = useHistory()
   return <div>
     {currentCampaigns.length > 0 && <Container>

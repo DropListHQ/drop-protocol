@@ -18,12 +18,15 @@ import CampaignInitial from './campaign-initial'
 import CampaignTree from './campaign-tree'
 import CampaignDeploy from './campaign-deploy'
 import CampaignApproval from './campaign-approval'
+import { useHistory } from 'react-router-dom'
 
 const mapStateToProps = ({
   newRetroDrop: { step, type },
+  user: { chainId }
 }: RootState) => ({
   step,
-  type
+  type,
+  chainId
 })
 
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
@@ -74,20 +77,27 @@ const definePreviousStep = (step: TRetroDropStep): TRetroDropStep => {
   }
 }
 
+
 const CampaignsCreate: FC<ReduxType> = ({
   setStep,
   step,
   setType,
   type,
+  chainId,
   clearDropData
 }) => {  
   const [ recipients, setRecipients ] = useState<TRecipientsData>({})
   const [ dropTitle, setDropTitle ] = useState('')
   const [ dropLogoURL, setDropLogoURL ] = useState('')
   const [ dropDescription, setDropDescription ] = useState('')
-
+  const history = useHistory()
   const cancel = () => clearDropData()
-  const back = () => setStep(definePreviousStep(step))
+  const back = () => {
+    if (step === 'choose_type') {
+      return history.push('/')
+    }
+    setStep(definePreviousStep(step))
+  }
   
   const onTypeChoose:onTypeChoose = type => {
     setType(type)
@@ -104,7 +114,7 @@ const CampaignsCreate: FC<ReduxType> = ({
     description={defineTitie(step)}
     returnAction={() => back()}
   >
-    {step === 'initialize' && <div>
+    {step === 'initialize' && chainId === 4 && <div>
       Get Rinkeby test NFTs from <TextLink target='_blank' href='https://faucet.paradigm.xyz/'>this faucet</TextLink>.<br/>Read the <TextLink target='_blank' href='https://www.notion.so/DropList-Alpha-Instruction-3d897edbf6464bf196406958d8024eda'>full instruction</TextLink> how to launch campaign.
     </div>}
   </Breadcrumbs>

@@ -1,5 +1,4 @@
 import React, { FC } from 'react'
-import Icons from 'icons'
 import {
   MiniWidget,
   MiniWidgetTitle,
@@ -35,7 +34,7 @@ const MiniWidgetComponent: FC<Props> = ({
   
     return <ThemeProvider theme={themes.light}>
       <MiniWidget>
-        <MiniWidgetTitle>{title}<Icons.EthereumLogo /></MiniWidgetTitle>
+        <MiniWidgetTitle>{title}{logo}</MiniWidgetTitle>
         <MiniWidgetDescription>{description}</MiniWidgetDescription>
         <Buttons>{button}</Buttons>
       </MiniWidget>
