@@ -4,7 +4,7 @@ import {
   TextLink
 } from 'components/common'
 
-import { TRetroDropStep, TRetroDropType, TRecipientsData } from 'types'
+import { TRetroDropStep, TRecipientsData, isValidStep } from 'types'
 import { RootState } from 'data/store';
 import * as newRetroDropActions from 'data/store/reducers/new-retro-drop/actions'
 
@@ -18,7 +18,7 @@ import CampaignInitial from './campaign-initial'
 import CampaignTree from './campaign-tree'
 import CampaignDeploy from './campaign-deploy'
 import CampaignApproval from './campaign-approval'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 
 const mapStateToProps = ({
   newRetroDrop: { step, type },
@@ -31,14 +31,12 @@ const mapStateToProps = ({
 
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
   return {
-      setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step)),
       clearDropData: () => dispatch(newRetroDropActions.clearNewRetroDrop()),
-      setType: (type: TRetroDropType) => dispatch(newRetroDropActions.setType(type))
+      setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step))
   }
 }
 
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
-type onTypeChoose = (type: TRetroDropType) => void
 const defineTitie = (step: TRetroDropStep): string => {
   switch(step) {
     case 'choose_type':
@@ -77,31 +75,34 @@ const definePreviousStep = (step: TRetroDropStep): TRetroDropStep => {
   }
 }
 
+type defineStep = () => TRetroDropStep
 
 const CampaignsCreate: FC<ReduxType> = ({
-  setStep,
-  step,
-  setType,
-  type,
   chainId,
-  clearDropData
+  clearDropData,
+  setStep
 }) => {  
   const [ recipients, setRecipients ] = useState<TRecipientsData>({})
   const [ dropTitle, setDropTitle ] = useState('')
   const [ dropLogoURL, setDropLogoURL ] = useState('')
   const [ dropDescription, setDropDescription ] = useState('')
   const history = useHistory()
+  let { search } = useLocation();
+  const query = new URLSearchParams(search)
+  const defineStep: defineStep = () => {
+    const step = query.get('step')
+    if (isValidStep(step)) {
+      return step
+    }
+    return 'choose_type'
+  }
+  const step = defineStep()
   const cancel = () => clearDropData()
   const back = () => {
     if (step === 'choose_type') {
       return history.push('/')
     }
     setStep(definePreviousStep(step))
-  }
-  
-  const onTypeChoose:onTypeChoose = type => {
-    setType(type)
-    setStep('initialize')
   }
 
   useEffect(() => {
@@ -125,7 +126,7 @@ const CampaignsCreate: FC<ReduxType> = ({
       case 'choose_type':
         return <>
           {bredcrumbs}
-          <CampaignType onTypeChoose={onTypeChoose} />
+          <CampaignType />
         </>
       case 'initialize':
         return <>

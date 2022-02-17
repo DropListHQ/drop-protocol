@@ -3,10 +3,21 @@ import { MiniWidget } from 'components/common'
 import { RootState } from 'data/store';
 import { connect } from 'react-redux';
 import { Container, TypeWidgets, WidgetLogo } from './styled-components'
-import { TRetroDropType } from 'types'
+import { TRetroDropType, TRetroDropStep } from 'types'
 import EthereumLogo from 'images/Ethereum@2x.png'
 import RinkebyLogo from 'images/Rinkeby@2x.png'
 import PolygonLogo from 'images/Polygon@2x.png'
+import { Dispatch } from 'redux';
+import * as newRetroDropActions from 'data/store/reducers/new-retro-drop/actions'
+
+import { NewRetroDropActions } from 'data/store/reducers/new-retro-drop/types'
+
+const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
+  return {
+    setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step)),
+    setType: (type: TRetroDropType) => dispatch(newRetroDropActions.setType(type))
+  }
+}
 
 const mapStateToProps = ({
   drops: { retroDrops },
@@ -17,9 +28,6 @@ const mapStateToProps = ({
   chainId
 })
 
-type TProps = {
-  onTypeChoose: (type: TRetroDropType) => void
-}
 
 const defineLogo = (chainId: number | null): ReactNode => {
   if (chainId === 1) {
@@ -35,10 +43,16 @@ const defineLogo = (chainId: number | null): ReactNode => {
   }
 }
 
-type ReduxType = ReturnType<typeof mapStateToProps>
+type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
+type onTypeChoose = (type: TRetroDropType) => void
 
-const RetroactiveDrops: FC<ReduxType & TProps> = ({ onTypeChoose, chainId }) => {
+const RetroactiveDrops: FC<ReduxType> = ({ chainId, setType, setStep }) => {
   const logo = defineLogo(chainId)
+
+  const onTypeChoose: onTypeChoose = type => {
+    setType(type)
+    setStep('initialize')
+  }
   
   return <div>
     <Container>
@@ -79,4 +93,4 @@ const RetroactiveDrops: FC<ReduxType & TProps> = ({ onTypeChoose, chainId }) => 
   </div>
 }
 
-export default connect(mapStateToProps)(RetroactiveDrops)
+export default connect(mapStateToProps, mapDispatcherToProps)(RetroactiveDrops)
