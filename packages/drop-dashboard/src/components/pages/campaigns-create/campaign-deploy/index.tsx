@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import {
   WidgetControls,
   WidgetButton,
@@ -24,29 +24,27 @@ import {
 import { useHistory } from 'react-router-dom'
 
 type TProps = {
-  dropTitle: string,
   recipients: TRecipientsData,
-  dropDescription: string,
-  dropLogoURL: string
   cancel: () => void
 }
 
 const mapStateToProps = ({
   user: { address, provider, chainId },
-  newRetroDrop: { loading, step, tokenAddress, ipfs, merkleTree, type, decimals },
+  newRetroDrop: { loading, tokenAddress, ipfs, merkleTree, type, decimals, stepsCompleted, title, description, logoURL },
   contract: { loading: contractLoading },
 }: RootState) => ({
   loading,
   address,
   provider,
   ipfs,
-  step,
   tokenAddress,
   merkleTree,
   decimals,
   chainId,
   contractLoading,
-  type
+  type,
+  stepsCompleted,
+  title, description, logoURL
 })
 const mapDispatcherToProps = (dispatch: Dispatch<ContractActions> & Dispatch<NewRetroDropActions>) => {
   return {
@@ -65,9 +63,7 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 
 
 const CampaignDeploy: FC<ReduxType> = ({
-  dropTitle,
-  dropDescription,
-  dropLogoURL,
+  title, description, logoURL,
   cancel,
   chainId,
   recipients,
@@ -78,14 +74,19 @@ const CampaignDeploy: FC<ReduxType> = ({
   merkleTree,
   createDrop,
   type,
-  decimals
+  decimals,
+  stepsCompleted
 }) => {
   const history = useHistory()
+  useEffect(() => {
+    if (stepsCompleted.indexOf('publish_ipfs') > -1) { return }
+    return history.push(`/campaigns/new?step=${stepsCompleted[stepsCompleted.length - 1]}`)
+  }, [])
   return <DoubleWidget>
     <Widget>
       <DataBlock
         title='Drop’s title'
-        text={dropTitle}
+        text={title}
       />
       <WidgetDataSplit>
         <WidgetDataBlock
@@ -134,9 +135,9 @@ const CampaignDeploy: FC<ReduxType> = ({
       </WidgetControls>
     </Widget>
     <PreviewWidget
-      title={dropTitle}
-      description={dropDescription}
-      image={dropLogoURL}
+      title={title || ''}
+      description={description || ''}
+      image={logoURL || ''}
     />
   </DoubleWidget>
 }

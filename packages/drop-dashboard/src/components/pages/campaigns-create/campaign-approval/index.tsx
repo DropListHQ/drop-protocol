@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import {
   WidgetControls,
   WidgetButton,
@@ -26,15 +26,12 @@ import { ContractActions } from 'data/store/reducers/contract/types'
 
 type TProps = {
   recipients: TRecipientsData,
-  cancel: () => void,
-  dropTitle: string,
-  dropLogoURL: string,
-  dropDescription: string
+  cancel: () => void
 }
 
 const mapStateToProps = ({
   user: { address, provider, chainId },
-  newRetroDrop: { loading, step, tokenAddress, ipfs, merkleTree, dropAddress, type, decimals },
+  newRetroDrop: { loading, tokenAddress, ipfs, merkleTree, dropAddress, type, decimals, stepsCompleted, title, description, logoURL },
   contract: { loading: contractLoading },
 }: RootState) => ({
   loading,
@@ -42,13 +39,14 @@ const mapStateToProps = ({
   provider,
   ipfs,
   decimals,
-  step,
   tokenAddress,
   merkleTree,
   chainId,
   contractLoading,
   dropAddress,
-  type
+  type,
+  stepsCompleted,
+  title, description, logoURL
 })
 const mapDispatcherToProps = (dispatch: Dispatch<ContractActions> & Dispatch<NewRetroDropActions>) => {
   return {
@@ -153,7 +151,6 @@ const mapDispatcherToProps = (dispatch: Dispatch<ContractActions> & Dispatch<New
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps> & TProps
 
 const CampaignApproval: FC<ReduxType> = ({
-  dropTitle,
   cancel,
   chainId,
   recipients,
@@ -164,18 +161,22 @@ const CampaignApproval: FC<ReduxType> = ({
   dropAddress,
   type,
   address,
-  dropLogoURL,
-  dropDescription,
+  title, description, logoURL,
   approveERC1155,
   approveERC721,
   approveERC20,
-  decimals
+  decimals,
+  stepsCompleted
 }) => {
   const history = useHistory()
+  useEffect(() => {
+    if (stepsCompleted.indexOf('deploy_contract') > -1) { return }
+    return history.push(`/campaigns/new?step=${stepsCompleted[stepsCompleted.length - 1]}`)
+  }, [])
   return <Widget>
     <DataBlock
       title='Drop’s title'
-      text={dropTitle}
+      text={title}
     />
     <WidgetDataSplit>
       <WidgetDataBlock
@@ -217,7 +218,7 @@ const CampaignApproval: FC<ReduxType> = ({
         loading={contractLoading}
         appearance='default'
         onClick={() => {
-          if (!tokenAddress || !dropAddress || !ipfs || !chainId || !type) { return }
+          if (!tokenAddress || !dropAddress || !ipfs || !chainId || !type || !title) { return }
           let method
           if (type === 'erc1155') { method = approveERC1155 }
           else if (type === 'erc721') { method = approveERC721 }
@@ -228,11 +229,11 @@ const CampaignApproval: FC<ReduxType> = ({
             address,
             dropAddress,
             ipfs,
-            dropTitle,
+            title,
             address,
             chainId,
-            dropDescription,
-            dropLogoURL,
+            description || '',
+            logoURL || '',
             recipients,
             type,
             decimals,

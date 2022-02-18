@@ -3,7 +3,7 @@ import * as actionsNewRetroDrop from './actions';
 import { NewRetroDropActions } from './types';
 import { TRetroDropType } from 'types'
 import { pinataApi } from 'data/api'
-import { ERC20Contract, ERC721Contract, ERC1155Contract } from 'abi'
+import { ERC20Contract } from 'abi'
 import { ethers } from 'ethers';
 type TIPFSResponse = { data: { IpfsHash: string, PinSize: number, Timestamp: string } }
 
@@ -12,9 +12,11 @@ export async function createIPFS(dispatch: Dispatch<NewRetroDropActions>, data: 
   const response: TIPFSResponse = await createIpfs(data, title, description, logoURL, tokenAddress, chainId, type)
   dispatch(actionsNewRetroDrop.setIPFS(response.data.IpfsHash))
   dispatch(actionsNewRetroDrop.setTitle(title))
+  dispatch(actionsNewRetroDrop.setLogoURL(logoURL))
   dispatch(actionsNewRetroDrop.setDescription(description))
   dispatch(actionsNewRetroDrop.setTitle(title))
   dispatch(actionsNewRetroDrop.setLoading(false))
+  dispatch(actionsNewRetroDrop.completeStep('publish_ipfs'))
   callback()
 }
 
@@ -35,6 +37,7 @@ export async function setTokenContractData(dispatch: Dispatch<NewRetroDropAction
     if (type === 'erc1155') {
       
     }
+    dispatch(actionsNewRetroDrop.completeStep('initialize'))
     dispatch(actionsNewRetroDrop.setLoading(false))
     callback()
   } catch (err) {

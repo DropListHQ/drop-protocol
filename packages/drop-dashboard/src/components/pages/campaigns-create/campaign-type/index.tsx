@@ -15,7 +15,8 @@ import { NewRetroDropActions } from 'data/store/reducers/new-retro-drop/types'
 
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
   return {
-    setType: (type: TRetroDropType) => dispatch(newRetroDropActions.setType(type))
+    setType: (type: TRetroDropType) => dispatch(newRetroDropActions.setType(type)),
+    completeStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.completeStep(step))
   }
 }
 
@@ -46,12 +47,13 @@ const defineLogo = (chainId: number | null): ReactNode => {
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
 type onTypeChoose = (type: TRetroDropType) => void
 
-const RetroactiveDrops: FC<ReduxType> = ({ chainId, setType }) => {
+const RetroactiveDrops: FC<ReduxType> = ({ chainId, setType, completeStep }) => {
   const logo = defineLogo(chainId)
   const history = useHistory()
 
   const onTypeChoose: onTypeChoose = type => {
     setType(type)
+    completeStep('choose_type')
     history.push(`/campaigns/new?step=initialize`)
   }
   

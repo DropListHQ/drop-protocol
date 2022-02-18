@@ -26,12 +26,12 @@ function isValidStep(step: string | null): step is TRetroDropStep {
 }
 
 const mapStateToProps = ({
-  newRetroDrop: { step, type },
+  newRetroDrop: { type, stepsCompleted },
   user: { chainId }
 }: RootState) => ({
-  step,
   type,
-  chainId
+  chainId,
+  stepsCompleted
 })
 
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
@@ -83,12 +83,11 @@ type defineStep = () => TRetroDropStep
 
 const CampaignsCreate: FC<ReduxType> = ({
   chainId,
-  clearDropData
+  clearDropData,
+  stepsCompleted
 }) => {  
   const [ recipients, setRecipients ] = useState<TRecipientsData>({})
-  const [ dropTitle, setDropTitle ] = useState('')
-  const [ dropLogoURL, setDropLogoURL ] = useState('')
-  const [ dropDescription, setDropDescription ] = useState('')
+
   const history = useHistory()
   let { search } = useLocation();
   const query = new URLSearchParams(search)
@@ -135,8 +134,6 @@ const CampaignsCreate: FC<ReduxType> = ({
         return <>
           {bredcrumbs}
           <CampaignInitial
-            dropLogoURL={dropLogoURL}
-            dropDescription={dropDescription}
             cancel={cancel}
           />
         </>
@@ -153,12 +150,6 @@ const CampaignsCreate: FC<ReduxType> = ({
         return <>
           {bredcrumbs}
           <CampaignInfo
-            dropTitle={dropTitle}
-            dropLogoURL={dropLogoURL}
-            dropDescription={dropDescription}
-            setDropTitle={setDropTitle}
-            setDropLogoURL={setDropLogoURL}
-            setDropDescription={setDropDescription}
             cancel={cancel}
           />
         </>
@@ -166,9 +157,6 @@ const CampaignsCreate: FC<ReduxType> = ({
         return <>
           {bredcrumbs}
           <CampaignDeploy
-            dropTitle={dropTitle}
-            dropDescription={dropDescription}
-            dropLogoURL={dropLogoURL}
             recipients={recipients}
             cancel={cancel}
           />
@@ -179,9 +167,6 @@ const CampaignsCreate: FC<ReduxType> = ({
           <CampaignApproval
             recipients={recipients}
             cancel={cancel}
-            dropTitle={dropTitle}
-            dropLogoURL={dropLogoURL}
-            dropDescription={dropDescription}
           />
         </>
       default:

@@ -36,6 +36,7 @@ export default async function createDrop(
 	}
   
 	dispatch(actionsContract.setLoading(false))
+	dispatch(actionsNewRetroDrop.completeStep('deploy_contract'))
 	callback()
 }
 

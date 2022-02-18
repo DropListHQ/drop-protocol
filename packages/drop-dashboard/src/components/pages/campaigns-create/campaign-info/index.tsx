@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import {
   WidgetInput,
   WidgetControls,
@@ -19,28 +19,23 @@ import { TRetroDropType } from 'types';
 import { useHistory } from 'react-router-dom'
 
 type TProps = {
-  dropTitle: string,
-  dropLogoURL: string,
-  dropDescription: string,
-  setDropTitle: (value: string) => void,
-  setDropLogoURL: (value: string) => void,
-  setDropDescription: (value: string) => void,
   cancel: () => void
 }
 
 const mapStateToProps = ({
   user: { address, provider, chainId },
-  newRetroDrop: { loading, step, tokenAddress, ipfs, merkleTree, type },
+  newRetroDrop: { loading, stepsCompleted, tokenAddress, ipfs, merkleTree, type, title, description, logoURL },
 }: RootState) => ({
   loading,
   address,
   provider,
   ipfs,
-  step,
+  stepsCompleted,
   tokenAddress,
   merkleTree,
   chainId,
-  type
+  type,
+  title, description, logoURL
 })
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
   return {
@@ -70,21 +65,24 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 
 
 const CampaignInfo: FC<ReduxType> = ({
-  dropTitle,
-  dropLogoURL,
-  dropDescription,
   loading,
-  setDropTitle,
-  setDropLogoURL,
-  setDropDescription,
   cancel,
   createIPFS,
   tokenAddress,
   merkleTree,
   chainId,
-  type
+  type,
+  stepsCompleted,
+  title, description, logoURL
 }) => {
   const history = useHistory()
+  const [ dropTitle, setDropTitle ] = useState(title || '')
+  const [ dropLogoURL, setDropLogoURL ] = useState(logoURL || '')
+  const [ dropDescription, setDropDescription ] = useState(description || '')
+  useEffect(() => {
+    if (stepsCompleted.indexOf('create_tree') > -1) { return }
+    return history.push(`/campaigns/new?step=${stepsCompleted[stepsCompleted.length - 1]}`)
+  }, [])
   return <DoubleWidget>
     <Widget>
       <WidgetInput
@@ -119,7 +117,8 @@ const CampaignInfo: FC<ReduxType> = ({
           onClick={() => {
             if (!tokenAddress || !chainId || !type) { return }
             createIPFS(merkleTree, dropTitle, dropDescription, dropLogoURL, tokenAddress, chainId, type, () => {
-              history.push(`/campaigns/new?step=publish_ipfs`)
+              console.log({ dropLogoURL })
+              history.push(`/campaigns/new?step=deploy_contract`)
             })
           }}
         />
