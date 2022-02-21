@@ -45,7 +45,7 @@ export function newRetroDropReducer(
         case Constants.DROP_SET_DECIMALS:
           return {...state, decimals: action.payload.decimals }
         case Constants.DROP_SET_RECIPIENTS_VALUE:
-          return initialState
+          return {...state, recipientsValue: action.payload.recipientsValue }
         case Constants.DROP_CLEAR_NEW_RETRODROP:
           return initialState
         

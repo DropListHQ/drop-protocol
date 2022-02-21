@@ -134,6 +134,7 @@ const CampaignTree: FC<ReduxType> = ({
 
   const [ recipientsValue, setRecipientsValue ] = useState(recipientsOriginalValue)
   const history = useHistory()
+  console.log({ recipientsOriginalValue, type })
 
   useEffect(() => {
     if (stepsCompleted.indexOf('initialize') > -1) { return }
@@ -169,6 +170,7 @@ const CampaignTree: FC<ReduxType> = ({
     }
 
     if (recipientsData && merkleData) {
+      console.log({ recipientsValue })
       setRecipientsOriginalValue(recipientsValue)
       setRecipients(recipientsData)
       setMerkleTree(merkleData)
