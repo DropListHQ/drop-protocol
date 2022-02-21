@@ -1,4 +1,4 @@
-import { FC, useState } from 'react'
+import { FC, useState, useEffect } from 'react'
 import {
   WidgetTextarea,
   WidgetControls,
@@ -18,6 +18,7 @@ import {
   AnchorLink
 } from 'components/common'
 import { buildMerkleTreeERC1155, buildMerkleTreeERC20, buildMerkleTreeERC721 } from '@drop-protocol/drop-sdk'
+import { useHistory } from 'react-router-dom'
 
 import {
   parseDataERC20,
@@ -45,17 +46,18 @@ type TProps = {
 
 const mapStateToProps = ({
   communities: { communities },
-  newRetroDrop: { type, tokenAddress, decimals },
+  newRetroDrop: { type, tokenAddress, decimals, stepsCompleted, recipientsValue },
   user: { provider }
 }: RootState) => ({
   loadedCommunities: communities,
-  type, tokenAddress, provider, decimals
+  type, tokenAddress, provider, decimals, stepsCompleted, recipientsOriginalValue: recipientsValue
 })
 const mapDispatcherToProps = (dispatch: Dispatch<ContractActions> & Dispatch<NewRetroDropActions>) => {
   return {
-    setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step)),
     setMerkleTree: (merkleTree: any) => dispatch(newRetroDropActions.setMerkleTree(merkleTree)),
-    getOwnersData: (contract: string) => communitiesAsyncActions.getOwnersData(dispatch, contract)
+    getOwnersData: (contract: string) => communitiesAsyncActions.getOwnersData(dispatch, contract),
+    completeStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.completeStep(step)),
+    setRecipientsOriginalValue: (recipientsValue: string) => dispatch(newRetroDropActions.setRecipientsValue(recipientsValue))
   }
 }
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps> & TProps
@@ -102,16 +104,6 @@ and so on
 
 type TCreateDefaultRecipientsValue = (dropType: TRetroDropType | null) => string
 
-const createDefaultRecipientsValue: TCreateDefaultRecipientsValue = (type) => {
-  switch (type) {
-    case 'erc1155':
-    case 'erc721':
-    case 'erc20':
-    default:
-      return ''
-  }
-}
-
 const createRecipientsTitle: TCreateDefaultRecipientsValue = (type) => {
   switch (type) {
     case 'erc1155':
@@ -128,22 +120,30 @@ const createRecipientsTitle: TCreateDefaultRecipientsValue = (type) => {
 const CampaignTree: FC<ReduxType> = ({
   cancel,
   setMerkleTree,
-  setStep,
   setRecipients,
   loadedCommunities,
   getOwnersData,
   type,
   tokenAddress,
-  provider,
-  decimals
+  stepsCompleted,
+  completeStep,
+  decimals,
+  setRecipientsOriginalValue,
+  recipientsOriginalValue
 }) => {
 
-  const [ recipientsValue, setRecipientsValue ] = useState(createDefaultRecipientsValue(type))
+  const [ recipientsValue, setRecipientsValue ] = useState(recipientsOriginalValue)
+  const history = useHistory()
+  console.log({ recipientsOriginalValue, type })
+
+  useEffect(() => {
+    if (stepsCompleted.indexOf('initialize') > -1) { return }
+    return history.push(`/campaigns/new?step=${stepsCompleted[stepsCompleted.length - 1]}`)
+  }, [])
 
   const createTree = async (type: TRetroDropType, recipientsValue: string, tokenAddress: string): Promise<boolean> => {
     let recipientsData
     let merkleData
-    console.log({ recipientsValue, type, decimals })
     if (type === 'erc1155') {
       recipientsData = parseDataERC1155(type, recipientsValue)
       if (!recipientsData) {
@@ -165,14 +165,16 @@ const CampaignTree: FC<ReduxType> = ({
       if (!recipientsData) {
         return false
       }
-      console.log({ recipientsData })
       merkleData = buildMerkleTreeERC20(recipientsData)
       
     }
 
     if (recipientsData && merkleData) {
+      console.log({ recipientsValue })
+      setRecipientsOriginalValue(recipientsValue)
       setRecipients(recipientsData)
       setMerkleTree(merkleData)
+      
       return true
     }
     return false
@@ -203,7 +205,8 @@ const CampaignTree: FC<ReduxType> = ({
             if (!validTree) {
               return alert('Error in tree format')
             }
-            setStep('publish_ipfs')
+            completeStep('create_tree')
+            history.push(`/campaigns/new?step=publish_ipfs`)
           }}
         />
       </WidgetControls>

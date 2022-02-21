@@ -3,22 +3,24 @@ import * as actionsNewRetroDrop from './actions';
 import { NewRetroDropActions } from './types';
 import { TRetroDropType } from 'types'
 import { pinataApi } from 'data/api'
-import { ERC20Contract, ERC721Contract, ERC1155Contract } from 'abi'
+import { ERC20Contract } from 'abi'
 import { ethers } from 'ethers';
 type TIPFSResponse = { data: { IpfsHash: string, PinSize: number, Timestamp: string } }
 
-export async function createIPFS(dispatch: Dispatch<NewRetroDropActions>, data: any, title: string, description: string, logoURL: string, tokenAddress: string, chainId: number, type: TRetroDropType) {
+export async function createIPFS(dispatch: Dispatch<NewRetroDropActions>, data: any, title: string, description: string, logoURL: string, tokenAddress: string, chainId: number, type: TRetroDropType, callback: () => void) {
   dispatch(actionsNewRetroDrop.setLoading(true))
   const response: TIPFSResponse = await createIpfs(data, title, description, logoURL, tokenAddress, chainId, type)
   dispatch(actionsNewRetroDrop.setIPFS(response.data.IpfsHash))
   dispatch(actionsNewRetroDrop.setTitle(title))
+  dispatch(actionsNewRetroDrop.setLogoURL(logoURL))
   dispatch(actionsNewRetroDrop.setDescription(description))
   dispatch(actionsNewRetroDrop.setTitle(title))
   dispatch(actionsNewRetroDrop.setLoading(false))
-  dispatch(actionsNewRetroDrop.setStep('deploy_contract'))
+  dispatch(actionsNewRetroDrop.completeStep('publish_ipfs'))
+  callback()
 }
 
-export async function setTokenContractData(dispatch: Dispatch<NewRetroDropActions>, tokenAddress: string, provider: any, type: TRetroDropType) {
+export async function setTokenContractData(dispatch: Dispatch<NewRetroDropActions>, tokenAddress: string, provider: any, type: TRetroDropType, callback: () => void) {
   try {
     dispatch(actionsNewRetroDrop.setLoading(true))
     dispatch(actionsNewRetroDrop.setTokenAddress(tokenAddress))
@@ -35,8 +37,9 @@ export async function setTokenContractData(dispatch: Dispatch<NewRetroDropAction
     if (type === 'erc1155') {
       
     }
+    dispatch(actionsNewRetroDrop.completeStep('initialize'))
     dispatch(actionsNewRetroDrop.setLoading(false))
-    dispatch(actionsNewRetroDrop.setStep('create_tree'))
+    callback()
   } catch (err) {
     console.error(err)
     alert('Some error occured, please check token address')

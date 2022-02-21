@@ -4,7 +4,7 @@ import { Constants } from './constants';
 const initialState: NewRetroDropState = {
   title: '',
   merkleTree: null,
-  step: 'choose_type',
+  stepsCompleted: [],
   tokenAddress: '',
   logoURL: '',
   description: '',
@@ -12,7 +12,8 @@ const initialState: NewRetroDropState = {
   loading: false,
   ipfs: null,
   type: null,
-  decimals: null
+  decimals: null,
+  recipientsValue: ''
 }
 
 export function newRetroDropReducer(
@@ -22,8 +23,9 @@ export function newRetroDropReducer(
     switch (action.type) {
         case Constants.DROP_SET_MERKLE_TREE:
           return {...state, merkleTree: action.payload.merkleTree }
-        case Constants.DROP_SET_STEP:
-          return {...state, step: action.payload.step }
+        case Constants.DROP_COMPLETE_STEP:
+          const stepsCompleted = [ ...state.stepsCompleted, action.payload.step ]
+          return {...state, stepsCompleted  }
         case Constants.DROP_SET_TOKEN_ADDRESS:
           return {...state, tokenAddress: action.payload.tokenAddress }
         case Constants.DROP_SET_TITLE:
@@ -42,8 +44,11 @@ export function newRetroDropReducer(
           return {...state, type: action.payload.type }
         case Constants.DROP_SET_DECIMALS:
           return {...state, decimals: action.payload.decimals }
+        case Constants.DROP_SET_RECIPIENTS_VALUE:
+          return {...state, recipientsValue: action.payload.recipientsValue }
         case Constants.DROP_CLEAR_NEW_RETRODROP:
           return initialState
+        
         default:
           return state;
     }

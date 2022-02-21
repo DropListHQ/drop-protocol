@@ -3,7 +3,7 @@ import * as actions from './actions'
 import { TRetroDropStep, TRetroDropType } from 'types'
 
 export interface NewRetroDropState {
-  step: TRetroDropStep,
+  stepsCompleted: TRetroDropStep[],
   title: string | null,
   logoURL?: string | null,
   description?: string | null,
@@ -13,7 +13,8 @@ export interface NewRetroDropState {
   loading: boolean,
   ipfs: string | null,
   type: null | TRetroDropType,
-  decimals: null | number
+  decimals: null | number,
+  recipientsValue: string
 }
 
 export type NewRetroDropActions = ActionType<typeof actions>;

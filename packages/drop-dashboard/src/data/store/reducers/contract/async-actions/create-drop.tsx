@@ -18,7 +18,8 @@ export default async function createDrop(
 	tokenAddress: string,
 	ipfsHash: string,
 	chainId: number,
-	type: TRetroDropType
+	type: TRetroDropType,
+	callback: () => void
 ) {
 	dispatch(actionsContract.setLoading(true))
 	try {
@@ -35,7 +36,8 @@ export default async function createDrop(
 	}
   
 	dispatch(actionsContract.setLoading(false))
-	dispatch(actionsNewRetroDrop.setStep('give_approval'))
+	dispatch(actionsNewRetroDrop.completeStep('deploy_contract'))
+	callback()
 }
 
 

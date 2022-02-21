@@ -2,8 +2,8 @@ import { action } from 'typesafe-actions';
 import { Constants } from './constants';
 import { TRetroDropStep, TRetroDropType } from 'types'
 
-export function setStep(step: TRetroDropStep) {
-  return action(Constants.DROP_SET_STEP, {
+export function completeStep(step: TRetroDropStep) {
+  return action(Constants.DROP_COMPLETE_STEP, {
     step
   })
 }
@@ -65,6 +65,12 @@ export function setType(type: TRetroDropType) {
 export function setDecimals(decimals: number) {
   return action(Constants.DROP_SET_DECIMALS, {
     decimals
+  })
+}
+
+export function setRecipientsValue(recipientsValue: string) {
+  return action(Constants.DROP_SET_RECIPIENTS_VALUE, {
+    recipientsValue
   })
 }
 

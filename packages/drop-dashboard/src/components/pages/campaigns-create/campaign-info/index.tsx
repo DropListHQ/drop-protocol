@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
 import {
   WidgetInput,
   WidgetControls,
@@ -16,30 +16,26 @@ import { Dispatch } from 'redux';
 import { NewRetroDropActions } from 'data/store/reducers/new-retro-drop/types'
 import { connect } from 'react-redux'
 import { TRetroDropType } from 'types';
+import { useHistory } from 'react-router-dom'
 
 type TProps = {
-  dropTitle: string,
-  dropLogoURL: string,
-  dropDescription: string,
-  setDropTitle: (value: string) => void,
-  setDropLogoURL: (value: string) => void,
-  setDropDescription: (value: string) => void,
   cancel: () => void
 }
 
 const mapStateToProps = ({
   user: { address, provider, chainId },
-  newRetroDrop: { loading, step, tokenAddress, ipfs, merkleTree, type },
+  newRetroDrop: { loading, stepsCompleted, tokenAddress, ipfs, merkleTree, type, title, description, logoURL },
 }: RootState) => ({
   loading,
   address,
   provider,
   ipfs,
-  step,
+  stepsCompleted,
   tokenAddress,
   merkleTree,
   chainId,
-  type
+  type,
+  title, description, logoURL
 })
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
   return {
@@ -50,7 +46,8 @@ const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
       logoURL: string,
       tokenAddress: string,
       chainId: number,
-      type: TRetroDropType
+      type: TRetroDropType,
+      callback: () => void
     ) => newRetroDropAsyncActions.createIPFS(
       dispatch,
       data,
@@ -59,7 +56,8 @@ const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
       logoURL,
       tokenAddress,
       chainId,
-      type
+      type,
+      callback
     ),
   }
 }
@@ -67,20 +65,24 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 
 
 const CampaignInfo: FC<ReduxType> = ({
-  dropTitle,
-  dropLogoURL,
-  dropDescription,
   loading,
-  setDropTitle,
-  setDropLogoURL,
-  setDropDescription,
   cancel,
   createIPFS,
   tokenAddress,
   merkleTree,
   chainId,
-  type
+  type,
+  stepsCompleted,
+  title, description, logoURL
 }) => {
+  const history = useHistory()
+  const [ dropTitle, setDropTitle ] = useState(title || '')
+  const [ dropLogoURL, setDropLogoURL ] = useState(logoURL || '')
+  const [ dropDescription, setDropDescription ] = useState(description || '')
+  useEffect(() => {
+    if (stepsCompleted.indexOf('create_tree') > -1) { return }
+    return history.push(`/campaigns/new?step=${stepsCompleted[stepsCompleted.length - 1]}`)
+  }, [])
   return <DoubleWidget>
     <Widget>
       <WidgetInput
@@ -114,7 +116,10 @@ const CampaignInfo: FC<ReduxType> = ({
           disabled={!dropTitle || !tokenAddress || loading}
           onClick={() => {
             if (!tokenAddress || !chainId || !type) { return }
-            createIPFS(merkleTree, dropTitle, dropDescription, dropLogoURL, tokenAddress, chainId, type)
+            createIPFS(merkleTree, dropTitle, dropDescription, dropLogoURL, tokenAddress, chainId, type, () => {
+              console.log({ dropLogoURL })
+              history.push(`/campaigns/new?step=deploy_contract`)
+            })
           }}
         />
       </WidgetControls>

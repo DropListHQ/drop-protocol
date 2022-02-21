@@ -4,7 +4,7 @@ import {
   TextLink
 } from 'components/common'
 
-import { TRetroDropStep, TRetroDropType, TRecipientsData } from 'types'
+import { TRetroDropStep, TRecipientsData } from 'types'
 import { RootState } from 'data/store';
 import * as newRetroDropActions from 'data/store/reducers/new-retro-drop/actions'
 
@@ -18,27 +18,29 @@ import CampaignInitial from './campaign-initial'
 import CampaignTree from './campaign-tree'
 import CampaignDeploy from './campaign-deploy'
 import CampaignApproval from './campaign-approval'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
+
+function isValidStep(step: string | null): step is TRetroDropStep {
+  if (!step) { return false }
+  return ['initialize', 'create_tree',  'publish_ipfs', 'deploy_contract', 'give_approval', 'choose_type'].indexOf(step) !== -1;
+}
 
 const mapStateToProps = ({
-  newRetroDrop: { step, type },
+  newRetroDrop: { type, stepsCompleted },
   user: { chainId }
 }: RootState) => ({
-  step,
   type,
-  chainId
+  chainId,
+  stepsCompleted
 })
 
 const mapDispatcherToProps = (dispatch: Dispatch<NewRetroDropActions>) => {
   return {
-      setStep: (step: TRetroDropStep) => dispatch(newRetroDropActions.setStep(step)),
-      clearDropData: () => dispatch(newRetroDropActions.clearNewRetroDrop()),
-      setType: (type: TRetroDropType) => dispatch(newRetroDropActions.setType(type))
+    clearDropData: () => dispatch(newRetroDropActions.clearNewRetroDrop())
   }
 }
 
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
-type onTypeChoose = (type: TRetroDropType) => void
 const defineTitie = (step: TRetroDropStep): string => {
   switch(step) {
     case 'choose_type':
@@ -77,31 +79,32 @@ const definePreviousStep = (step: TRetroDropStep): TRetroDropStep => {
   }
 }
 
+type defineStep = () => TRetroDropStep
 
 const CampaignsCreate: FC<ReduxType> = ({
-  setStep,
-  step,
-  setType,
-  type,
   chainId,
-  clearDropData
+  clearDropData,
+  stepsCompleted
 }) => {  
   const [ recipients, setRecipients ] = useState<TRecipientsData>({})
-  const [ dropTitle, setDropTitle ] = useState('')
-  const [ dropLogoURL, setDropLogoURL ] = useState('')
-  const [ dropDescription, setDropDescription ] = useState('')
+
   const history = useHistory()
+  let { search } = useLocation();
+  const query = new URLSearchParams(search)
+  const defineStep: defineStep = () => {
+    const step = query.get('step')
+    if (isValidStep(step)) {
+      return step
+    }
+    return 'choose_type'
+  }
+  const step = defineStep()
   const cancel = () => clearDropData()
   const back = () => {
     if (step === 'choose_type') {
       return history.push('/')
     }
-    setStep(definePreviousStep(step))
-  }
-  
-  const onTypeChoose:onTypeChoose = type => {
-    setType(type)
-    setStep('initialize')
+    history.push(`/campaigns/new?step=${definePreviousStep(step)}`)
   }
 
   useEffect(() => {
@@ -125,14 +128,12 @@ const CampaignsCreate: FC<ReduxType> = ({
       case 'choose_type':
         return <>
           {bredcrumbs}
-          <CampaignType onTypeChoose={onTypeChoose} />
+          <CampaignType />
         </>
       case 'initialize':
         return <>
           {bredcrumbs}
           <CampaignInitial
-            dropLogoURL={dropLogoURL}
-            dropDescription={dropDescription}
             cancel={cancel}
           />
         </>
@@ -149,12 +150,6 @@ const CampaignsCreate: FC<ReduxType> = ({
         return <>
           {bredcrumbs}
           <CampaignInfo
-            dropTitle={dropTitle}
-            dropLogoURL={dropLogoURL}
-            dropDescription={dropDescription}
-            setDropTitle={setDropTitle}
-            setDropLogoURL={setDropLogoURL}
-            setDropDescription={setDropDescription}
             cancel={cancel}
           />
         </>
@@ -162,9 +157,6 @@ const CampaignsCreate: FC<ReduxType> = ({
         return <>
           {bredcrumbs}
           <CampaignDeploy
-            dropTitle={dropTitle}
-            dropDescription={dropDescription}
-            dropLogoURL={dropLogoURL}
             recipients={recipients}
             cancel={cancel}
           />
@@ -175,9 +167,6 @@ const CampaignsCreate: FC<ReduxType> = ({
           <CampaignApproval
             recipients={recipients}
             cancel={cancel}
-            dropTitle={dropTitle}
-            dropLogoURL={dropLogoURL}
-            dropDescription={dropDescription}
           />
         </>
       default:
