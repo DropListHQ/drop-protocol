@@ -1,4 +1,5 @@
 import axios from 'axios'
+import communitiesConfig from 'configs/communities'
 
 const instance = axios.create({
   baseURL: 'https://api.studio.thegraph.com/query/9597/dropowners32/0.0.2'
@@ -43,10 +44,14 @@ const getCommunityData = async (contract: string[]) => {
 }
 
 const getOwners = async (contract: string): Promise<TOwners> => {
+  const instance = axios.create({
+    baseURL: communitiesConfig[contract].url
+  });
   const response = await instance.post('/', {
     query: `query NftOwners($contract: String) {
       nfts(
-        where:{ contract:$contract }
+        where:{ contract:$contract },
+        first: 999
       ){
         tokenID
         nftOwners {
