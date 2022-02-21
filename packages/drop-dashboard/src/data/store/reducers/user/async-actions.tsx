@@ -1,6 +1,7 @@
 import { Dispatch } from 'redux';
 import * as actions from './actions';
 import { UserActions } from './types';
+import { IMetamaskError } from 'types'
 import Web3Modal from "web3modal";
 import { Web3Provider } from '@ethersproject/providers'
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -72,10 +73,6 @@ export async function connectWallet (dispatch: Dispatch<UserActions>) {
   });
 }
 
-interface MetamaskError extends Error {
-  code?: number;
-}
-
 export async function switchWallet (
   dispatch: Dispatch<UserActions>,
 	provider: any,
@@ -89,7 +86,7 @@ export async function switchWallet (
     });
   } catch (err) {
       
-      const switchError = err as MetamaskError;
+      const switchError = err as IMetamaskError;
       if (switchError.code && switchError.code === 4902) {
         try {
           const chainObj = chains[chainId]
