@@ -51,7 +51,7 @@ const getOwners = async (contract: string): Promise<TOwners> => {
     query: `query NftOwners($contract: String) {
       nfts(
         where:{ contract:$contract },
-        first: 999
+        first: 5000
       ){
         tokenID
         nftOwners {
