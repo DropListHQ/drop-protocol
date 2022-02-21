@@ -2,6 +2,7 @@ import { Dispatch } from 'redux';
 import * as actionsCommunities from './actions';
 import { CommunitiesActions } from './types';
 import { communities } from 'data/api'
+import communitiesData from 'configs/communities'
 import { getCSV } from 'helpers'
 type TReduce = { owner: string, tokenID: string }[]
 
@@ -9,11 +10,16 @@ export async function getCommunityData(
   dispatch: Dispatch<CommunitiesActions>,
   contracts: string[]
 ) {
-  const res = await communities.getCommunityData(contracts)
-  const { data, errors } = res
-  console.log({ data })
-  if (errors) { return }
-  const { nftContracts } = data
+  // const res = await communities.getCommunityData(contracts)
+  // const { data, errors } = res
+  // console.log({ data })
+  // if (errors) { return }
+  // const { nftContracts } = data
+
+  const nftContracts = contracts.map(contract => {
+    return { ...communitiesData[contract], id: contract }
+  })
+  console.log({ nftContracts })
 
   dispatch(actionsCommunities.setCommunities(nftContracts))
 }

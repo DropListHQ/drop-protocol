@@ -54,7 +54,7 @@ const Communities: FC<ReduxType & TProps> = ({ address, connectWallet, loadedCom
           return <CommunityWidget
             title={item.name || 'Untitled'}
             key={item.id}
-            description={`${item.nftOwners.length} holders`}
+            description={`${item.numOwners} holders`}
             buttonTitle='Download .csv'
             action={() => {
               // console.log('hello')

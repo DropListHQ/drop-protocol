@@ -77,7 +77,7 @@ const CampaignsPage: FC<ReduxType & TProps> = ({ retroDrops, address, connectWal
           return <CommunityWidget
             title={item.name || 'Untitled'}
             key={item.id}
-            description={`${item.nftOwners.length} holders`}
+            description={`${item.numOwners} holders`}
             buttonTitle='Download .csv'
             action={() => {
               // console.log('hello')
