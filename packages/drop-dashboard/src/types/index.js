@@ -9,6 +9,7 @@ import TCommunities from './communities'
 import MerkleDistributorInfoERC1155 from './merkle-distributor-info-erc1155'
 import MerkleDistributorInfoERC721 from './merkle-distributor-info-erc721'
 import MerkleDistributorInfoERC20 from './merkle-distributor-info-erc20'
+import IMetamaskError from './metamask-error'
 
 export {
   TMerkleTree,
@@ -24,5 +25,6 @@ export {
   TItemERC20,
   MerkleDistributorInfoERC1155,
   MerkleDistributorInfoERC721,
-  MerkleDistributorInfoERC20
+  MerkleDistributorInfoERC20,
+  IMetamaskError
 }

@@ -4,7 +4,7 @@ import * as actionsNewRetroDrop from 'data/store/reducers/new-retro-drop/actions
 import { ContractActions } from '../types';
 import { NewRetroDropActions } from 'data/store/reducers/new-retro-drop/types';
 import { ethers } from 'ethers';
-import { TMerkleTree, TRetroDropType } from 'types'
+import { TMerkleTree, TRetroDropType, IMetamaskError } from 'types'
 import contracts from 'configs/contracts'
 import { DropFactoryInterface } from '@drop-protocol/drop-sdk'
 import { hexlifyIpfsHash } from 'helpers'
@@ -26,16 +26,24 @@ export default async function createDrop(
 		const contractData = contracts[chainId]
 		const factoryAddress = contractData.factory
 		const templateAddress = contractData[type]
+		console.log({
+			contractData,
+			factoryAddress,
+			templateAddress
+		})
 		let drop = await deployContract(provider, merkleTree, tokenAddress, ipfsHash, factoryAddress, templateAddress)
 		dispatch(actionsNewRetroDrop.setDropAddress(drop))
+		dispatch(actionsContract.setLoading(false))
 		
 	} catch (err) {
-		console.log({
-			err
-		})
+		const error = err as IMetamaskError;
+		if (error.code === 4001) {
+			return dispatch(actionsContract.setLoading(false))
+		}
+		dispatch(actionsContract.setLoading(false))
 	}
   
-	dispatch(actionsContract.setLoading(false))
+	
 	dispatch(actionsNewRetroDrop.completeStep('deploy_contract'))
 	callback()
 }
@@ -52,6 +60,13 @@ const deployContract = async (
 	const signer = await provider.getSigner()
 	const proxyContract = await new ethers.Contract(factoryAddress, DropFactoryInterface, signer)
 	const ipfsHexlified = hexlifyIpfsHash(ipfsHash)
+	console.log({
+		1: templateAddress,
+		2: tokenAddress,
+		3: merkleTree.merkleRoot,
+		4: DECEMBER_31_2325,
+		5: ipfsHexlified
+	})
 	await proxyContract.createDrop(
 		templateAddress,
 		tokenAddress,
@@ -73,7 +88,7 @@ const deployContract = async (
 				if (ipfsHexlified === ipfs) {
 					resolve(drop)
 				}
-		})
+			})
 		})
 	}
 	return await checkReceipt()
