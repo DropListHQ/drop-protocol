@@ -93,6 +93,7 @@ const ClaimPage: FC<ReduxType> = ({
     }
   }, [provider, address, chainId, dropSDK])
 
+  if (!dropSDK) return null
   return <Page noHeader={step === 'check_eligibility'}>
     <Container>
       {screen}

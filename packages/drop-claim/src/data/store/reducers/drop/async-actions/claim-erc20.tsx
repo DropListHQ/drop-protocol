@@ -4,11 +4,11 @@ import * as actionsDrop from '../actions';
 import { DropActions } from '../types';
 import { TokenActions } from '../../token/types';
 import { ethers } from 'ethers'
-import { DropInterfaceERC20 } from '@drop-protocol/drop-sdk'
+import DropSDK, { DropInterfaceERC20 } from '@drop-protocol/drop-sdk'
 
-const checkReceipt = async function (contractInstance: any, currentIndex: number): Promise<string> {
+const checkReceipt = async function(contractInstance: any, currentIndex: number): Promise<string> {
   return new Promise((resolve, reject) => {
-    contractInstance.on('ClaimedERC20', (index: number, account: string, amount: string, event: any) => { 
+    contractInstance.on('ClaimedERC20', (index: number, account: string, amount: string, event: any) => {
       if (currentIndex === Number(index)) {
         const { transactionHash } = event
         resolve(transactionHash)
@@ -18,9 +18,10 @@ const checkReceipt = async function (contractInstance: any, currentIndex: number
 }
 
 export default async function claim(
-	dispatch: Dispatch<DropActions> & Dispatch<TokenActions>,
+  dispatch: Dispatch<DropActions> & Dispatch<TokenActions>,
   provider: any,
-	index: number,
+  dropSDK: DropSDK,
+  index: number,
   amount: string,
   address: string,
   dropAddress: string,
@@ -29,7 +30,7 @@ export default async function claim(
   try {
     const contractInstanceProvider = new ethers.Contract(dropAddress, DropInterfaceERC20, provider)
     dispatch(actionsDrop.setStep('claiming_process'))
-    const hash = await claimTokens(provider, index, amount, address, dropAddress, merkleProof)
+    const hash = await claimTokens(provider, dropSDK, index, amount, address, dropAddress, merkleProof)
     dispatch(actionsDrop.setHash(hash))
     const updatedHash = await checkReceipt(contractInstanceProvider, index)
     if (updatedHash) {
@@ -43,7 +44,8 @@ export default async function claim(
 
 const claimTokens = async (
   provider: any,
-	index: number,
+  dropSDK: DropSDK,
+  index: number,
   amount: string,
   address: string,
   dropAddress: string,
