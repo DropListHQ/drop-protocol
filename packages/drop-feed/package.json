@@ -1,0 +1,73 @@
+{
+  "name": "@drop-protocol/drop-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@craco/craco": "^6.4.0",
+    "@drop-protocol/drop-sdk": "^0.2.1",
+    "@reduxjs/toolkit": "^1.6.2",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router-dom": "^5.3.1",
+    "@walletconnect/web3-provider": "^1.7.1",
+    "axios": "^0.24.0",
+    "classnames": "^2.3.1",
+    "ethereumjs-util": "^7.1.3",
+    "ethers": "^5.5.1",
+    "jest": "26.6.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-error-overlay": "6.0.9",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^5.3.0",
+    "react-scripts": "4.0.3",
+    "react-scrollbars-custom": "^4.0.27",
+    "react-select": "^5.1.0",
+    "redux": "^4.1.1",
+    "redux-saga": "^1.1.3",
+    "redux-thunk": "^2.4.1",
+    "styled-components": "^5.3.1",
+    "typescript": "^4.1.2",
+    "web-vitals": "^1.0.1",
+    "web3modal": "^1.9.4"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react-redux": "^7.1.20",
+    "@types/styled-components": "^5.1.15",
+    "babel-eslint": "^10.1.0",
+    "typesafe-actions": "^5.1.0"
+  },
+  "resolutions": {
+    "react-scripts/jest": "26.6.0",
+    "react-error-overlay": "6.0.9"
+  }
+}
