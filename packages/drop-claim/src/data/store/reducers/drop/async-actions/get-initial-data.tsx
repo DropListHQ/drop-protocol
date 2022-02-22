@@ -9,7 +9,7 @@ import { utils } from 'ethers'
 import getERC1155Data from './get-erc1155-token-data'
 import getERC721Data from './get-erc721-token-data'
 import getERC20Data from './get-erc20-token-data'
-import DropSDK, { Drop } from '@drop-protocol/drop-sdk'
+import DropSDK, { DropERC20, DropERC721, DropERC1155 } from '@drop-protocol/drop-sdk'
 
 export default async function getData(
   dispatch: Dispatch<DropActions> & Dispatch<TokenActions>,
@@ -20,7 +20,7 @@ export default async function getData(
   dropSDK: DropSDK
 ) {
   dispatch(actionsDrop.setLoading(true))
-  const drop: Drop = await dropSDK.getDrop(ipfshash)
+  const drop: DropERC20 | DropERC721 | DropERC1155 = await dropSDK.getDrop(ipfshash)
 
   const allowedAddressList = drop.getRecipients()
   dispatch(actionsDrop.setChainId(drop.chainId))
