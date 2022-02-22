@@ -1,6 +1,9 @@
+import { Contract } from 'ethers';
 import { TDropMetadata, TRecipientsData, TDropType } from '../types';
 
+
 export default abstract class DropBase {
+    public readonly contract: Contract;
     public readonly ipfshash: string;
     public readonly metadata: TDropMetadata;
     public readonly chainId: number;
@@ -20,11 +23,11 @@ export default abstract class DropBase {
         this.address = address;
     }
 
-    getRecipients() {
+    getRecipients(): string[] {
         return Object.keys(this.claims)
     }
 
-    hasReceiverClaimed(recipient: string) {
+    hasReceiverClaimed(recipient: string): boolean {
         return this.contract.isClaimed(this.claims[recipient].index);
     }
 }

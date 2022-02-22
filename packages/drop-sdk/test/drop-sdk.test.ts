@@ -1,14 +1,15 @@
 import DropSDK from '../src'
 import { ethers } from 'ethers';
+require('dotenv').config()
 
 describe('#getDrop', () => {
     it('should return drop instance', async () => {
-
         const chainId = 4;
         const ipfshash = "Qme99gNyxamTfK6qWL8jfr6g9idEYvJREBJygDz334Z7QJ";
         const baseUrl = "https://gateway.pinata.cloud/ipfs"
 
-        const provider = ethers.getDefaultProvider('rinkeby');
+        const infuraProjectId = process.env.INFURA_PROJECT_ID
+        const provider = new ethers.providers.InfuraProvider('rinkeby', infuraProjectId);
         const dropSDK = new DropSDK(provider, chainId, baseUrl);
 
         const drop = await dropSDK.getDrop(ipfshash);
