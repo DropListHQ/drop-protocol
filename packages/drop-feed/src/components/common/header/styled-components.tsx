@@ -13,7 +13,6 @@ export const Header = styled.div`
 export const HeaderTitle = styled.h2`
   color: ${props => props.theme.primaryTextColor};
   font-size: 16px;
-  flex: 1;
   display: flex;
   align-items: center;
   
@@ -25,6 +24,7 @@ export const HeaderTitle = styled.h2`
 export const HeaderInfo = styled.div`
   display: flex;
   align-items: center;
+  margin-left: auto;
 `;
 
 export const HeaderMode = styled.div`
@@ -71,7 +71,7 @@ export const HeaderUserInfo = styled.div`
 export const HeaderMenu = styled.div`
   display: flex;
   padding: 0;
-  margin: 0;
+  margin: 0 0 0 74px;
 `
 export const HeaderMenuItemActiveClass = 'headerMenuItemActiveClass'
 

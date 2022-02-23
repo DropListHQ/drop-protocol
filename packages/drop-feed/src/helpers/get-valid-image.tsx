@@ -7,7 +7,6 @@ const getValidImage = async (imageUrl: string, showImage?: boolean) => {
   try {
     const checkImage = await fetch(imageUrl)
     if (checkImage.status > 299) { throw new Error() }
-    console.log(checkImage.status)
     return imageUrl
   } catch (err) {
     if (showImage) { alert('Cannot add image due to usage rights limitation. Please use other image.') }

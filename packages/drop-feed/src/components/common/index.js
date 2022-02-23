@@ -10,16 +10,16 @@ import Widget from './widget'
 import CommunityWidget from './comminity-widget'
 import Footer from './footer'
 import Textarea from './textarea'
-import DataBlock from './data-block'
 import Loader from './loader'
 import Title from './title'
-import Campaign from './campaign'
+import Drop from './drop'
 import Breadcrumbs from './breadcrumbs'
 import InfoBlock from './info-block'
 import PreviewWidget from './preview-widget'
 import TextLink from './text-link'
 import AnchorLink from './anchor-link'
 import MiniPopup from './mini-popup'
+import Text from './text'
 
 export {
   Header,
@@ -32,16 +32,16 @@ export {
   Select,
   Widget,
   Textarea,
-  DataBlock,
   Loader,
   Title,
   CommunityWidget,
   Footer,
-  Campaign,
+  Drop,
   Breadcrumbs,
   InfoBlock,
   PreviewWidget,
   TextLink,
   AnchorLink,
-  MiniPopup
+  MiniPopup,
+  Text
 }

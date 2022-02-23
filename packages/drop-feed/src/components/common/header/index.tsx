@@ -68,15 +68,7 @@ const HeaderComponent: FC<Props & ReduxType> = ({ chainId, address, connectWalle
 						exact
 						activeClassName={HeaderMenuItemActiveClass}
 					>
-						My campaigns
-					</HeaderMenuItem>
-
-					<HeaderMenuItem
-						exact
-						to='/communities'
-						activeClassName={HeaderMenuItemActiveClass}
-					>
-						Communities
+						Feed
 					</HeaderMenuItem>
 				</HeaderMenu>
 				<HeaderInfo>

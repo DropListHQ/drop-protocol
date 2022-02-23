@@ -7,10 +7,7 @@ import ProtectedRoute from './protected-route'
 import {
   NotFound,
   Page,
-  Campaigns,
-  CampaignsCreate,
-  CampaignsDetails,
-  Communities
+  Feed
 //   NotFound,
 //   ProtectedRoute,
 //   Authorize
@@ -36,7 +33,7 @@ const mapDispatcherToProps = (dispatch: Dispatch<UserActions | CommunitiesAction
 const mapStateToProps = ({ user: { provider, address } }: RootState) => ({ provider, address })
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
 
-const AppRouter: FC<ReduxType> = ({ address, connectWallet, getCommunityData }) => {
+const AppRouter: FC<ReduxType> = ({ connectWallet, getCommunityData }) => {
   useEffect(() => {
     getCommunityData(Object.keys(communities))
   }, [])
@@ -44,23 +41,8 @@ const AppRouter: FC<ReduxType> = ({ address, connectWallet, getCommunityData }) 
   return <HashRouter>
     <Page>
       <Switch>
-
-        <ProtectedRoute
-          path='/campaigns/new'
-          exact={true}
-          loggedIn={Boolean(address)}
-          component={CampaignsCreate}
-        />
-        <ProtectedRoute
-          path='/campaigns/:id'
-          exact={true}
-          loggedIn={Boolean(address)}
-          component={CampaignsDetails}
-        />
-        <Route path='/communities' exact={true} render={props => <Communities
-          {...props}
-        />} />
-        <Route path='/' exact={true} render={props => <Campaigns
+        <Route path='/claim' exact={true} render={props => <h1>claim</h1>} />
+        <Route path='/' exact={true} render={props => <Feed
           connectWallet={connectWallet}
           {...props}
         />} />
