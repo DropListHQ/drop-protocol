@@ -24,3 +24,12 @@ export { MerkleDistributorInfoERC721, RecipientsDictFormatERC721, RecipientsArra
 
 // ABI
 export { DropFactoryInterface, DropInterfaceERC20, DropInterfaceERC721, DropInterfaceERC1155 } from "./contracts/interfaces"
+
+// TYPES
+export * from './types';
+export * from './Drop';
+
+
+// SDK
+import DropSDK from "./drop-sdk";
+export default DropSDK;

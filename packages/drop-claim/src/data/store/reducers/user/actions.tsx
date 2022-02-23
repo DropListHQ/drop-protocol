@@ -40,3 +40,14 @@ export function setChainId(chainId: number) {
     }
   )
 }
+
+export function setDropSDK(provider: any, chainId: number) {
+  return action(
+    Constants.USER_SET_DROP_SDK,
+    // payload
+    {
+      provider,
+      chainId
+    }
+  )
+}
