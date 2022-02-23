@@ -8,9 +8,9 @@ import {
   NotFound,
   ClaimPage,
   CampaignFinished
-//   NotFound,
-//   ProtectedRoute,
-//   Authorize
+  //   NotFound,
+  //   ProtectedRoute,
+  //   Authorize
 } from 'components/pages'
 import { Dispatch } from 'redux';
 import * as actions from 'data/store/reducers/user/actions'
@@ -28,23 +28,24 @@ const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42] })
 
 const mapDispatcherToProps = (dispatch: Dispatch<UserActions>) => {
   return {
-      setAddress: (address: string) => dispatch(actions.setAddress(address)),
-      setProvider: (provider: any) => dispatch(actions.setProvider(provider)),
-      setChainId: (chainId: number) => dispatch(actions.setChainId(chainId))
+    setAddress: (address: string) => dispatch(actions.setAddress(address)),
+    setProvider: (provider: any) => dispatch(actions.setProvider(provider)),
+    setChainId: (chainId: number) => dispatch(actions.setChainId(chainId)),
+    setDropSDK: (provider: any, chainId: number) => dispatch(actions.setDropSDK(provider, chainId))
   }
 }
 const mapStateToProps = ({ user: { provider, address, chainId } }: RootState) => ({ provider, address, chainId })
 
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
 
-const AppRouter: FC<ReduxType> = ({ setAddress, setProvider, setChainId, provider, address }) => {
+const AppRouter: FC<ReduxType> = ({ setAddress, setProvider, setChainId, setDropSDK, provider, address }) => {
   const context = useWeb3React<Web3Provider>()
   const { library, activate, active, error, chainId, account } = context
   console.log({ active, error })
 
   useEffect(() => {
     if (provider) { return }
-    async function defineProvider () {
+    async function defineProvider() {
       // const providerOptions = {
       //   /* See Provider Options Section */
       // };
@@ -53,9 +54,9 @@ const AppRouter: FC<ReduxType> = ({ setAddress, setProvider, setChainId, provide
       //   cacheProvider: true, // optional
       //   providerOptions // required
       // })
-      
+
       try {
-        if (error) { throw new Error('Error occured')}
+        if (error) { throw new Error('Error occured') }
         activate(injected)
         // const provider = await web3Modal.connect();
         // provider.on("accountsChanged", (accounts: string[]) => {
@@ -64,7 +65,7 @@ const AppRouter: FC<ReduxType> = ({ setAddress, setProvider, setChainId, provide
         // provider.on("chainChanged", (chainId: number) => {
         //   window.location.reload()
         // });
-        
+
         // const providerWeb3 = new Web3Provider(provider)
         if (!library) { return }
         const { chainId } = await library.getNetwork()
@@ -72,13 +73,14 @@ const AppRouter: FC<ReduxType> = ({ setAddress, setProvider, setChainId, provide
         setAddress(accounts[0])
         setChainId(chainId)
         setProvider(library)
+        setDropSDK(library, chainId)
       } catch (err) {
         console.error(err)
         setProvider(null)
       }
     }
-    
-    
+
+
     defineProvider()
   }, [active, error])
 
@@ -90,11 +92,12 @@ const AppRouter: FC<ReduxType> = ({ setAddress, setProvider, setChainId, provide
       setAddress(accounts[0])
       setChainId(chainId)
       setProvider(library)
+      setDropSDK(library, chainId)
     }
     reload()
   }, [chainId, account, library])
 
-  
+
 
   if (!active && !error) {
     return <ScreenLoader />

@@ -3,7 +3,7 @@ import { RootState } from 'data/store'
 import { connect } from 'react-redux'
 import { shortenString, defineNetworkName } from 'helpers'
 import { Title, ScreenButton, TokenImageHuge } from './styled-components'
-import { TDropType } from 'types'
+import { TDropType } from '@drop-protocol/drop-sdk'
 import { ethers, utils } from 'ethers'
 
 const mapStateToProps = ({
@@ -54,21 +54,25 @@ const defineTitle: TDefineTitle = (tokenName, address, type, amount, decimals) =
 const ClaimingFinished: FC<ReduxType> = ({ image, amount, decimals, type, name, address, chainId, tokenId, tokenAddress, logoURL }) => {
   const title = defineTitle(name, shortenString(address), type, amount, decimals)
   return <>
-    {image && <TokenImageHuge
-      src={image}
-      alt={name}
-    />}
-    {title}
-    {chainId && tokenId && tokenAddress && <ScreenButton
-      title='View NFT on OpenSea'
-      onClick={() => {
-        window.open(defineOpenseaURL({
-          chainId,
-          tokenId,
-          tokenAddress
-        }))
-      }}
-    />}
+    {
+      image && <TokenImageHuge
+        src={image}
+        alt={name}
+        />
+    }
+  { title }
+  {
+  chainId && tokenId && tokenAddress && <ScreenButton
+    title='View NFT on OpenSea'
+    onClick={() => {
+      window.open(defineOpenseaURL({
+        chainId,
+        tokenId,
+        tokenAddress
+      }))
+    } }
+    />
+  }
   </>
 }
 
