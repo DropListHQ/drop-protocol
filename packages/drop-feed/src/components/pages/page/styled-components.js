@@ -6,8 +6,7 @@ export const Page = styled.div`
 
 
 export const MainContent = styled.div`
-  max-width: 980px;
-  margin: 0 auto;
+  
 `;
 
 export const Content = styled.main`

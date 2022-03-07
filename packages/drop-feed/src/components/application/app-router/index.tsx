@@ -7,7 +7,9 @@ import ProtectedRoute from './protected-route'
 import {
   NotFound,
   Page,
-  Feed
+  Feed,
+  Claim,
+  Drop
 //   NotFound,
 //   ProtectedRoute,
 //   Authorize
@@ -41,7 +43,10 @@ const AppRouter: FC<ReduxType> = ({ connectWallet, getCommunityData }) => {
   return <HashRouter>
     <Page>
       <Switch>
-        <Route path='/claim' exact={true} render={props => <h1>claim</h1>} />
+        <Route path='/claim/:ipfs'><Claim /></Route>
+        <Route path='/drops/:id'>
+          <Drop />
+        </Route>
         <Route path='/' exact={true} render={props => <Feed
           connectWallet={connectWallet}
           {...props}

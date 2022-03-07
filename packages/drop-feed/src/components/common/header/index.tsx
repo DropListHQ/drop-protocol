@@ -11,7 +11,8 @@ import {
 		ConnectionIndicator,
 		MiniPopupCustomItem,
 		NetworkIndicator,
-		NetworkIndicatorClass
+		NetworkIndicatorClass,
+		HeaderContent
 		// @ts-ignore
 } from './styled-components.tsx'
 import { Dispatch } from 'redux';
@@ -58,7 +59,8 @@ const HeaderComponent: FC<Props & ReduxType> = ({ chainId, address, connectWalle
 	</MiniPopup>
 
 	return <ThemeProvider theme={themes.light}>
-			<Header>
+		<Header>
+			<HeaderContent>
 				<HeaderTitle>
 					<HeaderLogoLink to='/'><Icons.LinkdropLogo />DropList</HeaderLogoLink>
 				</HeaderTitle>
@@ -86,7 +88,8 @@ const HeaderComponent: FC<Props & ReduxType> = ({ chainId, address, connectWalle
 						Connect
 					</HeaderUserInfo>}
 				</HeaderInfo>
-			</Header>
+			</HeaderContent>
+		</Header>
 	</ThemeProvider>
 }
 

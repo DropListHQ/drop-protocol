@@ -4,7 +4,8 @@ import {
     InputContainer,
     InputField,
     InputTitle,
-    InputError
+    InputError,
+    InputInfo
 } from './styled-components'
 
 import { ThemeProvider } from 'styled-components'
@@ -17,12 +18,12 @@ interface Props {
   title?: string,
   placeholder?: string,
   type?: string,
-  name?: string,
   disabled?: boolean,
   onChange: (value: string) => string,
   error?: string,
   value: string,
-  className?: string
+  className?: string,
+  info?: string
 }
 
 const InputComponent: FC<Props> = ({
@@ -32,7 +33,7 @@ const InputComponent: FC<Props> = ({
   type = 'text',
   onChange,
   error,
-  name,
+  info,
   value = '',
   className
 }) => {
@@ -52,6 +53,7 @@ const InputComponent: FC<Props> = ({
           />
         </InputContainer>
         {error && <InputError>{error}</InputError>}
+        {info && <InputInfo>{info}</InputInfo>}
     </ThemeProvider>
 }
 

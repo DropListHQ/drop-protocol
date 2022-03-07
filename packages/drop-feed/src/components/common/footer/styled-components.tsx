@@ -1,7 +1,16 @@
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+import Container from '../container'
 
 export const Footer = styled.footer`
+  
+`
+
+type TFooterContentProps = {
+  className?: string
+}
+
+export const FooterContent = styled(Container)<TFooterContentProps>`
   display: flex;
   height: 60px;
   align-items: center;
@@ -9,7 +18,8 @@ export const Footer = styled.footer`
   padding: 0 20px;
   width: 100%;
   color: ${props => props.theme.primaryTextColor};
-`
+`;
+
 export const FooterMenu = styled.div`
   display: flex;  
 `

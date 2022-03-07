@@ -29,7 +29,6 @@ export const InputTitle = styled.h3<InputTitleProps>`
   color: ${props => props.theme.primaryTextColor};
 `
 
-
 export const InputField = styled.input<InputFieldProps>`
   color: ${props => props.theme.primaryTextColor};
   font-size: 14px;
@@ -54,4 +53,12 @@ export const InputError = styled.div`
   font-size: 12px;
   line-height: 16px;
   color: ${props => props.theme.dangerTextColor};
+`
+
+export const InputInfo = styled.div`
+  margin-top: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  color: ${props => props.theme.noteTextColor};
 `

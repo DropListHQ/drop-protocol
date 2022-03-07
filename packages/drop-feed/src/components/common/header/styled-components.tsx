@@ -1,13 +1,21 @@
 import styled, { css } from 'styled-components';
 import { NavLink } from 'react-router-dom'
+import Container from '../container'
 
-export const Header = styled.div`
+export const Header = styled.header`
+  border-bottom: 1px solid ${props => props.theme.primaryBorderColor};
+`;
+
+type THeaderContentProps = {
+  className?: string
+}
+
+export const HeaderContent = styled(Container)<THeaderContentProps>`
   display: flex;
   align-items: center;
   justify-items: space-between;
   width: 100%;
   height: 68px;
-  padding: 0 20px;
 `;
 
 export const HeaderTitle = styled.h2`

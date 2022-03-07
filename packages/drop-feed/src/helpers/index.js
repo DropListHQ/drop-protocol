@@ -15,6 +15,9 @@ import getValidImage from './get-valid-image'
 import countTotalTokens from './count-total-tokens'
 import defineEtherscanUrl from './define-etherscan-url'
 import toHex from './to-hex'
+import defineExplorerURL from './define-explorer-url'
+import IPFSRedefineUrl from './ipfs-redefine-url'
+import secondsToDhms from './convert-seconds-to-dhm'
 
 export {
   shortenString,
@@ -31,5 +34,8 @@ export {
   getValidImage,
   countTotalTokens,
   defineEtherscanUrl,
-  toHex
+  toHex,
+  defineExplorerURL,
+  IPFSRedefineUrl,
+  secondsToDhms
 }

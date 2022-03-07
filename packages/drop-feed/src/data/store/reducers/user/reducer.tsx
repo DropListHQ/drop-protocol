@@ -5,7 +5,8 @@ const initialState: UserState = {
   address: '',
   loading: false,
   provider: null,
-  chainId: null
+  chainId: null,
+  dropSDK: undefined
 };
 
 export function userReducer(

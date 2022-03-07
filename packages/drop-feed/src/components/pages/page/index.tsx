@@ -1,6 +1,6 @@
 import React, { FC } from 'react'
 // import { functionalActions } from 'decorators'
-import { Header, Footer } from 'components/common'
+import { Header, Footer, Container } from 'components/common'
 import { Page, MainContent, Content } from './styled-components'
 import { ThemeProvider } from 'styled-components'
 import themes from 'themes'
@@ -18,7 +18,9 @@ const PageComponent: FC<PageProps> = ({ children, account, chainId }) => {
         <MainContent>
           <Header />
           <Content>
-            {children}
+            <Container>
+              {children}
+            </Container>
           </Content>
           <Footer />
         </MainContent>

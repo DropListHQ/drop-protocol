@@ -1,5 +1,6 @@
 import TMerkleTree from './merkle-tree'
-import TRetroDropStep from './retro-drop-step'
+import TDropCreateStep from './drop-create-step'
+import TDropClaimStep from './drop-claim-step'
 import TRetroDrop from './retro-drop'
 import TRetroDropType from './retro-drop-type'
 import TRetroDropStatus from './retro-drop-status'
@@ -13,11 +14,12 @@ import IMetamaskError from './metamask-error'
 
 export {
   TMerkleTree,
-  TRetroDropStep,
+  TDropCreateStep,
   TRetroDrop,
   TRetroDropType,
   TRetroDropStatus,
   TRecipientsData,
+  TDropClaimStep,
   TOwners,
   TCommunities,
   TItemERC1155,

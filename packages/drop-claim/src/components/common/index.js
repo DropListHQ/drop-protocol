@@ -6,9 +6,9 @@ import Textarea from './textarea'
 import Loader from './loader'
 import Title from './title'
 import TokenImage from './token-image'
-import ScreenLoader from './screen-loader'
 import Text from './text'
 import FramedIcon from './framed-icon'
+import ScreenLoader from './screen-loader'
 import Widget from './widget'
 
 export {

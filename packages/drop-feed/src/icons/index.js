@@ -10,6 +10,9 @@ import { ReactComponent as StarMenuIcon } from './star-menu-icon.svg';
 import { ReactComponent as GoBackIcon } from './go-back-icon.svg';
 import { ReactComponent as DownloadIcon } from './download-icon.svg'
 import { ReactComponent as ExternalLinkIcon } from './external-link-icon.svg'
+import { ReactComponent as BlueArrowIcon } from './blue-arrow-icon.svg';
+import { ReactComponent as ArrowIcon } from './arrow-icon.svg';
+import { ReactComponent as DroplistLogo } from './droplist-logo.svg';
 
 const Icons = {
   EthereumLogo,
@@ -23,7 +26,10 @@ const Icons = {
   LinkdropWhiteLogo,
   GoBackIcon,
   DownloadIcon,
-  ExternalLinkIcon
+  ExternalLinkIcon,
+  BlueArrowIcon,
+  ArrowIcon,
+  DroplistLogo
 }
 
 export default Icons

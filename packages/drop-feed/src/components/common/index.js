@@ -20,6 +20,11 @@ import TextLink from './text-link'
 import AnchorLink from './anchor-link'
 import MiniPopup from './mini-popup'
 import Text from './text'
+import TokenImage from './token-image'
+import FramedIcon from './framed-icon'
+import ScreenLoader from './screen-loader'
+import Container from './container'
+import Timer from './timer'
 
 export {
   Header,
@@ -43,5 +48,10 @@ export {
   TextLink,
   AnchorLink,
   MiniPopup,
-  Text
+  Text,
+  TokenImage,
+  FramedIcon,
+  ScreenLoader,
+  Container,
+  Timer
 }
