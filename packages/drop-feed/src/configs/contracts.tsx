@@ -1,8 +1,8 @@
-import { TRetroDropType } from 'types'
+import { TDropType } from 'types'
 
 type TContracts = {
   [networkId: string | number]: {
-    [key in TRetroDropType]: string
+    [key in TDropType]: string
   } & {
     factory: string;
   }

@@ -7,10 +7,11 @@ import {
   DropContent,
   DropContract,
   DropInfo,
+  DropLink,
   DropTagsContainer
 } from './styled-components'
 import { getValidImage } from 'helpers'
-import { TRetroDropType } from 'types'
+import { TDropType } from 'types'
 import { Tag } from 'components/common'
 import { defineNetworkName, shortenString } from 'helpers'
 
@@ -24,7 +25,7 @@ type TProps = {
   id: string,
   description: string,
   chainId: number,
-  type: TRetroDropType,
+  type: TDropType,
   address?: string
 }
 
@@ -49,7 +50,9 @@ const DropComponent: FC<TProps> = ({
   //   defineImage()
   // }, [])
   return <Drop>
-    <DropImage src={imageURL} alt={title} address={address} />
+    <DropLink to={`/drops/${id}`}>
+      <DropImage src={imageURL} alt={title} address={address} />
+    </DropLink>
     <DropContent>
       <DropInfo>
         <DropContract>
@@ -60,7 +63,7 @@ const DropComponent: FC<TProps> = ({
           <Tag title={type.toUpperCase()} status='default'/>
         </DropTagsContainer>
       </DropInfo>
-      <DropTitle>{title}</DropTitle>
+      <DropLink to={`/drops/${id}`}><DropTitle>{title}</DropTitle></DropLink>
       <DropDescription>{description}</DropDescription>
     </DropContent>
   </Drop>

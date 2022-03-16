@@ -4,27 +4,24 @@ import {
   Content,
   Text
 } from './styled-components'
-import moment from 'moment'
 import { secondsToDhms } from 'helpers'
-
-const eventDate = new Date(1646222887038)
-eventDate.setDate(eventDate.getDate() + 1)
-
-
 type TTimer = { hours: string; days: string; minutes: string }
-
-const Timer: FC = () => {
+type TProps = {
+  finishDate: Date,
+  className?: string
+}
+const Timer: FC<TProps> = ({ finishDate, className }) => {
   const [ timer, setTimer ] = useState<TTimer>({
     hours: '0h', days: '0d', minutes: '0m'
   })
   useEffect(() => {
     const intervalCB = () => {
       const currentDate = new Date()
-      const left = moment(eventDate).diff(currentDate, 'seconds')
+      const left = (Number(finishDate) - Number(currentDate)) / 1000
       const { hours, days, minutes } = secondsToDhms(left)
       console.log({ hours, days, minutes })
       if (hours === '0h' && days === '0d' && minutes === '0m') {
-        window.clearInterval(interval)
+        return window.clearInterval(interval)
       }
       setTimer({ hours, days, minutes })
     }
@@ -36,7 +33,7 @@ const Timer: FC = () => {
   }, [])
   
 
-  return <Wrapper>
+  return <Wrapper className={className}>
     <Content>
       <Text>{timer.days}</Text>
       <Text>{timer.hours}</Text>

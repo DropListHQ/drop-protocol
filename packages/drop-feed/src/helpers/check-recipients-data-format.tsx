@@ -1,8 +1,8 @@
 import {
-  TRetroDropType, 
+  TDropType, 
 } from 'types'
 
-const checkRecipientsDataFormat = (type: TRetroDropType, data: string): boolean => {
+const checkRecipientsDataFormat = (type: TDropType, data: string): boolean => {
   const recipients = data.split('\n')
   let isValid = false
   if (type === 'erc1155') {

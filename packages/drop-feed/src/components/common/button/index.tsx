@@ -1,20 +1,20 @@
 import React, { FC } from 'react'
 import {
     Button,
-    ButtonLoader
+    ButtonLoader,
+    Anchor
 } from './styled-components'
-
-import { ThemeProvider } from 'styled-components'
-import themes from 'themes'
 
 interface Props {
   title: string,
   disabled?: boolean,
   loading?: boolean,
-  onClick: () => void,
+  onClick?: () => void,
   appearance?: 'action' | 'action-inverted' | 'default' | 'default-inverted',
   className?: string,
-  size?: 'default' | 'small'
+  size?: 'default' | 'small',
+  href?: string,
+  target?: '_blank' | '_self' | '_parent' | '_top' 
 }
 
 const ButtonComponent: FC<Props> = ({
@@ -24,20 +24,32 @@ const ButtonComponent: FC<Props> = ({
   onClick,
   appearance = 'default',
   className,
-  size
+  size,
+  href,
+  target
 }) => {
-    return <ThemeProvider theme={themes.light}>
-      <Button
-        disabled={disabled}
-        loading={loading}
-        onClick={onClick}
-        appearance={appearance}
-        className={className}
-        size={size}
-      >
-        {loading && <ButtonLoader size='small' />}{title}
-      </Button>
-    </ThemeProvider>
+    if (href) {
+      return <Anchor href={href} target={target}>
+        <Button
+          disabled={disabled}
+          appearance={appearance}
+          className={className}
+          size={size}
+        >
+          {title}
+        </Button>
+      </Anchor>
+    }
+    return <Button
+      disabled={disabled}
+      loading={loading}
+      onClick={onClick}
+      appearance={appearance}
+      className={className}
+      size={size}
+    >
+      {loading && <ButtonLoader size='small' />}{title}
+    </Button>
 }
 
 

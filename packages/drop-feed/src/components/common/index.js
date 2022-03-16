@@ -25,6 +25,7 @@ import FramedIcon from './framed-icon'
 import ScreenLoader from './screen-loader'
 import Container from './container'
 import Timer from './timer'
+import ToDo from './to-do'
 
 export {
   Header,
@@ -53,5 +54,6 @@ export {
   FramedIcon,
   ScreenLoader,
   Container,
-  Timer
+  Timer,
+  ToDo
 }

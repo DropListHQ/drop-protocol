@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { Button } from '../index'
+import { Link } from 'react-router-dom'
 
 export const Drop = styled.div`
   background-color: ${props => props.theme.blankColor};
@@ -19,6 +19,13 @@ export const DropTitle = styled.h3`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`
+
+export const DropLink = styled(Link)`
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  width: 100%;
 `
 
 export const DropDescription = styled.p`

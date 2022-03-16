@@ -1,9 +1,9 @@
 import TMerkleTree from './merkle-tree'
 import TDropCreateStep from './drop-create-step'
 import TDropClaimStep from './drop-claim-step'
-import TRetroDrop from './retro-drop'
-import TRetroDropType from './retro-drop-type'
-import TRetroDropStatus from './retro-drop-status'
+import TDrop from './drop'
+import TDropType from './drop-type'
+import TDropStatus from './drop-status'
 import TRecipientsData, { TItemERC1155, TItemERC721, TItemERC20 } from './recipients-data'
 import TOwners from './owners'
 import TCommunities from './communities'
@@ -15,9 +15,9 @@ import IMetamaskError from './metamask-error'
 export {
   TMerkleTree,
   TDropCreateStep,
-  TRetroDrop,
-  TRetroDropType,
-  TRetroDropStatus,
+  TDrop,
+  TDropType,
+  TDropStatus,
   TRecipientsData,
   TDropClaimStep,
   TOwners,

@@ -3,11 +3,15 @@ import Loader from '../loader'
 
 interface ButtonProps {
   disabled: boolean,
-  loading: boolean,
+  loading?: boolean,
   appearance: 'action' | 'action-inverted' | 'default' | 'default-inverted',
   className?: string,
   size?: 'default' | 'small'
 }
+
+export const Anchor = styled.a`
+  text-decoration: none;
+`
 
 export const ButtonLoader = styled(Loader)`
   margin-right: 8px;

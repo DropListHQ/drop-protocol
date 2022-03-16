@@ -1,8 +1,8 @@
 import { action } from 'typesafe-actions';
 import { Constants } from './constants';
-import { TRetroDrop } from 'types'
+import { TDrop } from 'types'
 
 
-export function addNewRetroDrop(retroDrop: TRetroDrop) {
-  return action(Constants.DROP_ADD_NEW_RETRO_DROP, retroDrop)
+export function addNewRetroDrop(drop: TDrop) {
+  return action(Constants.DROP_ADD_NEW_RETRO_DROP, drop)
 }

@@ -1,13 +1,23 @@
 
+import { TodoItem, TodoList, TodoItemIndicator } from './styled-components'
+import Icons from 'icons'
+import { FC } from 'react'
 
-const data = [
-  { title: 'Owning an NFT from the list of eligible communities', id: 1, active: false },
-  { title: 'Sign a message to participate', id: 2, active: false },
-  { title: 'Claim drop', id: 3, active: false }
-]
-const TodoList = () => {
-  
+type TProps = {
+  data: { title: string, id: string | number, active: boolean }[],
+  className?: string
+}
+
+const TodoListComponent: FC<TProps> = ({ data, className }) => {
+  return <TodoList className={className}>
+    {data.map(item => <TodoItem>
+      <TodoItemIndicator active={item.active}>
+          <Icons.CheckIcon />
+      </TodoItemIndicator>
+      {item.title}
+    </TodoItem>)}
+  </TodoList>
 }
 
 
-export default TodoList
+export default TodoListComponent

@@ -13,6 +13,8 @@ import { ReactComponent as ExternalLinkIcon } from './external-link-icon.svg'
 import { ReactComponent as BlueArrowIcon } from './blue-arrow-icon.svg';
 import { ReactComponent as ArrowIcon } from './arrow-icon.svg';
 import { ReactComponent as DroplistLogo } from './droplist-logo.svg';
+import { ReactComponent as CheckIcon } from './check-icon.svg';
+import { ReactComponent as SelectIcon } from './select-icon.svg';
 
 const Icons = {
   EthereumLogo,
@@ -29,7 +31,9 @@ const Icons = {
   ExternalLinkIcon,
   BlueArrowIcon,
   ArrowIcon,
-  DroplistLogo
+  DroplistLogo,
+  CheckIcon,
+  SelectIcon
 }
 
 export default Icons

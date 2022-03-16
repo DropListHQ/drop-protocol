@@ -75,6 +75,10 @@ export const HeaderUserInfo = styled.div`
   ${props => props.onClick && css`
     cursor: pointer;
   `}
+
+  &:last-child {
+    margin-right: 0px;
+  }
 `
 export const HeaderMenu = styled.div`
   display: flex;
