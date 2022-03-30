@@ -1,14 +1,14 @@
 import { checkRecipientsDataFormat } from './index'
 import {
-  TDropType,
+  TCampaignTokenType,
   TItemERC1155,
   TItemERC721,
   TItemERC20
 } from 'types'
 import { utils } from 'ethers';
 
-type TResult<TItemType> = (type: TDropType, data: string) => TItemType | null
-type TResultERC20 = (type: TDropType, data: string, decimals: number) => TItemERC20 | null
+type TResult<TItemType> = (type: TCampaignTokenType, data: string) => TItemType | null
+type TResultERC20 = (type: TCampaignTokenType, data: string, decimals: number) => TItemERC20 | null
 
 
 export const parseDataERC1155: TResult<TItemERC1155> = (type, data) => {

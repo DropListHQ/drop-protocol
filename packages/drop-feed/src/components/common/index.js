@@ -12,7 +12,7 @@ import Footer from './footer'
 import Textarea from './textarea'
 import Loader from './loader'
 import Title from './title'
-import Drop from './drop'
+import Campaign from './campaign'
 import Breadcrumbs from './breadcrumbs'
 import InfoBlock from './info-block'
 import PreviewWidget from './preview-widget'
@@ -26,6 +26,8 @@ import ScreenLoader from './screen-loader'
 import Container from './container'
 import Timer from './timer'
 import ToDo from './to-do'
+import MainTitle from './main-title'
+import Userpic from './userpic'
 
 export {
   Header,
@@ -42,7 +44,7 @@ export {
   Title,
   CommunityWidget,
   Footer,
-  Drop,
+  Campaign,
   Breadcrumbs,
   InfoBlock,
   PreviewWidget,
@@ -55,5 +57,7 @@ export {
   ScreenLoader,
   Container,
   Timer,
-  ToDo
+  ToDo,
+  MainTitle,
+  Userpic
 }

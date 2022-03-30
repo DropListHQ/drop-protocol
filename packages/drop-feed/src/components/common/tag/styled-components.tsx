@@ -10,7 +10,7 @@ export const TagContainer = styled.div<TagProps>`
   display: inline-block;
   border-radius: 12px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 9px;
   line-height: 16px;
 
   ${props => props.status === 'error' && css`

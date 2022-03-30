@@ -1,6 +1,6 @@
-import { TDropStatus, TRecipientsData, TDropType } from './index.js'
+import { TDropStatus, TRecipientsData, TCampaignTokenType } from './index.js'
 
-type TDrop = {
+type TCampaign = {
   title: string,
   ipfsHash: string,
   address: string,
@@ -10,9 +10,9 @@ type TDrop = {
   status: TDropStatus,
   tokenAddress: string,
   recipients: TRecipientsData,
-  type: TDropType,
+  type: TCampaignTokenType,
   decimals: number | null,
   dropAddress: string
 }
 
-export default TDrop
+export default TCampaign

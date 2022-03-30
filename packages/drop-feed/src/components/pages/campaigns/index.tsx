@@ -1,13 +1,16 @@
 import { FC, useState } from 'react'
-import { Title, Drop, Text } from 'components/common'
+import { Title, Campaign, Text, Widget } from 'components/common'
 import { Container } from './styled-components'
 import DropImage1 from 'images/1.png'
 import DropImage2 from 'images/2.png'
 import DropImage3 from 'images/3.png'
+import AsideImageSrc from 'images/its-alive.png'
 import { connect } from 'react-redux';
 import { RootState } from 'data/store';
 import * as asyncUserActions from 'data/store/reducers/user/async-actions'
 import { UserActions } from 'data/store/reducers/user/types'
+import TelegramIcon from 'images/telegram.png'
+
 import {
   Filters,
   CommunityFilter,
@@ -17,10 +20,19 @@ import {
   MainInfo,
   Aside,
   Buttons,
-  PageButton
+  PageButton,
+  AsideImage,
+
+  MoreDropsWidget,
+  MoreDropsIcon,
+  MoreDropsTitle,
+  MoreDropsText,
+  MoreDropsButton
+
 } from './styled-components'
-import { TDropType } from 'types'
+import { TCampaignTokenType } from 'types'
 import { Dispatch } from 'redux'
+import { campaigns } from 'configs/campaigns'
 
 const communities = [
   { value: 1, label: 'Bored Ape Yacht Club' },
@@ -82,10 +94,13 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 const Feed: FC<ReduxType> = ({ address, connectWallet }) => {
   const [ comunity, setCommunity ] = useState<string | number | null>(1)
   const [ network, setNetwork ] = useState<string | number | null>(1)
-  const [ type, setType ] = useState<TDropType | null>(null)
+  const [ type, setType ] = useState<TCampaignTokenType | null>(null)
   if (!address) {
     return <>
       <Content>
+        <Aside>
+          <AsideImage src={AsideImageSrc} />
+        </Aside>
         <MainInfo>
           <MainTitle>Welcome<br />to DropList Alpha</MainTitle>
           <Text>
@@ -106,15 +121,13 @@ const Feed: FC<ReduxType> = ({ address, connectWallet }) => {
             <PageButton appearance='action' title='Let’s go' onClick={() => { connectWallet() }} />
           </Buttons>
         </MainInfo>
-        <Aside>
-          aside
-        </Aside>
+        
       </Content>
     </>
   }
   return <>
-    <Title>Feed</Title>
-    <Filters>
+    <Title>My Drops</Title>
+    {false && <Filters>
       <CommunityFilter
         value={comunity}
         onChange={value => setCommunity(value)}
@@ -133,9 +146,17 @@ const Feed: FC<ReduxType> = ({ address, connectWallet }) => {
         onChange={value => setType(value)}
         placeholder='Token'
       />
-    </Filters>
+    </Filters>}
     <Container>
-      {data.map(item => <Drop {...item} type='erc721' address={address} />)}
+      {campaigns.map(item => <Campaign
+        {...item}
+      />)}
+      <MoreDropsWidget>
+        <MoreDropsIcon src={TelegramIcon} alt='telegram icon'/>
+        <MoreDropsTitle>More drops soon</MoreDropsTitle>
+        <MoreDropsText>Subscribe for teelgram bot to be notified when new drops available for your wallet</MoreDropsText>
+        <MoreDropsButton title='Subscribe' />
+      </MoreDropsWidget>
     </Container>
   </>
 }

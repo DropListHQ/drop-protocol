@@ -1,8 +1,8 @@
 import React, { FC } from 'react'
 import { TitleComponent } from './styled-components'
 
-const Title: FC = ({ children }) => {
+const MainTitle: FC = ({ children }) => {
   return <TitleComponent>{children}</TitleComponent>
 }
 
-export default Title
+export default MainTitle

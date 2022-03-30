@@ -1,8 +1,8 @@
-import { TDropType } from 'types'
+import { TCampaignTokenType } from 'types'
 
 type TContracts = {
   [networkId: string | number]: {
-    [key in TDropType]: string
+    [key in TCampaignTokenType]: string
   } & {
     factory: string;
   }

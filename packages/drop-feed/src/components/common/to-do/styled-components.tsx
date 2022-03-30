@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components'
+import { Button } from 'components/common'
 
 export const TodoList = styled.ul`
   list-style: none;
@@ -7,9 +8,10 @@ export const TodoList = styled.ul`
 `
 
 export const TodoItem = styled.li`
-  margin: 0 0 16px;
+  margin: 0 0 8px;
   display: flex;
   align-items: center;
+  min-height: 36px;
 `
 
 type TTodoItemIndicator = {
@@ -17,24 +19,34 @@ type TTodoItemIndicator = {
 }
 
 export const TodoItemIndicator = styled.div<TTodoItemIndicator>`
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   background: ${props => props.theme.blankColor};
-  border: 1px solid ${props => props.theme.primaryBorderColor};
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 18px;
   margin-right: 10px;
+  border: 2px solid ${props => props.theme.primaryBorderColor};
   display: flex;
   align-items: center;
   justify-content: center;
   ${props => props.active && css`
-    background: ${props.theme.buttonActionBackgroundColor};
+    background: ${props.theme.statusSuccessColor};
     border: none;
   `};
 `
 
 export const TodoItemTitle = styled.h4`
-  
+  margin: 0;
+`
+
+export const TodoItemControls = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+`
+
+export const ToDoButton = styled(Button)`
+  width: 126px;
 `

@@ -1,6 +1,6 @@
-import { TDropType, TRecipientsData } from 'types'
+import { TCampaignTokenType, TRecipientsData } from 'types'
 import { utils } from 'ethers'
-type TCountTotalTokens = (recipientsData: TRecipientsData, type: TDropType | null, decimals: number | null) => number
+type TCountTotalTokens = (recipientsData: TRecipientsData, type: TCampaignTokenType | null, decimals: number | null) => number
 
 const countTotalTokens: TCountTotalTokens = (recipientsData, type, decimals) => {
   if (!recipientsData) { return 0 }

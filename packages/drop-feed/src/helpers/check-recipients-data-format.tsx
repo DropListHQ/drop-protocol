@@ -1,8 +1,8 @@
 import {
-  TDropType, 
+  TCampaignTokenType, 
 } from 'types'
 
-const checkRecipientsDataFormat = (type: TDropType, data: string): boolean => {
+const checkRecipientsDataFormat = (type: TCampaignTokenType, data: string): boolean => {
   const recipients = data.split('\n')
   let isValid = false
   if (type === 'erc1155') {
