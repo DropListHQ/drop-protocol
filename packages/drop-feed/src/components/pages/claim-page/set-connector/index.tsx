@@ -6,7 +6,7 @@ import { FramedIconComponent, TextComponent, ButtonComponent, Container } from '
 
 const mapStateToProps = ({
   user: { chainId },
-  drop: { chainId: dropChainId },
+  campaign: { chainId: dropChainId },
 }: RootState) => ({
   chainId,
   dropChainId

@@ -9,7 +9,8 @@ import {
   Page,
   Campaigns,
   Claim,
-  Campaign
+  Campaign,
+  CampaignResult
 //   NotFound,
 //   ProtectedRoute,
 //   Authorize
@@ -35,7 +36,7 @@ const mapDispatcherToProps = (dispatch: Dispatch<UserActions | CommunitiesAction
 const mapStateToProps = ({ user: { provider, address } }: RootState) => ({ provider, address })
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
 
-const AppRouter: FC<ReduxType> = ({ connectWallet, getCommunityData }) => {
+const AppRouter: FC<ReduxType> = ({ connectWallet, getCommunityData, address }) => {
   useEffect(() => {
     getCommunityData(Object.keys(communities))
   }, [])
@@ -43,7 +44,11 @@ const AppRouter: FC<ReduxType> = ({ connectWallet, getCommunityData }) => {
   return <HashRouter>
     <Page>
       <Switch>
-        <Route path='/claim/:ipfs'><Claim /></Route>
+        <ProtectedRoute
+          loggedIn={Boolean(address)}
+          component={CampaignResult}
+          path='/campaigns/:id/result'
+        />
         <Route path='/campaigns/:id'>
           <Campaign />
         </Route>

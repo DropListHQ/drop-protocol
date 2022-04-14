@@ -15,6 +15,7 @@ import { ReactComponent as ArrowIcon } from './arrow-icon.svg';
 import { ReactComponent as DroplistLogo } from './droplist-logo.svg';
 import { ReactComponent as CheckIcon } from './check-icon.svg';
 import { ReactComponent as SelectIcon } from './select-icon.svg';
+import { ReactComponent as PopupCloseIcon } from './popup-close-icon.svg';
 
 const Icons = {
   EthereumLogo,
@@ -33,7 +34,8 @@ const Icons = {
   ArrowIcon,
   DroplistLogo,
   CheckIcon,
-  SelectIcon
+  SelectIcon,
+  PopupCloseIcon
 }
 
 export default Icons

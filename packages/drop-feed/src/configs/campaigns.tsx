@@ -5,9 +5,8 @@ import CommunityIcon from 'images/community.png'
 
 export const campaigns: ICampaign[] = [{
   title: 'Dedication to the glorious naked parties in Acapulco',
-  short_description: 'Ape with me” raffle organized by Ladger specially for BAYC owners. The main prize is a collectible Ledger Nano S with engraved Ape of a winner.',
+  short_description: 'Do you remember those times we were young, naked and happy? We do. And Super Co. App does. Complete all tasks from the list and get a chance to win Cryptoad 3752.',
   chain_id: 4,
-  token_type: 'erc1155',
   campaign_address: '0x3F389A7d841EdBa3964Ebd5acCbaf76f7525B3bE',
   owner: {
     name: 'Ledger',
@@ -18,12 +17,17 @@ export const campaigns: ICampaign[] = [{
   communities: [
     {
       address: '0x35573543f290fef43d62ad3269bb9a733445ddab',
-      logo: CommunityIcon
+      logo: CommunityIcon,
+      name: "Bored Ape"
     }
   ],
-  token_address: '0x35573543f290fef43d62ad3269bb9a733445ddab',
-  token_id: 5,
-  status: 'active'
+  status: 'active',
+  prize: {
+    token_address: '0x35573543f290fef43d62ad3269bb9a733445ddab',
+    token_id: 5,
+    token_type: 'erc1155',
+    collection_name: 'Cryptoadz'
+  }
 }]
 
 export const campaign: ICampaignDetails = {

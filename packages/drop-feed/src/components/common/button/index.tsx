@@ -2,7 +2,8 @@ import React, { FC } from 'react'
 import {
     Button,
     ButtonLoader,
-    Anchor
+    Anchor,
+    ButtonLink
 } from './styled-components'
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
   className?: string,
   size?: 'default' | 'small',
   href?: string,
+  to?: string,
   target?: '_blank' | '_self' | '_parent' | '_top' 
 }
 
@@ -26,7 +28,8 @@ const ButtonComponent: FC<Props> = ({
   className,
   size,
   href,
-  target
+  target,
+  to
 }) => {
     if (href) {
       return <Anchor href={href} target={target}>
@@ -39,6 +42,18 @@ const ButtonComponent: FC<Props> = ({
           {title}
         </Button>
       </Anchor>
+    }
+    if (to) {
+      return <ButtonLink to={to}>
+        <Button
+          disabled={disabled}
+          appearance={appearance}
+          className={className}
+          size={size}
+        >
+          {title}
+        </Button>
+      </ButtonLink>
     }
     return <Button
       disabled={disabled}

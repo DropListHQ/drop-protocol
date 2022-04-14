@@ -25,12 +25,12 @@ const { REACT_APP_CLAIM_URL } = process.env
 const CampaignComponent: FC<ICampaign> = ({
   title,
   image,
-  token_type,
   chain_id,
   short_description,
   campaign_address,
   owner,
-  communities
+  communities,
+  prize
 }) => {
   const [ imageURL, setImageURL ] = useState(image)
   // useEffect(() => {
@@ -62,7 +62,7 @@ const CampaignComponent: FC<ICampaign> = ({
         </CampaignContract>
         <CampaignTagsContainer>
           <Tag title={defineNetworkName(chain_id)} status='default'/>
-          <Tag title={token_type.toUpperCase()} status='default'/>
+          <Tag title={prize.token_type.toUpperCase()} status='default'/>
         </CampaignTagsContainer>
       </CampaignInfo>
       <CampaignLink to={`/campaigns/${campaign_address}`}><CampaignTitle>{title}</CampaignTitle></CampaignLink>

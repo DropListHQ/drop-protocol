@@ -24,6 +24,8 @@ import { shortenString, defineNetworkName, capitalize } from 'helpers'
 import { RootState } from 'data/store';
 import { connect } from 'react-redux';
 import * as asyncUserActions from 'data/store/reducers/user/async-actions'
+import * as userActions from 'data/store/reducers/user/actions'
+
 import { UserActions } from 'data/store/reducers/user/types'
 import MiniPopup from '../mini-popup'
 import chains from 'configs/chains'
@@ -33,6 +35,7 @@ const mapStateToProps = ({ user: { chainId, address, provider } }: RootState) =>
 const mapDispatcherToProps = (dispatch: Dispatch<UserActions>) => {
   return {
     connectWallet: () => asyncUserActions.connectWallet(dispatch),
+		toggleConnectorPopup: () => dispatch(userActions.toggleConnectorPopup(true)),
 		switchWallet: (provider: any, chainId: number) => asyncUserActions.switchWallet(dispatch, provider, chainId)
   }
 }
@@ -41,8 +44,14 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 
 interface Props {}
 
-
-const HeaderComponent: FC<Props & ReduxType> = ({ chainId, address, connectWallet, switchWallet, provider }) => {
+const HeaderComponent: FC<Props & ReduxType> = ({
+	chainId,
+	address,
+	connectWallet,
+	switchWallet,
+	provider,
+	toggleConnectorPopup
+}) => {
 	const [ showToggleChain, setShowToggleChain ] = useState(false)
 	
 
@@ -80,7 +89,9 @@ const HeaderComponent: FC<Props & ReduxType> = ({ chainId, address, connectWalle
 						{capitalize(defineNetworkName(chainId))}
 						{chainsPopup}
 					</HeaderUserInfo>}
-					{address && <HeaderUserInfo>
+					{address && <HeaderUserInfo
+						onClick={() => toggleConnectorPopup()}
+					>
 						<ConnectionIndicator />
 						{shortenString(address)}
 					</HeaderUserInfo>}

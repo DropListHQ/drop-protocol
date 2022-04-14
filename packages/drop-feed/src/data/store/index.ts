@@ -2,40 +2,40 @@ import { createBrowserHistory } from 'history'
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 
 import { userReducer } from './reducers/user/reducer';
-import { dropsReducer } from './reducers/drops/reducer'
+import { dropsReducer } from './reducers/campaigns/reducer'
 import { communitiesReducer } from './reducers/communities/reducer'
 
 import { setProps, getLocalStore, setLocalStore } from './local-storage-redux'
 import { UserState } from './reducers/user/types';
-import { DropsState } from './reducers/drops/types';
+import { CampaignsState } from './reducers/campaigns/types';
 import { CommunitiesState } from './reducers/communities/types';
 
 
 import { tokenReducer } from './reducers/token/reducer'
-import { dropReducer } from './reducers/drop/reducer'
+import { campaignReducer } from './reducers/campaign/reducer'
 
 // import { setProps, getLocalStore, setLocalStore } from './local-storage-redux'
 import { TokenState } from './reducers/token/types';
-import { DropState } from './reducers/drop/types';
+import { CampaignState } from './reducers/campaign/types';
 
 export const history = createBrowserHistory()
 setProps(['drops'])
 
 export interface RootState {
   user: UserState,
-  drops: DropsState,
+  campaigns: CampaignsState,
   communities: CommunitiesState,
   token: TokenState,
-  drop: DropState
+  campaign: CampaignState
 }
 
 const store = createStore<RootState, any, any, any>(
   combineReducers({
     user: userReducer,
-    drops: dropsReducer,
+    campaigns: dropsReducer,
     communities: communitiesReducer,
     token: tokenReducer,
-    drop: dropReducer
+    campaign: campaignReducer
   }),
   getLocalStore()
 )

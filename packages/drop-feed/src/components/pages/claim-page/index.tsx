@@ -10,7 +10,7 @@ import SetConnector from './set-connector'
 import NoTokensLeft from './no-tokens-left'
 import { ScreenLoader } from 'components/common'
 import Page from '../page'
-import { TDropClaimStep } from 'types'
+import { TCampaignStep } from 'types'
 import { useHistory } from 'react-router-dom'
 
 import { RootState } from 'data/store'
@@ -18,32 +18,21 @@ import { connect } from 'react-redux'
 import { Container } from './styled-components'
 import { useParams } from 'react-router-dom'
 import { Dispatch } from 'redux';
-import * as dropAsyncActions from 'data/store/reducers/drop/async-actions'
-import * as dropActions from 'data/store/reducers/drop/actions'
-import { DropActions } from 'data/store/reducers/drop/types'
+import * as dropAsyncActions from 'data/store/reducers/campaign/async-actions'
+import * as dropActions from 'data/store/reducers/campaign/actions'
+import { CampaignActions } from 'data/store/reducers/campaign/types'
 import { TokenActions } from 'data/store/reducers/token/types'
 
 const mapStateToProps = ({
   user: { address, provider, chainId, dropSDK },
-  drop: { step },
 }: RootState) => ({
   address,
-  step,
   provider,
   chainId,
   dropSDK
 })
-const mapDispatcherToProps = (dispatch: Dispatch<DropActions> & Dispatch<TokenActions>) => {
+const mapDispatcherToProps = (dispatch: Dispatch<CampaignActions> & Dispatch<TokenActions>) => {
   return {
-    getData: (
-      provider: any,
-      ipfs: string,
-      chainId: number,
-      address: string,
-      history: any,
-      dropSDK: DropSDK
-    ) => dropAsyncActions.getInitialData(dispatch, provider, ipfs, chainId, address, dropSDK),
-    setStep: (step: TDropClaimStep) => dispatch(dropActions.setStep(step))
   }
 }
 
@@ -51,51 +40,18 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 
 type TDefineStep = (step: string) => ReactElement
 
-const defineCurrentScreen: TDefineStep = step => {
-  switch (step) {
-    case 'initial':
-      return <InitialScreen />
-    case 'change_network':
-      return <ChangeNetwork />
-    case 'not_allowed':
-      return <NotAllowedForClaim />
-    case 'claiming_process':
-      return <ClaimingProcess />
-    case 'claiming_finished':
-      return <ClaimingFinished />
-    case 'check_eligibility':
-      return <CheckEligibility />
-    case 'set_connector':
-      return <SetConnector />
-    case 'no_tokens_left':
-      return <NoTokensLeft />
-    default:
-      return <ScreenLoader />
-  }
-}
 
 const ClaimPage: FC<ReduxType> = ({
-  step,
-  getData,
   address,
   chainId,
   provider,
-  setStep,
   dropSDK
 }) => {
-  const { ipfs }: { ipfs: string } = useParams()
-  const screen = defineCurrentScreen(step)
-  const history = useHistory()
-  useEffect(() => {
-    if (provider === null) { setStep('set_connector') }
-    if (chainId && provider && dropSDK) {
-      getData(provider, ipfs, chainId, address, history, dropSDK)
-    }
-  }, [provider, address, chainId, dropSDK])
+  
 
   return <Page>
     <Container>
-      {screen}
+      сдфшьclaimingштп
     </Container>
   </Page>
 }

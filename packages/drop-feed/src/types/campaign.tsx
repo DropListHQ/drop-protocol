@@ -1,4 +1,4 @@
-import { TCampaignOwner, TCampaignTokenType, TCommunities } from './index'
+import { TCampaignOwner, TCommunities, TTicket, TPrize } from './index'
 
 export interface ICampaign {
   title: string,
@@ -7,20 +7,14 @@ export interface ICampaign {
   image: string,
   campaign_address: string,
   chain_id: number,
-  token_type: TCampaignTokenType,
   communities: TCommunities,
-  token_address: string,
-  token_id?: string | number,
-  status: 'active' | 'finished'
+  status: 'active' | 'finished',
+  prize: TPrize
 }
 
 export interface ICampaignDetails extends ICampaign {
   date: string,
   description: string,
-  ticket: {
-    total: number,
-    token_address: string,
-    type: TCampaignTokenType
-  }
+  ticket: TTicket
 }
 

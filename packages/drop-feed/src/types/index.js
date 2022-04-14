@@ -1,5 +1,5 @@
 import TMerkleTree from './merkle-tree'
-import TDropClaimStep from './drop-claim-step'
+import TCampaignStep from './campaign-step'
 import TDrop from './drop'
 import TCampaignTokenType from './campaign-token-type'
 import TDropStatus from './drop-status'
@@ -11,7 +11,9 @@ import MerkleDistributorInfoERC721 from './merkle-distributor-info-erc721'
 import MerkleDistributorInfoERC20 from './merkle-distributor-info-erc20'
 import IMetamaskError from './metamask-error'
 import TCampaignOwner from './campaign-owner'
+import TTicket from './ticket'
 import { ICampaignDetails, ICampaign } from './campaign'
+import TPrize from './prize'
 
 export {
   TMerkleTree,
@@ -19,7 +21,7 @@ export {
   TCampaignTokenType,
   TDropStatus,
   TRecipientsData,
-  TDropClaimStep,
+  TCampaignStep,
   TOwners,
   TCommunities,
   TItemERC1155,
@@ -32,4 +34,6 @@ export {
   ICampaignDetails,
   ICampaign,
   TCampaignOwner,
+  TTicket,
+  TPrize
 }

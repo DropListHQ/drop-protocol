@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 
 const mapStateToProps = ({
   user: { chainId },
-  drop: { chainId: dropChainId },
+  campaign: { chainId: campaignChainId },
 }: RootState) => ({
   chainId,
-  dropChainId
+  campaignChainId
 })
 
 type ReduxType = ReturnType<typeof mapStateToProps> 
@@ -15,10 +15,10 @@ type ReduxType = ReturnType<typeof mapStateToProps>
 
 const ChangeNetwork: FC<ReduxType> = ({
   chainId,
-  dropChainId
+  campaignChainId
 }) => {
   return <>
-    change network. now it is {chainId}, but should be {dropChainId}
+    change network. now it is {chainId}, but should be {campaignChainId}
   </>
 }
 

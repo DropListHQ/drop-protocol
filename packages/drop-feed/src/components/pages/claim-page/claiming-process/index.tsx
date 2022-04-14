@@ -8,7 +8,7 @@ import Icons from 'icons'
 
 const mapStateToProps = ({
   user: { chainId },
-  drop: { hash }
+  campaign: { hash }
 }: RootState) => ({
   hash,
   chainId

@@ -2,33 +2,32 @@ import React, { FC, useState } from 'react'
 import { RootState } from 'data/store'
 import { connect } from 'react-redux'
 import { ScreenInput, ScreenButton, Title, Container, ScreenText, BackButton } from './styled-components'
-import { TDropClaimStep } from 'types'
-import * as dropActions from 'data/store/reducers/drop/actions'
+import { TCampaignStep } from 'types'
+import * as dropActions from 'data/store/reducers/campaign/actions'
 import { Dispatch } from 'redux';
-import { DropActions } from 'data/store/reducers/drop/types'
+import { CampaignActions } from 'data/store/reducers/campaign/types'
 import Icons from 'icons'
 
 const mapStateToProps = ({
   user: { address },
-  drop: { allowedAddressList },
+  campaign: { allowedAddressList },
 }: RootState) => ({
   address,
   allowedAddressList
 })
-const mapDispatcherToProps = (dispatch: Dispatch<DropActions>) => {
+const mapDispatcherToProps = (dispatch: Dispatch<CampaignActions>) => {
   return {
-    stepStep: (step: TDropClaimStep) => dispatch(dropActions.setStep(step))
   }
 }
 type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatcherToProps>
 type TStatus = 'default' | 'success' | 'error'
 
-const CheckEligibility: FC<ReduxType> = ({ address, allowedAddressList, stepStep }) => {
+const CheckEligibility: FC<ReduxType> = ({ address, allowedAddressList }) => {
   const [ value, setValue ] = useState('')
   const [ status, setStatus ] = useState<TStatus>('default')
   return <Container>
     <BackButton
-      onClick={() => { return stepStep('initial') }}
+      onClick={() => {  }}
     ><Icons.ArrowIcon />Back</BackButton>
     <Title>Check eligibility</Title>
     <ScreenText>To check eligibility paste your address below:</ScreenText>
@@ -47,7 +46,7 @@ const CheckEligibility: FC<ReduxType> = ({ address, allowedAddressList, stepStep
       title={status === 'success' ? 'Claim now' : 'Check'}
       onClick={() => {
         if (status === 'success') {
-          return stepStep('initial')
+          return 
         }
         if (allowedAddressList.find((item: string) => item.toLowerCase() === value.toLocaleLowerCase())) {
           setStatus('success')

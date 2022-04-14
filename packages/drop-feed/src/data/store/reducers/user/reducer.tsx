@@ -6,7 +6,8 @@ const initialState: UserState = {
   loading: false,
   provider: null,
   chainId: null,
-  dropSDK: undefined
+  dropSDK: undefined,
+  showConnectorPopup: false
 };
 
 export function userReducer(
@@ -22,6 +23,8 @@ export function userReducer(
           return {...state, provider: action.payload.provider }
         case Constants.USER_SET_CHAIN_ID:
           return {...state, chainId: action.payload.chainId }
+        case Constants.USER_TOGGLE_CONNECTOR_POPUP:
+          return {...state, showConnectorPopup: action.payload.showConnectorPopup }
         default:
             return state;
     }

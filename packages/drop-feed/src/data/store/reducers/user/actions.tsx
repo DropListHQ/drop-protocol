@@ -41,6 +41,16 @@ export function setChainId(chainId: number) {
   )
 }
 
+export function toggleConnectorPopup(state: boolean) {
+  return action(
+    Constants.USER_TOGGLE_CONNECTOR_POPUP,
+    // payload
+    {
+      showConnectorPopup: state
+    }
+  )
+}
+
 export function setDropSDK(provider: any, chainId: number) {
   return action(
     Constants.USER_SET_DROP_SDK,

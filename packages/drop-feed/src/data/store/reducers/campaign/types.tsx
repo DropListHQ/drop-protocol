@@ -1,10 +1,8 @@
 import { ActionType } from 'typesafe-actions';
 import * as actions from './actions'
-import { TDropClaimStep } from 'types'
 import { TRecipientsData, TDropType } from '@drop-protocol/drop-sdk';
 
-export interface DropState {
-  step: TDropClaimStep,
+export interface CampaignState {
   loading: boolean,
   chainId: number | null,
   tokenAddress: string | null,
@@ -12,16 +10,13 @@ export interface DropState {
   amount: string | null,
   allowedAddressList: string[],
   title: string,
-  dropAddress: string,
   proof: string[],
   index: number,
   hash: null | string,
   claims: TRecipientsData,
   logoURL: string | null,
-  description: string | null,
-  type: TDropType | null
+  type: TDropType | null,
+  winner: string | null
 }
 
-
-
-export type DropActions = ActionType<typeof actions>;
+export type CampaignActions = ActionType<typeof actions>;

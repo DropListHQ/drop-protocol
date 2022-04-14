@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Widget, ToDo, Timer, Button, Userpic } from 'components/common'
+import { Widget, ToDo, Timer, Button, Userpic, Status } from 'components/common'
 
 export const Content = styled.div`
   display: flex;
@@ -103,10 +103,6 @@ export const CampaignButton = styled(Button)`
   max-width: 100%;
   width: 100%;
   margin-bottom: 8px;
-
-  &:last-child {
-    margin-bottom: 0px;
-  }
 `
 
 export const TableHeadTitle = styled(TableRowTitle)`
@@ -141,4 +137,27 @@ export const CommunityUserpic = styled(Userpic)`
 
 export const TableButton = styled(Button)`
   width: 126px;
+`
+
+export const CampaignStatus = styled.div`
+  display: flex;
+`
+
+export const CampaignOwner = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 36px;
+`
+
+export const CampaignOwnerImage = styled.img`
+  width: 24px;
+  height: 24px;
+  border-radius: 24px;
+  margin-right: 8px;
+`
+
+export const CampaignStatusIndicator = styled(Status)`
+  margin-right: 24px;
 `

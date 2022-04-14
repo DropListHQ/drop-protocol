@@ -1,7 +1,7 @@
 
 import { Dispatch } from 'redux';
 import * as actionsDrop from '../actions';
-import { DropActions } from '../types';
+import { CampaignActions } from '../types';
 import { TokenActions } from '../../token/types';
 import { ethers } from 'ethers'
 import { DropInterfaceERC20 } from '@drop-protocol/drop-sdk'
@@ -18,7 +18,7 @@ const checkReceipt = async function (contractInstance: any, currentIndex: number
 }
 
 export default async function claim(
-	dispatch: Dispatch<DropActions> & Dispatch<TokenActions>,
+	dispatch: Dispatch<CampaignActions> & Dispatch<TokenActions>,
   provider: any,
 	index: number,
   amount: string,
@@ -28,13 +28,13 @@ export default async function claim(
 ) {
   try {
     const contractInstanceProvider = new ethers.Contract(dropAddress, DropInterfaceERC20, provider)
-    dispatch(actionsDrop.setStep('claiming_process'))
+    // dispatch(actionsDrop.setStep('claiming_process'))
     const hash = await claimTokens(provider, index, amount, address, dropAddress, merkleProof)
     dispatch(actionsDrop.setHash(hash))
     const updatedHash = await checkReceipt(contractInstanceProvider, index)
     if (updatedHash) {
       dispatch(actionsDrop.setHash(updatedHash))
-      dispatch(actionsDrop.setStep('claiming_finished'))
+      // dispatch(actionsDrop.setStep('claiming_finished'))
     }
   } catch (err) {
     console.log(err)

@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import { shortenString, defineNetworkName } from 'helpers'
 import { Title, ScreenButton, TokenImageHuge } from './styled-components'
 import { TDropType } from '@drop-protocol/drop-sdk'
-import { ethers, utils } from 'ethers'
+import { utils } from 'ethers'
 
 const mapStateToProps = ({
-  drop: { hash, chainId, type, tokenId, tokenAddress, logoURL, amount },
+  campaign: { hash, chainId, type, tokenId, tokenAddress, logoURL, amount },
   user: { address },
   token: { image, name, decimals }
 }: RootState) => ({

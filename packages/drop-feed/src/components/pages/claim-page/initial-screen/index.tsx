@@ -1,24 +1,24 @@
 import React, { FC } from 'react'
-import { TokenImage, Widget } from 'components/common'
+import { Widget } from 'components/common'
 import { Title, ScreenButton, TextComponent, IconComponent, Description } from './styled-components'
 import { RootState } from 'data/store'
 import { connect } from 'react-redux'
-import { DropActions } from 'data/store/reducers/drop/types'
+import { CampaignActions } from 'data/store/reducers/campaign/types'
 import { TokenActions } from 'data/store/reducers/token/types'
-import * as dropAsyncActions from 'data/store/reducers/drop/async-actions'
+import * as dropAsyncActions from 'data/store/reducers/campaign/async-actions'
 import { Dispatch } from 'redux';
-import * as dropActions from 'data/store/reducers/drop/actions'
-import { TDropClaimStep } from 'types'
+import * as dropActions from 'data/store/reducers/campaign/actions'
+import { TCampaignStep } from 'types'
 
 const mapStateToProps = ({
   token: { name, image },
   user: { address, provider },
-  drop: { proof, tokenId, amount, dropAddress, index, allowedAddressList, logoURL, description, title, type }
+  campaign: { proof, tokenId, amount, index, allowedAddressList, logoURL, title, type }
 }: RootState) => ({
-  name, image, type, address, proof, tokenId, amount, dropAddress, provider, index, title, allowedAddressList, logoURL, description
+  name, image, type, address, proof, tokenId, amount, provider, index, title, allowedAddressList, logoURL
 })
 
-const mapDispatcherToProps = (dispatch: Dispatch<DropActions> & Dispatch<TokenActions>) => {
+const mapDispatcherToProps = (dispatch: Dispatch<CampaignActions> & Dispatch<TokenActions>) => {
   return {
       claimERC1155: (
         address: string,
@@ -70,7 +70,6 @@ const mapDispatcherToProps = (dispatch: Dispatch<DropActions> & Dispatch<TokenAc
         dropAddress,
         proof
       ),
-      stepStep: (step: TDropClaimStep) => dispatch(dropActions.setStep(step))
   }
 }
 
@@ -80,7 +79,6 @@ type ReduxType = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispa
 const InitialScreen: FC<ReduxType> = ({
   name,
   title,
-  description,
   allowedAddressList,
   logoURL,
   type,
@@ -88,13 +86,11 @@ const InitialScreen: FC<ReduxType> = ({
   proof,
   tokenId,
   amount,
-  dropAddress,
   provider,
   index,
   claimERC1155,
   claimERC721,
   claimERC20,
-  stepStep
 }) => {
   const allowed = allowedAddressList.some(item => item.toLowerCase() === address.toLocaleLowerCase())
   return <Widget
@@ -104,7 +100,7 @@ const InitialScreen: FC<ReduxType> = ({
       // />}
     > 
     <Title>{title}</Title>
-    <Description>{description}</Description>
+    <Description></Description>
     <ScreenButton
       disabled={
         (type === 'erc1155' && (!tokenId || !amount || !allowed)) ||
@@ -114,21 +110,20 @@ const InitialScreen: FC<ReduxType> = ({
       title='Claim'
       onClick={() => {
         console.log({ type })
-        if (type === 'erc1155' && tokenId && amount) {
-          return claimERC1155(address, proof, tokenId, amount, dropAddress, provider, index)
-        }
-        if (type === 'erc721' && tokenId) {
-          return claimERC721(address, proof, tokenId, dropAddress, provider, index)
-        }
-        if (type === 'erc20' && amount) {
-          return claimERC20(address, proof, amount, dropAddress, provider, index)
-        }
+        // if (type === 'erc1155' && tokenId && amount) {
+        //   return claimERC1155(address, proof, tokenId, amount, dropAddress, provider, index)
+        // }
+        // if (type === 'erc721' && tokenId) {
+        //   return claimERC721(address, proof, tokenId, dropAddress, provider, index)
+        // }
+        // if (type === 'erc20' && amount) {
+        //   return claimERC20(address, proof, amount, dropAddress, provider, index)
+        // }
       }}
     />
     <TextComponent
       onClick={() => {
         console.log('here')
-        stepStep('check_eligibility')
       }}
     >Check here if you are eligible<br />for this RetroDrop<IconComponent /></TextComponent>
   </Widget>

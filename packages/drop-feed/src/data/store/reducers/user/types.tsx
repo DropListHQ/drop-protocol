@@ -7,7 +7,8 @@ export interface UserState {
   loading: boolean,
   provider: any,
   chainId: number | null,
-  dropSDK: DropSDK | undefined
+  dropSDK: DropSDK | undefined,
+  showConnectorPopup: boolean
 }
 
 export type UserActions = ActionType<typeof actions>;

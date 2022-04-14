@@ -28,6 +28,9 @@ import Timer from './timer'
 import ToDo from './to-do'
 import MainTitle from './main-title'
 import Userpic from './userpic'
+import Status from './status'
+import Popup from './popup'
+import ConnectorPopup from './connector-popup'
 
 export {
   Header,
@@ -59,5 +62,8 @@ export {
   Timer,
   ToDo,
   MainTitle,
-  Userpic
+  Userpic,
+  Status,
+  Popup,
+  ConnectorPopup
 }

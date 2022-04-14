@@ -1,5 +1,6 @@
 import styled, { css } from 'styled-components';
 import Loader from '../loader'
+import { Link } from 'react-router-dom'
 
 interface ButtonProps {
   disabled: boolean,
@@ -8,6 +9,10 @@ interface ButtonProps {
   className?: string,
   size?: 'default' | 'small'
 }
+
+export const ButtonLink = styled(Link)`
+  text-decoration: none;
+`
 
 export const Anchor = styled.a`
   text-decoration: none;

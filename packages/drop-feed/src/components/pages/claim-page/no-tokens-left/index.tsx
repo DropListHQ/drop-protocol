@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 
 const mapStateToProps = ({
   user: { address },
-  drop: { allowedAddressList },
+  campaign: { allowedAddressList },
 }: RootState) => ({
   address,
   allowedAddressList
